@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Debug: Log tous les produits disponibles
-  const products = document.querySelectorAll('[data-product-target]');
+  const products = document.querySelectorAll("[data-product-target]");
   console.log(`Nombre total de produits chargés: ${products.length}`);
-  
+
   // Debug: Log toutes les catégories de produits
   const categories = new Set();
-  document.querySelectorAll('[data-category-target]').forEach(el => {
+  document.querySelectorAll("[data-category-target]").forEach((el) => {
     categories.add(el.dataset.categoryTarget);
   });
-  console.log('Catégories de produits disponibles:', Array.from(categories));
+  console.log("Catégories de produits disponibles:", Array.from(categories));
 
   // Gestion de l'overlay de chargement
   const overlay = document.querySelector(".overlay-loading");
@@ -116,7 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "[data-confirmation-overlay]"
   );
 
-
   // Fonction pour mettre à jour le compteur du panier
   function updateCartCount() {
     fetch(window.Shopify.routes.root + "cart.js")
@@ -180,7 +179,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Afficher la vue des collections si on est sur la slide products sans collection sélectionnée
         if (slideType === "products" && !id) {
-          const collectionsView = targetSlide.querySelector('.rdc-borne__collections-view');
+          const collectionsView = targetSlide.querySelector(
+            ".rdc-borne__collections-view"
+          );
           if (collectionsView) {
             collectionsView.style.display = "block";
           }
@@ -212,19 +213,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Si on est sur la slide des produits
     if (slideType === "products") {
-      const collectionsView = document.querySelector('.rdc-borne__collections-view');
-      const productsViews = document.querySelectorAll('.rdc-borne__products-view');
+      const collectionsView = document.querySelector(
+        ".rdc-borne__collections-view"
+      );
+      const productsViews = document.querySelectorAll(
+        ".rdc-borne__products-view"
+      );
 
       if (id) {
         // Masquer la vue des collections et afficher les produits de la collection sélectionnée
-        collectionsView.style.display = 'none';
-        productsViews.forEach(view => {
-          view.style.display = view.dataset.productCollection === id ? 'block' : 'none';
+        collectionsView.style.display = "none";
+        productsViews.forEach((view) => {
+          view.style.display =
+            view.dataset.productCollection === id ? "block" : "none";
         });
       } else {
         // Afficher la vue des collections et masquer tous les produits
-        collectionsView.style.display = 'block';
-        productsViews.forEach(view => view.style.display = 'none');
+        collectionsView.style.display = "block";
+        productsViews.forEach((view) => (view.style.display = "none"));
       }
 
       // Afficher le panier sur desktop
@@ -300,7 +306,10 @@ document.addEventListener("DOMContentLoaded", function () {
           // Sinon, revenir à la slide des catégories
           navigationButtons.categories.style.display = "none";
           showSlide("categories");
-          borne.classList.remove("rdc-borne--show-products", "rdc-borne--show-details");
+          borne.classList.remove(
+            "rdc-borne--show-products",
+            "rdc-borne--show-details"
+          );
         }
       } else if (backTo === "products") {
         navigationButtons.products.style.display = "none";

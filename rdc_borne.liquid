@@ -208,7 +208,8 @@
             {%- assign category_handle = category_name | handleize -%}
             <button class="rdc-borne__type-button" data-category-target="{{ category_handle }}">
               <div class="rdc-borne__type-image">
-                <img src="{{ category_handle | append: '.webp' | file_url }}" alt="{{ category_name }}" loading="lazy">
+                {% assign image_name = category_name | replace: ' ', '_' | replace: '&', '_' | replace: 'é', 'e' | replace: 'è', 'e' | replace: 'ê', 'e' | replace: 'à', 'a' | replace: 'â', 'a' | replace: 'ô', 'o' | replace: 'î', 'i' | replace: 'ï', 'i' | replace: 'û', 'u' | replace: 'ù', 'u' | downcase %}
+                <img src="{{ image_name | append: '.webp' | file_url }}" alt="{{ category_name }}" loading="lazy">
               </div>
               <h2>{{ category_name }}</h2>
             </button>
