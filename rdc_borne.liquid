@@ -1,3 +1,29 @@
+<style>
+.rdc-borne__slide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(30px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+}
+
+.rdc-borne__slide[data-slide="categories"],
+.rdc-borne__slide[data-slide="collections"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+</style>
+
 {% schema %}
 {
   "name": "Borne RDC",
@@ -8,6 +34,12 @@
       "label": "Catégories (séparées par des virgules)",
       "default": "T-shirts, Débardeurs, Sweatshirts",
       "info": "Les images associées doivent être nommées 'nom_categorie.webp'"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Collections à afficher",
+      "limit": 20
     }
   ],
   "presets": [
@@ -180,57 +212,13 @@
             </button>
           {%- endfor -%}
         </div>
+      </div>
 
-      <!-- Slide 2: Liste des produits par catégorie -->
-      {%- assign categories = section.settings.categories | split: ',' -%}
-      {%- for category in categories -%}
-        {%- assign category_name = category | strip -%}
-        {%- assign category_handle = category_name | handleize -%}
-        <div class="rdc-borne__slide" data-slide="products" data-category="{{ category_handle }}">
-          <div class="rdc-borne__slide-header">
-            <h1>On y est presque ! 🎉</h1>
-            <p style="font-size: 1.5rem;">Choisissez votre {{ category_name | downcase }} préféré</p>
-          </div>
-          <div class="rdc-borne__products-grid">
-            {% assign category_products = section.settings.collection.products | where: "product_type", category_name %}
-            {% for product in category_products %}
-              <button class="rdc-borne__product" data-product-target="{{ product.id }}">
-                <div class="rdc-borne__product-image">
-                  <img 
-                    src="{{ product.featured_image | img_url: 'large' }}" 
-                    alt="{{ product.title | escape }}" 
-                    loading="lazy"
-                  />
-                </div>
-                <div class="rdc-borne__product-info">
-                  <h3>{{ product.title }}</h3>
-                  <p class="rdc-borne__product-price">{{ product.price | money }}</p>
-                  {% assign color_option = product.options_with_values | where: "name", "Couleur" | first %}
-                  {% if color_option %}
-                    <div class="rdc-borne__product-colors">
-                      {% for value in color_option.values limit: 3 %}
-                        <span class="rdc-borne__product-color" 
-                          {% if value.swatch.image %}
-                            style="background-image: url({{ value.swatch.image | img_url: '50x' }})"
-                          {% else %}
-                            style="background-color: {{ value.swatch.color }}"
-                          {% endif %}
-                        >
-                          <span class="visually-hidden">{{ value }}</span>
-                        </span>
-                      {% endfor %}
-                      {% assign remaining_colors = color_option.values.size | minus: 3 %}
-                      {% if remaining_colors > 0 %}
-                        <span class="rdc-borne__product-color-count">+{{ remaining_colors }}</span>
-                      {% endif %}
-                    </div>
-                  {% endif %}
-                </div>
-              </button>
-            {% endfor %}
-          </div>
-        </div>
-      {% endfor %}
+      <!-- Slide 2: Collections -->
+      <div class="rdc-borne__slide" data-slide="collections" style="text-align: center; padding: 50px;">
+        <h1 style="font-size: 48px;">SLIDE 2</h1>
+        <p style="font-size: 24px; margin-top: 20px;">Vous êtes sur la deuxième slide !</p>
+      </div>
 
     <!-- Slide 3: Fiche produit -->
     {% for product in section.settings.collection.products %}

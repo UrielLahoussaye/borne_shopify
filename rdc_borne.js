@@ -168,26 +168,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Afficher la slide demandée
-    let targetSlide;
-    if (slideType === "product-details") {
-      targetSlide = document.querySelector(
-        `[data-slide="${slideType}"][data-product-id="${id}"]`
-      );
-    } else if (slideType === "products" && id) {
-      targetSlide = document.querySelector(
-        `[data-slide="${slideType}"][data-category="${id}"]`
-      );
-    } else {
-      targetSlide = document.querySelector(`[data-slide="${slideType}"]`);
-    }
+    const targetSlide = document.querySelector(`[data-slide="${slideType}"]`);
 
     if (targetSlide) {
-      targetSlide.style.display = "flex";
+      targetSlide.style.display = "block";
       // Petit délai pour permettre à la transition de s'effectuer
       setTimeout(() => {
         targetSlide.style.opacity = "1";
         targetSlide.style.pointerEvents = "auto";
         targetSlide.style.transform = "translateX(0)";
+
+        // Afficher la vue des collections si on est sur la slide products sans collection sélectionnée
+        if (slideType === "products" && !id) {
+          const collectionsView = targetSlide.querySelector('.rdc-borne__collections-view');
+          if (collectionsView) {
+            collectionsView.style.display = "block";
+          }
+        }
       }, 50);
     }
 
@@ -213,8 +210,24 @@ document.addEventListener("DOMContentLoaded", function () {
       cart.classList.remove("active");
     }
 
-    // Si on est sur la slide des produits, afficher le panier
+    // Si on est sur la slide des produits
     if (slideType === "products") {
+      const collectionsView = document.querySelector('.rdc-borne__collections-view');
+      const productsViews = document.querySelectorAll('.rdc-borne__products-view');
+
+      if (id) {
+        // Masquer la vue des collections et afficher les produits de la collection sélectionnée
+        collectionsView.style.display = 'none';
+        productsViews.forEach(view => {
+          view.style.display = view.dataset.productCollection === id ? 'block' : 'none';
+        });
+      } else {
+        // Afficher la vue des collections et masquer tous les produits
+        collectionsView.style.display = 'block';
+        productsViews.forEach(view => view.style.display = 'none');
+      }
+
+      // Afficher le panier sur desktop
       if (!isMobile) {
         cart.classList.add("active");
       }
@@ -222,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Variables globales
-  let currentCategory = "";
+  let currentCollection = "";
 
   // Sélection des boutons de navigation
   const navigationButtons = {
@@ -240,13 +253,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Gestion des clicks
   document.addEventListener("click", function (e) {
-    // Gestion des clicks sur les catégories
+    // Gestion des clicks sur les catégories (slide 1)
     const categoryButton = e.target.closest("[data-category-target]");
     if (categoryButton) {
       e.preventDefault();
-      const categoryId = categoryButton.dataset.categoryTarget;
-      currentCategory = categoryId;
-      showSlide("products", categoryId);
+      currentCollection = ""; // Réinitialiser la collection sélectionnée
+      showSlide("collections"); // Afficher la vue des collections
+      navigationButtons.categories.style.display = "flex";
+      return;
+    }
+
+    // Gestion des clicks sur les collections (slide 2)
+    const collectionButton = e.target.closest("[data-collection-target]");
+    if (collectionButton) {
+      e.preventDefault();
+      const collectionHandle = collectionButton.dataset.collectionTarget;
+      currentCollection = collectionHandle;
+      showSlide("products", collectionHandle);
       navigationButtons.categories.style.display = "flex";
       return;
     }
@@ -269,13 +292,19 @@ document.addEventListener("DOMContentLoaded", function () {
       const backTo = backButton.dataset.back;
 
       if (backTo === "categories") {
-        currentCategory = "";
-        navigationButtons.categories.style.display = "none";
-        showSlide("categories");
-        borne.classList.remove("rdc-borne--show-products", "rdc-borne--show-details");
+        // Si on est dans une collection, revenir à la vue des collections
+        if (currentCollection) {
+          currentCollection = "";
+          showSlide("products");
+        } else {
+          // Sinon, revenir à la slide des catégories
+          navigationButtons.categories.style.display = "none";
+          showSlide("categories");
+          borne.classList.remove("rdc-borne--show-products", "rdc-borne--show-details");
+        }
       } else if (backTo === "products") {
         navigationButtons.products.style.display = "none";
-        showSlide("products", currentCategory);
+        showSlide("products", currentCollection);
         borne.classList.remove("rdc-borne--show-details");
         borne.classList.add("rdc-borne--show-products");
       }
