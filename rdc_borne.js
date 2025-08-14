@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const targetSlide = document.querySelector(`[data-slide="${slideType}"]`);
 
     if (targetSlide) {
-      targetSlide.style.display = "block";
+      targetSlide.style.display = "flex";
       // Petit délai pour permettre à la transition de s'effectuer
       setTimeout(() => {
         targetSlide.style.opacity = "1";

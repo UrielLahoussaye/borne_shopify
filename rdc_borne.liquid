@@ -5,21 +5,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
-  display: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   pointer-events: none;
   transform: translateX(30px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 10;
-}
-
-.rdc-borne__slide[data-slide="categories"],
-.rdc-borne__slide[data-slide="collections"] {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   padding: 2rem;
 }
 </style>
@@ -40,6 +35,13 @@
       "id": "collections",
       "label": "Collections à afficher",
       "limit": 20
+    },
+    {
+      "type": "textarea",
+      "id": "collection_descriptions",
+      "label": "Descriptions personnalisées des collections",
+      "default": "Le léger:Un super t-shirt;L'Iconique:Un t-shirt encore mieux;",
+      "info": "Format: nom:description;nom:description; (nom doit correspondre exactement au nom de la collection)"
     }
   ],
   "presets": [
@@ -215,9 +217,36 @@
       </div>
 
       <!-- Slide 2: Collections -->
-      <div class="rdc-borne__slide" data-slide="collections" style="text-align: center; padding: 50px;">
-        <h1 style="font-size: 48px;">SLIDE 2</h1>
-        <p style="font-size: 24px; margin-top: 20px;">Vous êtes sur la deuxième slide !</p>
+      <div class="rdc-borne__slide" data-slide="collections">
+        <div class="rdc-borne__slide-header">
+          <h1>Choisissez votre collection 😊</h1>
+          <p style="font-size: 1.5rem;">Découvrez nos gammes de vêtements</p>
+        </div>
+
+        <div class="rdc-borne__types-grid">
+          {%- assign custom_descriptions = section.settings.collection_descriptions | split: ';' -%}
+          {%- for collection in section.settings.collections -%}
+            {%- assign custom_description = collection.description -%}
+            {%- for desc in custom_descriptions -%}
+              {%- assign desc_parts = desc | split: ':' -%}
+              {%- if desc_parts.size == 2 -%}
+                {%- assign name = desc_parts[0] | strip -%}
+                {%- if name == collection.title -%}
+                  {%- assign custom_description = desc_parts[1] | strip -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            <button class="rdc-borne__type-button" data-collection-target="{{ collection.handle }}">
+              <div class="rdc-borne__type-image">
+                <img src="{{ collection.image | default: collection.products.first.featured_image | img_url: 'large' }}" alt="{{ collection.title }}" loading="lazy">
+              </div>
+              <h2>{{ collection.title }}</h2>
+              <p class="rdc-borne__type-description">{{ custom_description }}</p>
+            </button>
+          {%- endfor -%}
+        </div>
       </div>
 
     <!-- Slide 3: Fiche produit -->
