@@ -40,8 +40,13 @@
       "type": "textarea",
       "id": "collection_descriptions",
       "label": "Descriptions personnalisées des collections",
-      "default": "Le léger:Un super t-shirt;L'Iconique:Un t-shirt encore mieux;",
-      "info": "Format: nom:description;nom:description; (nom doit correspondre exactement au nom de la collection)"
+      "info": "Format: nom:description|nom:description (nom doit correspondre exactement au nom de la collection)"
+    },
+    {
+      "type": "textarea",
+      "id": "category_collections_mapping",
+      "label": "Mapping catégories > collections",
+       "info": "Format: categorie:collection1,collection2|categorie2:collection3,collection4 (les noms de collections doivent correspondre exactement)"
     }
   ],
   "presets": [
@@ -221,11 +226,12 @@
       <div class="rdc-borne__slide" data-slide="collections">
         <div class="rdc-borne__slide-header">
           <h1>Choisissez votre collection 😊</h1>
-          <p style="font-size: 1.5rem;">Découvrez nos gammes de vêtements</p>
+          <p style="font-size: 1.5rem;">Catégorie sélectionnée : <span class="selected-category">-</span></p>
         </div>
 
-        <div class="rdc-borne__types-grid">
-          {%- assign custom_descriptions = section.settings.collection_descriptions | split: ';' -%}
+        <div class="rdc-borne__types-grid" data-selected-category="">
+          {%- assign custom_descriptions = section.settings.collection_descriptions | split: '|' -%}
+          {%- assign category_mappings = section.settings.category_collections_mapping | split: '|' -%}
           {%- for collection in section.settings.collections -%}
             {%- assign custom_description = collection.description -%}
             {%- for desc in custom_descriptions -%}
@@ -239,7 +245,22 @@
               {%- endif -%}
             {%- endfor -%}
 
-            <button class="rdc-borne__type-button" data-collection-target="{{ collection.handle }}">
+            {%- assign collection_mappings = '' -%}
+            {%- for mapping in category_mappings -%}
+              {%- assign mapping_parts = mapping | split: ':' -%}
+              {%- if mapping_parts.size == 2 -%}
+                {%- assign category_name = mapping_parts[0] | strip -%}
+                {%- assign collection_list = mapping_parts[1] | strip | split: ',' -%}
+                {%- for mapped_collection in collection_list -%}
+                  {%- assign mapped_collection_name = mapped_collection | strip -%}
+                  {%- if mapped_collection_name == collection.title -%}
+                    {%- assign collection_mappings = collection_mappings | append: category_name | append: ',' -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            <button class="rdc-borne__type-button" data-collection-target="{{ collection.handle }}" data-collection-description="{{ custom_description }}" data-categories="{{ collection_mappings }}" style="display: none;">
               <div class="rdc-borne__type-image">
                 <img src="{{ collection.image | default: collection.products.first.featured_image | img_url: 'large' }}" alt="{{ collection.title }}" loading="lazy">
               </div>

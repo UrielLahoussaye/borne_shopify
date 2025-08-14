@@ -211,6 +211,40 @@ document.addEventListener("DOMContentLoaded", function () {
       cart.classList.remove("active");
     }
 
+    // Si on est sur la slide des collections
+    if (slideType === "collections") {
+      const collectionsGrid = targetSlide.querySelector(
+        ".rdc-borne__types-grid"
+      );
+      const collectionButtons = targetSlide.querySelectorAll(
+        ".rdc-borne__type-button"
+      );
+
+      // Mettre à jour la catégorie sélectionnée
+      collectionsGrid.dataset.selectedCategory = id || "";
+
+      // Mettre à jour le titre avec la catégorie sélectionnée
+      const selectedCategorySpan =
+        targetSlide.querySelector(".selected-category");
+      if (selectedCategorySpan) {
+        selectedCategorySpan.textContent = id || "-";
+      }
+
+      // Filtrer les collections selon la catégorie
+      collectionButtons.forEach((button) => {
+        const categories = button.dataset.categories.split(',').map(cat => cat.trim()).filter(Boolean);
+        const category = id || "";
+
+        // Afficher la collection si elle est mappée à cette catégorie
+        if (category && categories.includes(category)) {
+          button.style.display = "flex";
+        } else {
+          button.style.display = "none";
+        }
+      });
+      return;
+    }
+
     // Si on est sur la slide des produits
     if (slideType === "products") {
       const collectionsView = document.querySelector(
@@ -263,8 +297,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const categoryButton = e.target.closest("[data-category-target]");
     if (categoryButton) {
       e.preventDefault();
+      const selectedCategory = categoryButton
+        .querySelector("h2")
+        .textContent.trim();
       currentCollection = ""; // Réinitialiser la collection sélectionnée
-      showSlide("collections"); // Afficher la vue des collections
+      showSlide("collections", selectedCategory); // Passer la catégorie à la slide collections
       navigationButtons.categories.style.display = "flex";
       return;
     }
