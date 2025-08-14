@@ -1,24 +1,3 @@
-<style>
-.rdc-borne__slide {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(30px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 10;
-  padding: 2rem;
-}
-</style>
-
 {% schema %}
 {
   "name": "Borne RDC",
@@ -40,13 +19,27 @@
       "type": "textarea",
       "id": "collection_descriptions",
       "label": "Descriptions personnalisées des collections",
-      "info": "Format: nom:description|nom:description (nom doit correspondre exactement au nom de la collection)"
     },
     {
-      "type": "textarea",
-      "id": "category_collections_mapping",
-      "label": "Mapping catégories > collections",
-       "info": "Format: categorie:collection1,collection2|categorie2:collection3,collection4 (les noms de collections doivent correspondre exactement)"
+      "type": "collection",
+      "id": "collection_1_2",
+      "label": "Collection 2 de catégorie 1"
+    },
+    {
+      "type": "text",
+      "id": "category_2",
+      "label": "Catégorie 2",
+      "default": "Sweats"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2_1",
+      "label": "Collection 1 de catégorie 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2_2",
+      "label": "Collection 2 de catégorie 2"
     }
   ],
   "presets": [
@@ -57,337 +50,76 @@
   ]
 }
 {% endschema %}
-<div class="overlay-loading" style="position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 99999; background: #F7F7F4;"></div>
-<button type="button" class="rdc-borne__cart-button" data-cart-toggle>
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="9" cy="21" r="1"></circle>
-    <circle cx="20" cy="21" r="1"></circle>
-    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-  </svg>
-  <span class="rdc-borne__cart-count" data-cart-count></span>
-</button>
 
-<div class="rdc-borne__cart" data-cart>
-  <div class="rdc-borne__cart-header">
-    <h2>Votre panier</h2>
-    <div class="rdc-borne__cart-header-buttons">
-      <button type="button" class="rdc-borne__cart-clear" data-cart-clear title="Vider le panier">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6h18"></path>
-          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-        </svg>
-      </button>
-      <button type="button" class="rdc-borne__cart-close" data-cart-toggle>×</button>
-    </div>
-  </div>
-  
-  <div class="rdc-borne__cart-items">
-    {%- if cart.item_count > 0 -%}
-      {%- for item in cart.items -%}
-        <div class="rdc-borne__cart-item" data-cart-item="{{ item.key }}">
-          {%- if item.image -%}
-            <img src="{{ item.image | image_url: width: 100 }}" alt="{{ item.title | escape }}" loading="lazy" width="100" height="100">
-          {%- endif -%}
-          
-          <div class="rdc-borne__cart-item-info">
-            <h3>{{ item.product.title }}</h3>
-            {%- unless item.variant.title contains 'Default' -%}
-              <p>{{ item.variant.title }}</p>
-            {%- endunless -%}
-            <div class="rdc-borne__cart-item-price">
-              {%- if item.original_price > item.final_price -%}
-                <span class="rdc-borne__cart-item-original-price">{{ item.original_line_price | money }}</span>
-              {%- endif -%}
-              <span class="rdc-borne__cart-item-final-price">{{ item.final_line_price | money }}</span>
-            </div>
-            <div class="rdc-borne__cart-item-quantity">
-              <button type="button" data-quantity-minus>-</button>
-              <input type="number" value="{{ item.quantity }}" min="0" data-quantity-input>
-              <button type="button" data-quantity-plus>+</button>
-            </div>
-          </div>
-
-          <button type="button" class="rdc-borne__cart-item-remove" data-cart-remove="{{ item.key }}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      {%- endfor -%}
-
-      <div class="rdc-borne__cart-footer">
-        {%- assign items_count = cart.item_count -%}
-        {%- if items_count > 0 and items_count < 4 -%}
-          {%- assign next_threshold = 0 -%}
-          {%- assign next_discount = 0 -%}
-          
-          {%- if items_count == 1 -%}
-            {%- assign next_threshold = 2 -%}
-            {%- assign next_discount = 5 -%}
-          {%- elsif items_count == 2 -%}
-            {%- assign next_threshold = 3 -%}
-            {%- assign next_discount = 10 -%}
-          {%- elsif items_count == 3 -%}
-            {%- assign next_threshold = 4 -%}
-            {%- assign next_discount = 15 -%}
-          {%- endif -%}
-
-          {%- assign items_needed = next_threshold | minus: items_count -%}
-          
-          <div class="rdc-borne__cart-incentive">
-            <div class="rdc-borne__cart-incentive-progress">
-              <div class="rdc-borne__cart-incentive-bar" style="width: {{ items_count | times: 25 }}%"></div>
-            </div>
-            <p>
-              {%- if items_needed == 1 -%}
-                Plus qu'<strong>1 article</strong> pour obtenir <strong>{{ next_discount }}% de remise</strong> !
-              {%- else -%}
-                Encore <strong>{{ items_needed }} articles</strong> pour obtenir <strong>{{ next_discount }}% de remise</strong> !
-              {%- endif -%}
-            </p>
-          </div>
-        {%- elsif items_count >= 4 -%}
-          <div class="rdc-borne__cart-incentive">
-            <div class="rdc-borne__cart-incentive-progress">
-              <div class="rdc-borne__cart-incentive-bar" style="width: 100%"></div>
-            </div>
-            <p>Félicitations ! Vous bénéficiez de la remise maximale de <strong>15%</strong> !</p>
-          </div>
-        {%- endif -%}
-
-        <div class="rdc-borne__cart-total">
-          {%- if cart.original_total_price > cart.total_price -%}
-            <div class="rdc-borne__cart-subtotal">
-              <span>Sous-total</span>
-              <span>{{ cart.original_total_price | money }}</span>
-            </div>
-            <div class="rdc-borne__cart-discount">
-              <span>Réduction</span>
-              <span>-{{ cart.original_total_price | minus: cart.total_price | money }}</span>
-            </div>
-          {%- endif -%}
-          <div class="rdc-borne__cart-final-total">
-            <span>Total</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
-        </div>
-        <a href="/checkout" class="rdc-borne__cart-checkout" data-cart-checkout>
-          Passer la commande
-        </a>
-        <p class="rdc-borne__cart-note">Toute commande passée sur la Borne sera imprimée et expédiée sous 15 à 21 jours</p>
-      </div>
-
-    {%- else -%}
-      <div class="rdc-borne__cart-empty">
-        <p>Votre panier est vide</p>
-      </div>
-    {%- endif -%}
-  </div>
-</div>
-
-<div class="rdc-borne__checkout-popup">
-  <div class="rdc-borne__checkout-popup-content">
-    <div class="rdc-borne__checkout-loader"></div>
-    <h2>Félicitations !</h2>
-    <p>Nous préparons votre commande...</p>
-  </div>
-</div>
-
-<div class="rdc-borne" data-borne>
-  <button type="button" class="rdc-borne__back-button" data-back="categories">
+<div class="rdc-borne">
+  <button class="rdc-borne__back-button" data-action="back">
+    <span class="rdc-borne__back-icon">&larr;</span> Retour
   </button>
 
-  <!-- Slide 1: Catégories principales -->
-  <div class="rdc-borne__slide" data-slide="categories">
-        <div class="rdc-borne__slide-header">
-          <h1>Quelle catégorie vous intéresse ? 🌱</h1>
-          <p style="font-size: 1.5rem;">Choisissez votre style préféré.</p>
-        </div>
+  <!-- Écran 1 -->
+  <div class="rdc-borne__screen" data-screen="1" data-active="true">
+    <div class="rdc-borne__content">
+      <h1>Premier écran</h1>
+    </div>
+    <button class="rdc-borne__next-button" data-action="next" data-target="2">Suivant</button>
+  </div>
 
-        <div class="rdc-borne__types-grid">
-          {%- assign categories = section.settings.categories | split: ',' -%}
-          {%- for category in categories -%}
-            {%- assign category_name = category | strip -%}
-            {%- assign category_handle = category_name | handleize -%}
-            <button class="rdc-borne__type-button" data-category-target="{{ category_handle }}">
-              <div class="rdc-borne__type-image">
-                {% assign image_name = category_name | replace: ' ', '_' | replace: '&', '_' | replace: 'é', 'e' | replace: 'è', 'e' | replace: 'ê', 'e' | replace: 'à', 'a' | replace: 'â', 'a' | replace: 'ô', 'o' | replace: 'î', 'i' | replace: 'ï', 'i' | replace: 'û', 'u' | replace: 'ù', 'u' | downcase %}
-                <img src="{{ image_name | append: '.webp' | file_url }}" alt="{{ category_name }}" loading="lazy">
-              </div>
-              <h2>{{ category_name }}</h2>
-            </button>
-          {%- endfor -%}
-        </div>
-      </div>
+  <!-- Écran 2 -->
+  <div class="rdc-borne__screen" data-screen="2" data-active="false">
+    <div class="rdc-borne__content">
+      <h1>Deuxième écran</h1>
+    </div>
+    <button class="rdc-borne__next-button" data-action="next" data-target="3">Suivant</button>
+  </div>
 
-      <!-- Slide 2: Collections -->
-      <div class="rdc-borne__slide" data-slide="collections">
-        <div class="rdc-borne__slide-header">
-          <h1>Choisissez votre collection 😊</h1>
-          <p style="font-size: 1.5rem;">Catégorie sélectionnée : <span class="selected-category">-</span></p>
-        </div>
+  <!-- Écran 3 -->
+  <div class="rdc-borne__screen" data-screen="3" data-active="false">
+    <div class="rdc-borne__content">
+      <h1>Troisième écran</h1>
+    </div>
+    <button class="rdc-borne__next-button" data-action="next" data-target="4">Suivant</button>
+  </div>
 
-        <div class="rdc-borne__types-grid" data-selected-category="">
-          {%- assign custom_descriptions = section.settings.collection_descriptions | split: '|' -%}
-          {%- assign category_mappings = section.settings.category_collections_mapping | split: '|' -%}
-          {%- for collection in section.settings.collections -%}
-            {%- assign custom_description = collection.description -%}
-            {%- for desc in custom_descriptions -%}
-              {%- assign desc_parts = desc | split: ':' -%}
-              {%- if desc_parts.size == 2 -%}
-                {%- assign name = desc_parts[0] | strip -%}
-                {%- if name == collection.title -%}
-                  {%- assign custom_description = desc_parts[1] | strip -%}
-                  {%- break -%}
-                {%- endif -%}
-              {%- endif -%}
-            {%- endfor -%}
+  <!-- Écran 4 -->
+  <div class="rdc-borne__screen" data-screen="4" data-active="false">
+    <div class="rdc-borne__content">
+      <h1>Quatrième écran</h1>
+    </div>
+  </div>
+</div>
 
-            {%- assign collection_mappings = '' -%}
-            {%- for mapping in category_mappings -%}
-              {%- assign mapping_parts = mapping | split: ':' -%}
-              {%- if mapping_parts.size == 2 -%}
-                {%- assign category_name = mapping_parts[0] | strip -%}
-                {%- assign collection_list = mapping_parts[1] | strip | split: ',' -%}
-                {%- for mapped_collection in collection_list -%}
-                  {%- assign mapped_collection_name = mapped_collection | strip -%}
-                  {%- if mapped_collection_name == collection.title -%}
-                    {%- assign collection_mappings = collection_mappings | append: category_name | append: ',' -%}
-                  {%- endif -%}
-                {%- endfor -%}
-              {%- endif -%}
-            {%- endfor -%}
-
-            <button class="rdc-borne__type-button" data-collection-target="{{ collection.handle }}" data-collection-description="{{ custom_description }}" data-categories="{{ collection_mappings }}" style="display: none;">
-              <div class="rdc-borne__type-image">
-                <img src="{{ collection.image | default: collection.products.first.featured_image | img_url: 'large' }}" alt="{{ collection.title }}" loading="lazy">
-              </div>
-              <h2>{{ collection.title }}</h2>
-              <p class="rdc-borne__type-description">{{ custom_description }}</p>
-            </button>
-          {%- endfor -%}
-        </div>
-      </div>
-
-    <!-- Slide 3: Fiche produit -->
-    {% for product in section.settings.collection.products %}
-      <div class="rdc-borne__slide" data-slide="product-details" data-product-id="{{ product.id }}">
-        <div class="rdc-borne__product-content">
-          <div>          
-            <h2>{{ product.title }}</h2>
-            <p class="rdc-borne__product-subtitle">
-              <span data-selected-color="{{ product.id }}">{% if product.variants.first.options[1] %}{{ product.variants.first.options[1] }}{% else %}--{% endif %}</span>
-            </p>
-          </div>
-          
-          <div class="rdc-borne__product-images">
-            <img 
-              class="rdc-borne__product-main-image" 
-              src="{{ product.featured_image | img_url: 'large' }}" 
-              alt="{{ product.title | escape }}"
-              data-main-image="{{ product.id }}"
-            />
-            {% comment %}Préchargement des images des variantes{% endcomment %}
-            {% for variant in product.variants %}
-              {% if variant.image %}
-                <link rel="preload" as="image" href="{{ variant.image | img_url: 'large' }}">
-              {% endif %}
-            {% endfor %}
-          </div>
-
-          <form data-product-form="{{ product.id }}" class="rdc-borne__product-form" action="/cart/add" method="post" data-ajax="false">
-            <input type="hidden" name="return_to" value="{{ request.path }}">
-            <div class="rdc-borne__variants">
-              {% for option in product.options_with_values %}
-                {% if option.name == 'Couleur' %}
-                  <div class="rdc-borne__option-wrapper">
-                    <div class="rdc-borne__option-values rdc-borne__option-values--color">
-                      {% for value in option.values %}
-                        <input type="radio" 
-                          id="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
-                          name="{{ product.id }}-{{ option.name | handleize }}"
-                          value="{{ value | escape }}"
-                          {% if forloop.first %}checked{% endif %}
-                          data-option-trigger
-                          data-product-id="{{ product.id }}"
-                        >
-                        <label for="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
-                          class="rdc-borne__option-value rdc-borne__option-value--color"
-                          {% if value.swatch.image %}
-                            style="background-image: url({{ value.swatch.image | img_url: '50x' }})"
-                          {% else %}
-                            style="background-color: {{ value.swatch.color }}"
-                          {% endif %}
-                        >
-                          <span class="visually-hidden">{{ value }}</span>
-                        </label>
-                      {% endfor %}
-                    </div>
-                  </div>
-                {% endif %}
-                {% if option.name == 'Taille' %}
-                  <div class="rdc-borne__option-wrapper">
-                    <div class="rdc-borne__option-values">
-                      {% for value in option.values %}
-                        <input type="radio" 
-                          id="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
-                          name="{{ product.id }}-{{ option.name | handleize }}"
-                          value="{{ value | escape }}"
-                          {% if forloop.first %}checked{% endif %}
-                          data-option-trigger
-                          data-product-id="{{ product.id }}"
-                          data-size-option
-                        >
-                        <label for="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
-                          class="rdc-borne__option-value"
-                        >
-                          {{ value }}
-                        </label>
-                      {% endfor %}
-                    </div>
-                  </div>
+<script type="application/json" id="rdc-borne-data">
+  {
+    "categories": [
+      {% for i in (1..2) %}
+        {% assign category_key = 'category_' | append: i %}
+        {% assign category_name = section.settings[category_key] %}
+        {% if category_name != blank %}
+          {
+            "id": {{ i }},
+            "name": {{ category_name | json }},
+            "collections": [
+              {% for j in (1..2) %}
+                {% assign collection_key = 'collection_' | append: i | append: '_' | append: j %}
+                {% assign collection = section.settings[collection_key] %}
+                {% if collection != blank %}
+                  {
+                    "id": {{ collection.id | json }},
+                    "title": {{ collection.title | json }},
+                    "handle": {{ collection.handle | json }}
+                  }{% unless forloop.last %},{% endunless %}
                 {% endif %}
               {% endfor %}
+            ]
+          }{% unless forloop.last %},{% endunless %}
+        {% endif %}
+      {% endfor %}
+    ]
+  }
+</script>
 
-              <select name="id" data-variant-select="{{ product.id }}" style="display: none;">
-                {% for variant in product.variants %}
-                  <option 
-                    value="{{ variant.id }}"
-                    data-sku="{{ variant.sku }}"
-                    data-image-url="{{ variant.image | img_url: 'large' }}"
-                  >
-                    {{ variant.title }}
-                  </option>
-                {% endfor %}
-              </select>
-
-              <button type="submit" class="rdc-borne__add-to-cart" name="add">
-                Ajouter au panier
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    {% endfor %}
-
-
-
-  <div class="background-forest">
-    <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_gauche.webp?v=1740164842" alt="foret immersive gauche">
-    <img style="position: absolute; top: 0; right: 0;" src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_droite.webp?v=1740164852" alt="foret immersive droite">
-  </div>
-</div>
-
-<!-- Overlay de confirmation -->
-<div class="rdc-borne__confirmation-overlay" data-confirmation-overlay>
-  <div class="rdc-borne__confirmation-content">
-    <div class="rdc-borne__confirmation-emoji">🎉</div>
-    <h2>Article ajouté au panier</h2>
-    <p class="rdc-borne__confirmation-wait">Veuillez patienter.</p>
-  </div>
-</div>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
 {{ 'rdc_borne.css' | asset_url | stylesheet_tag }}
 {{ 'rdc_borne.js' | asset_url | script_tag }}
