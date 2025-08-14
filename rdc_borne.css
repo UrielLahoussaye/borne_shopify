@@ -2,34 +2,11 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   display: none;
 }
 
-.rdc-borne__screen {
-  display: none;
+.rdc-borne {
+  min-height: 100vh;
+  position: relative;
 }
 
-.rdc-borne__screen[data-active="true"] {
-  display: block;
-}
-  width: 100%;
-  padding: 1rem;
-}
-
-.rdc-borne__collection-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 2px solid white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.rdc-borne__collection-btn:hover {
-  background: white;
-  color: #1a1a1a;
-}
-
-/* Bouton Retour */
 .rdc-borne__back-button {
   position: fixed;
   top: 20px;
@@ -41,24 +18,35 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   cursor: pointer;
 }
 
-.rdc-borne__back-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+.rdc-borne__screen {
+  display: none;
 }
 
-.rdc-borne__back-button:hover {
-  background: #404040;
+.rdc-borne__screen[data-active="true"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
 }
 
-.rdc-borne__back-icon {
-  font-size: 1.4rem;
+.rdc-borne__content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* Bouton Suivant */
 .rdc-borne__next-button {
   margin-top: 20px;
-  padding: 10px 20px;
+  padding: 10px 30px;
   background: #f0f0f0;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.rdc-borne__back-button:hover,
+.rdc-borne__next-button:hover {
+  background: #e0e0e0;
 }
