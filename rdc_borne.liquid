@@ -46,7 +46,12 @@
     },
     {
       "type": "header",
-      "content": "Types de produits"
+      "content": "Collections par type"
+    },
+    {
+      "type": "collection",
+      "id": "collection_debardeur_femme",
+      "label": "Collection Débardeur femme"
     },
     {
       "type": "text",
@@ -61,6 +66,11 @@
       "default": "Coupe ajustée et confortable pour femme"
     },
     {
+      "type": "collection",
+      "id": "collection_hoodie",
+      "label": "Collection Hoodie"
+    },
+    {
       "type": "text",
       "id": "type_hoodie",
       "label": "Type pour Hoodie",
@@ -71,6 +81,11 @@
       "id": "description_hoodie",
       "label": "Description Hoodie",
       "default": "Le sweat à capuche idéal pour toutes les saisons"
+    },
+    {
+      "type": "collection",
+      "id": "collection_iconique",
+      "label": "Collection Iconique"
     },
     {
       "type": "text",
@@ -85,6 +100,11 @@
       "default": "Notre modèle emblématique, un classique intemporel"
     },
     {
+      "type": "collection",
+      "id": "collection_zippe",
+      "label": "Collection Zippé"
+    },
+    {
       "type": "text",
       "id": "type_zippe",
       "label": "Type pour Zippé",
@@ -95,6 +115,11 @@
       "id": "description_zippe",
       "label": "Description Zippé",
       "default": "Pratique et stylé avec sa fermeture éclair"
+    },
+    {
+      "type": "collection",
+      "id": "collection_debardeur_homme",
+      "label": "Collection Débardeur homme"
     },
     {
       "type": "text",
@@ -109,6 +134,11 @@
       "default": "Coupe ajustée et confortable pour homme"
     },
     {
+      "type": "collection",
+      "id": "collection_leger",
+      "label": "Collection Le léger"
+    },
+    {
       "type": "text",
       "id": "type_leger",
       "label": "Type pour Le léger",
@@ -121,6 +151,11 @@
       "default": "Notre modèle ultra léger et respirant"
     },
     {
+      "type": "collection",
+      "id": "collection_inebranlable",
+      "label": "Collection L'inébranlable"
+    },
+    {
       "type": "text",
       "id": "type_inebranlable",
       "label": "Type pour L'inébranlable",
@@ -131,6 +166,11 @@
       "id": "description_inebranlable",
       "label": "Description L'inébranlable",
       "default": "Notre modèle le plus robuste et durable"
+    },
+    {
+      "type": "collection",
+      "id": "collection_solide",
+      "label": "Collection Le solide"
     },
     {
       "type": "text",
@@ -302,7 +342,6 @@
   </button>
 
   {%- if section.settings.collection != blank -%}
-    {% paginate section.settings.collection.products by 250 %}
     {%- assign product_types = section.settings.collection.products | map: 'type' | uniq -%}
     
     <!-- Slide 1: Catégories principales -->
@@ -357,6 +396,35 @@
         <div class="rdc-borne__types-grid">
           {% for type in product_types %}
             {% assign type_lower = type | downcase %}
+            {% assign collection_id = '' %}
+            {% assign type_debardeur_femme = section.settings.type_debardeur_femme | downcase %}
+            {% assign type_debardeur_homme = section.settings.type_debardeur_homme | downcase %}
+            {% assign type_hoodie = section.settings.type_hoodie | downcase %}
+            {% assign type_iconique = section.settings.type_iconique | downcase %}
+            {% assign type_zippe = section.settings.type_zippe | downcase %}
+            {% assign type_leger = section.settings.type_leger | downcase %}
+            {% assign type_inebranlable = section.settings.type_inebranlable | downcase %}
+            {% assign type_solide = section.settings.type_solide | downcase %}
+
+            {% if type_lower == type_debardeur_femme %}
+              {% assign collection_id = 'collection_debardeur_femme' %}
+            {% elsif type_lower == type_debardeur_homme %}
+              {% assign collection_id = 'collection_debardeur_homme' %}
+            {% elsif type_lower == type_hoodie %}
+              {% assign collection_id = 'collection_hoodie' %}
+            {% elsif type_lower == type_iconique %}
+              {% assign collection_id = 'collection_iconique' %}
+            {% elsif type_lower == type_zippe %}
+              {% assign collection_id = 'collection_zippe' %}
+            {% elsif type_lower == type_leger %}
+              {% assign collection_id = 'collection_leger' %}
+            {% elsif type_lower == type_inebranlable %}
+              {% assign collection_id = 'collection_inebranlable' %}
+            {% elsif type_lower == type_solide %}
+              {% assign collection_id = 'collection_solide' %}
+            {% endif %}
+
+            {% assign type_collection = section.settings[collection_id] %}
 
             {% comment %}Détermine la catégorie du type{% endcomment %}
             {% assign type_category = 'tshirts' %}
@@ -368,35 +436,25 @@
 
             <button class="rdc-borne__type-button" data-type-target="{{ type | handleize }}" data-category="{{ type_category }}">
                 <div class="rdc-borne__type-image">
-                  {% assign normalized_type = type | downcase | strip %}
-                  {% assign type_products = '' | split: '' %}
-                  {% if type == "L'iconique" %}
-                    <script>
-                      console.log('Analyzing L\'iconique products:');
-                      console.log('Normalized type:', '{{ normalized_type }}');
-                    </script>
-                  {% endif %}
-                  {% for product in section.settings.collection.products %}
-                    {% assign product_type_normalized = product.type | downcase | strip %}
-                    {% if type == "L'iconique" %}
-                      <script>
-                        console.log('Product:', '{{ product.title }}');
-                        console.log('Original type:', '{{ product.type }}');
-                        console.log('Normalized type:', '{{ product_type_normalized }}');
-                        console.log('Match?:', {{ product_type_normalized == normalized_type }});
-                      </script>
+                  {% if type_collection != blank %}
+                    {% if type_collection.image %}
+                      <img src="{{ type_collection.image | img_url: '400x400', crop: 'center' }}" alt="{{ type }}" loading="lazy">
+                    {% else %}
+                      {% assign first_product = type_collection.products.first %}
+                      {% if first_product.featured_image %}
+                        <img src="{{ first_product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ type }}" loading="lazy">
+                      {% endif %}
                     {% endif %}
-                    {% if product_type_normalized == normalized_type %}
-                      {% assign type_products = type_products | concat: product %}
-                    {% endif %}
-                  {% endfor %}
-                  {% assign first_product = type_products | first %}
-                  {% if first_product.featured_image %}
-                    <img src="{{ first_product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ type }}" loading="lazy">
+                  {% else %}
+                    <p style="color: red;">Collection non sélectionnée pour {{ type }}</p>
                   {% endif %}
                 </div>
                 <h2>{{ type }}</h2>
-                <p class="rdc-borne__type-description">{{ type_products.size }} produits</p>
+                {% assign description_id = 'description_' | append: collection_id | replace: 'collection_', '' %}
+                {% if section.settings[description_id] != blank %}
+                  <p class="rdc-borne__type-description">{{ section.settings[description_id] }}</p>
+                {% endif %}
+                <p class="rdc-borne__type-description">{{ section.settings.collection.products | where: 'type', type | size }} produits</p>
               </button>
           {% endfor %}
         </div>
@@ -410,53 +468,7 @@
             <p style="font-size: 1.5rem;">Choisissez votre futur {{ type | downcase }} préféré</p>
           </div>
           <div class="rdc-borne__products-grid">
-            {% comment %}Debug: Liste tous les types de produits non mappés{% endcomment %}
-            {% if forloop.first %}
-              {% assign all_unmapped_types = section.settings.collection.products | map: 'type' | uniq %}
-              {% assign mapped_types = product_types %}
-              <script>
-                console.log('Types de produits dans la collection:', {{ all_unmapped_types | json }});
-                console.log('Types mappés:', {{ mapped_types | json }});
-              </script>
-            {% endif %}
-
-            {% comment %}Debug: Afficher les types de produits non mappés{% endcomment %}
-            {% if forloop.first %}
-              <script>
-                console.log('Collection sélectionnée:', '{{ section.settings.collection.title }}');
-                console.log('Nombre total de produits dans la collection:', {{ section.settings.collection.products.size }});
-              </script>
-            {% endif %}
-
-            {% assign normalized_type = type | downcase | strip %}
             {% assign type_products = section.settings.collection.products | where: "type", type %}
-            
-            {% comment %}Vérification des produits avec type similaire si aucun trouvé{% endcomment %}
-            {% if type_products.size == 0 %}
-              {% assign temp_products = '' | split: '' %}
-              {% for product in section.settings.collection.products %}
-                {% assign product_type_normalized = product.type | downcase | strip %}
-                {% if product_type_normalized == normalized_type %}
-                  {% assign temp_products = temp_products | concat: product %}
-                {% endif %}
-              {% endfor %}
-              {% assign type_products = temp_products %}
-              {% if temp_products.size > 0 %}
-                <script>
-                  console.log('Produits trouvés avec type similaire pour "{{ type }}":', {{ temp_products.size }});
-                </script>
-              {% endif %}
-            {% endif %}
-            {% comment %}Essaie de trouver des produits avec un type similaire si aucun n'est trouvé{% endcomment %}
-            {% if type_products.size == 0 %}
-              {% assign type_lower = type | downcase | strip %}
-              {% for product in section.settings.collection.products %}
-                {% assign product_type_lower = product.type | downcase | strip %}
-                {% if product_type_lower == type_lower %}
-                  {% assign type_products = type_products | concat: product %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
             {% for product in type_products %}
               <button class="rdc-borne__product" data-product-target="{{ product.id }}">
                 <div class="rdc-borne__product-image">
@@ -504,9 +516,6 @@
             <h2>{{ product.title }}</h2>
             <p class="rdc-borne__product-subtitle">
               <span data-selected-color="{{ product.id }}">{% if product.variants.first.options[1] %}{{ product.variants.first.options[1] }}{% else %}--{% endif %}</span>
-            </p>
-            <p class="rdc-borne__product-price">
-              <span data-product-price="{{ product.id }}">{{ product.variants.first.price | money }}</span>
             </p>
           </div>
           
@@ -585,7 +594,6 @@
                     value="{{ variant.id }}"
                     data-sku="{{ variant.sku }}"
                     data-image-url="{{ variant.image | img_url: 'large' }}"
-                    data-price="{{ variant.price }}"
                   >
                     {{ variant.title }}
                   </option>
@@ -604,7 +612,6 @@
   {% else %}
     <p>Veuillez sélectionner une collection dans les paramètres de la section.</p>
   {% endif %}
-  {% endpaginate %}
 
   <div class="background-forest">
     <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_gauche.webp?v=1740164842" alt="foret immersive gauche">
