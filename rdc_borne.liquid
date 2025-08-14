@@ -56,12 +56,23 @@
     <span class="rdc-borne__back-icon">&larr;</span> Retour
   </button>
 
-  <!-- Écran 1 -->
+  <!-- Écran 1: Catégories -->
   <div class="rdc-borne__screen" data-screen="1" data-active="true">
     <div class="rdc-borne__content">
-      <h1>Premier écran</h1>
+      <h1 class="rdc-borne__title">Choisissez votre catégorie</h1>
+      <div class="rdc-borne__categories">
+        {% assign categories = section.settings.categories | split: ',' %}
+        {% for category in categories %}
+          {% assign category_clean = category | strip %}
+          <div class="rdc-borne__category" data-category="{{ category_clean | handleize }}">
+            <div class="rdc-borne__category-inner">
+              <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/{{ category_clean | handleize }}.webp?v=1755198090" alt="{{ category_clean }}" class="rdc-borne__category-image">
+              <h2 class="rdc-borne__category-title">{{ category_clean }}</h2>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-    <button class="rdc-borne__next-button" data-action="next" data-target="2">Suivant</button>
   </div>
 
   <!-- Écran 2 -->
