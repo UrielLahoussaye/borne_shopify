@@ -3,12 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const products = document.querySelectorAll('[data-product-target]');
   console.log(`Nombre total de produits chargés: ${products.length}`);
   
-  // Debug: Log tous les types de produits
-  const types = new Set();
-  document.querySelectorAll('[data-type-target]').forEach(el => {
-    types.add(el.dataset.typeTarget);
+  // Debug: Log toutes les catégories de produits
+  const categories = new Set();
+  document.querySelectorAll('[data-category-target]').forEach(el => {
+    categories.add(el.dataset.categoryTarget);
   });
-  console.log('Types de produits disponibles:', Array.from(types));
+  console.log('Catégories de produits disponibles:', Array.from(categories));
 
   // Gestion de l'overlay de chargement
   const overlay = document.querySelector(".overlay-loading");
@@ -110,12 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const cartItems = cart.querySelector(".rdc-borne__cart-items");
   const cartCount = document.querySelector("[data-cart-count]");
   const checkoutPopup = document.querySelector(".rdc-borne__checkout-popup");
-  const backToTypes = document.querySelector('[data-back="types"]');
+
   const backToProducts = document.querySelector('[data-back="products"]');
   const confirmationOverlay = document.querySelector(
     "[data-confirmation-overlay]"
   );
-  let currentType = null;
+
 
   // Fonction pour mettre à jour le compteur du panier
   function updateCartCount() {
@@ -173,12 +173,12 @@ document.addEventListener("DOMContentLoaded", function () {
       targetSlide = document.querySelector(
         `[data-slide="${slideType}"][data-product-id="${id}"]`
       );
+    } else if (slideType === "products" && id) {
+      targetSlide = document.querySelector(
+        `[data-slide="${slideType}"][data-category="${id}"]`
+      );
     } else {
-      targetSlide = id
-        ? document.querySelector(
-            `[data-slide="${slideType}"][data-type="${id}"]`
-          )
-        : document.querySelector(`[data-slide="${slideType}"]`);
+      targetSlide = document.querySelector(`[data-slide="${slideType}"]`);
     }
 
     if (targetSlide) {
@@ -196,12 +196,9 @@ document.addEventListener("DOMContentLoaded", function () {
     backButtons.forEach((button) => {
       if (slideType === "categories") {
         button.style.display = "none";
-      } else if (slideType === "types") {
-        button.style.display =
-          button.dataset.back === "categories" ? "block" : "none";
       } else if (slideType === "products") {
         button.style.display =
-          button.dataset.back === "types" ? "block" : "none";
+          button.dataset.back === "categories" ? "block" : "none";
       } else if (slideType === "product-details") {
         button.style.display =
           button.dataset.back === "products" ? "block" : "none";
@@ -211,8 +208,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Mettre à jour la classe active sur la borne
     borne.dataset.activeSlide = slideType;
 
-    // Si on est sur la slide des types ou des catégories, cacher le panier
-    if (slideType === "types" || slideType === "categories") {
+    // Si on est sur la slide des catégories, cacher le panier
+    if (slideType === "categories") {
       cart.classList.remove("active");
     }
 
@@ -230,7 +227,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Sélection des boutons de navigation
   const navigationButtons = {
     categories: document.querySelector('[data-back="categories"]'),
-    types: document.querySelector('[data-back="types"]'),
     products: document.querySelector('[data-back="products"]'),
   };
 
@@ -248,36 +244,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const categoryButton = e.target.closest("[data-category-target]");
     if (categoryButton) {
       e.preventDefault();
-      currentCategory = categoryButton.dataset.categoryTarget;
-      // Masquer tous les types
-      document.querySelectorAll(".rdc-borne__type-button").forEach((button) => {
-        button.style.display = "none";
-      });
-
-      // Afficher uniquement les types de la catégorie sélectionnée
-      document
-        .querySelectorAll(
-          `.rdc-borne__type-button[data-category="${currentCategory}"]`
-        )
-        .forEach((button) => {
-          button.style.display = "flex";
-        });
-      showSlide("types");
+      const categoryId = categoryButton.dataset.categoryTarget;
+      currentCategory = categoryId;
+      showSlide("products", categoryId);
       navigationButtons.categories.style.display = "flex";
       return;
-    }
-
-    // Gestion des clicks sur les types de produits
-    const typeButton = e.target.closest("[data-type-target]");
-    if (typeButton) {
-      const type = typeButton.dataset.typeTarget;
-      currentType = type; // Mise à jour de currentType
-
-      showSlide("products", type);
-      borne.classList.remove("rdc-borne--show-details");
-      borne.classList.add("rdc-borne--show-products");
-      navigationButtons.types.style.display = "flex";
-      navigationButtons.products.style.display = "none";
     }
 
     // Gestion des clicks sur les produits
@@ -289,7 +260,6 @@ document.addEventListener("DOMContentLoaded", function () {
       showSlide("product-details", productId);
       borne.classList.remove("rdc-borne--show-products");
       borne.classList.add("rdc-borne--show-details");
-      navigationButtons.types.style.display = "none";
       navigationButtons.products.style.display = "flex";
     }
 
@@ -302,26 +272,11 @@ document.addEventListener("DOMContentLoaded", function () {
         currentCategory = "";
         navigationButtons.categories.style.display = "none";
         showSlide("categories");
-        borne.classList.remove(
-          "rdc-borne--show-products",
-          "rdc-borne--show-details"
-        );
-      } else if (backTo === "types") {
-        navigationButtons.products.style.display = "none";
-        navigationButtons.types.style.display = "flex";
-        showSlide("types");
-        borne.classList.remove(
-          "rdc-borne--show-products",
-          "rdc-borne--show-details"
-        );
+        borne.classList.remove("rdc-borne--show-products", "rdc-borne--show-details");
       } else if (backTo === "products") {
-        navigationButtons.types.style.display = "flex";
         navigationButtons.products.style.display = "none";
-        showSlide("products", currentType);
-        borne.classList.remove(
-          "rdc-borne--show-products",
-          "rdc-borne--show-details"
-        );
+        showSlide("products", currentCategory);
+        borne.classList.remove("rdc-borne--show-details");
         borne.classList.add("rdc-borne--show-products");
       }
     }

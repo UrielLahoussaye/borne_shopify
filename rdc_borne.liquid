@@ -3,186 +3,11 @@
   "name": "Borne RDC",
   "settings": [
     {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection à afficher"
-    },
-    {
-      "type": "header",
-      "content": "Catégories principales"
-    },
-    {
-      "type": "image_picker",
-      "id": "tshirt_image",
-      "label": "Image catégorie T-shirts"
-    },
-    {
-      "type": "textarea",
-      "id": "tshirt_description",
-      "label": "Description T-shirts",
-      "default": "Nos t-shirts confortables et élégants"
-    },
-    {
-      "type": "image_picker",
-      "id": "debardeur_image",
-      "label": "Image catégorie Débardeurs"
-    },
-    {
-      "type": "textarea",
-      "id": "debardeur_description",
-      "label": "Description Débardeurs",
-      "default": "Nos débardeurs légers et stylés"
-    },
-    {
-      "type": "image_picker",
-      "id": "sweatshirt_image",
-      "label": "Image catégorie Sweatshirts"
-    },
-    {
-      "type": "textarea",
-      "id": "sweatshirt_description",
-      "label": "Description Sweatshirts",
-      "default": "Nos sweatshirts chauds et confortables"
-    },
-    {
-      "type": "header",
-      "content": "Collections par type"
-    },
-    {
-      "type": "collection",
-      "id": "collection_debardeur_femme",
-      "label": "Collection Débardeur femme"
-    },
-    {
       "type": "text",
-      "id": "type_debardeur_femme",
-      "label": "Type pour Débardeur femme",
-      "default": "Débardeur femme"
-    },
-    {
-      "type": "textarea",
-      "id": "description_debardeur_femme",
-      "label": "Description Débardeur femme",
-      "default": "Coupe ajustée et confortable pour femme"
-    },
-    {
-      "type": "collection",
-      "id": "collection_hoodie",
-      "label": "Collection Hoodie"
-    },
-    {
-      "type": "text",
-      "id": "type_hoodie",
-      "label": "Type pour Hoodie",
-      "default": "Le Hoodie"
-    },
-    {
-      "type": "textarea",
-      "id": "description_hoodie",
-      "label": "Description Hoodie",
-      "default": "Le sweat à capuche idéal pour toutes les saisons"
-    },
-    {
-      "type": "collection",
-      "id": "collection_iconique",
-      "label": "Collection Iconique"
-    },
-    {
-      "type": "text",
-      "id": "type_iconique",
-      "label": "Type pour Iconique",
-      "default": "L'iconique"
-    },
-    {
-      "type": "textarea",
-      "id": "description_iconique",
-      "label": "Description Iconique",
-      "default": "Notre modèle emblématique, un classique intemporel"
-    },
-    {
-      "type": "collection",
-      "id": "collection_zippe",
-      "label": "Collection Zippé"
-    },
-    {
-      "type": "text",
-      "id": "type_zippe",
-      "label": "Type pour Zippé",
-      "default": "Le Zippé"
-    },
-    {
-      "type": "textarea",
-      "id": "description_zippe",
-      "label": "Description Zippé",
-      "default": "Pratique et stylé avec sa fermeture éclair"
-    },
-    {
-      "type": "collection",
-      "id": "collection_debardeur_homme",
-      "label": "Collection Débardeur homme"
-    },
-    {
-      "type": "text",
-      "id": "type_debardeur_homme",
-      "label": "Type pour Débardeur homme",
-      "default": "Débardeur homme"
-    },
-    {
-      "type": "textarea",
-      "id": "description_debardeur_homme",
-      "label": "Description Débardeur homme",
-      "default": "Coupe ajustée et confortable pour homme"
-    },
-    {
-      "type": "collection",
-      "id": "collection_leger",
-      "label": "Collection Le léger"
-    },
-    {
-      "type": "text",
-      "id": "type_leger",
-      "label": "Type pour Le léger",
-      "default": "Le léger"
-    },
-    {
-      "type": "textarea",
-      "id": "description_leger",
-      "label": "Description Le léger",
-      "default": "Notre modèle ultra léger et respirant"
-    },
-    {
-      "type": "collection",
-      "id": "collection_inebranlable",
-      "label": "Collection L'inébranlable"
-    },
-    {
-      "type": "text",
-      "id": "type_inebranlable",
-      "label": "Type pour L'inébranlable",
-      "default": "L'inébranlable"
-    },
-    {
-      "type": "textarea",
-      "id": "description_inebranlable",
-      "label": "Description L'inébranlable",
-      "default": "Notre modèle le plus robuste et durable"
-    },
-    {
-      "type": "collection",
-      "id": "collection_solide",
-      "label": "Collection Le solide"
-    },
-    {
-      "type": "text",
-      "id": "type_solide",
-      "label": "Type pour Le solide",
-      "default": "Le solide"
-    },
-    {
-      "type": "textarea",
-      "id": "description_solide",
-      "label": "Description Le solide",
-      "default": "Notre modèle fiable et résistant"
+      "id": "categories",
+      "label": "Catégories (séparées par des virgules)",
+      "default": "T-shirts, Débardeurs, Sweatshirts",
+      "info": "Les images associées doivent être nommées 'nom_categorie.webp'"
     }
   ],
   "presets": [
@@ -335,141 +160,40 @@
   <button type="button" class="rdc-borne__back-button" data-back="categories">
   </button>
 
-  <button type="button" class="rdc-borne__back-button" data-back="types">
-  </button>
-
-  <button type="button" class="rdc-borne__back-button" data-back="products">
-  </button>
-
-  {%- if section.settings.collection != blank -%}
-    {%- assign product_types = section.settings.collection.products | map: 'type' | uniq -%}
-    
-    <!-- Slide 1: Catégories principales -->
-    <div class="rdc-borne__slide" data-slide="categories">
+  <!-- Slide 1: Catégories principales -->
+  <div class="rdc-borne__slide" data-slide="categories">
         <div class="rdc-borne__slide-header">
           <h1>Quelle catégorie vous intéresse ? 🌱</h1>
           <p style="font-size: 1.5rem;">Choisissez votre style préféré.</p>
         </div>
+
         <div class="rdc-borne__types-grid">
-          <!-- Catégorie T-shirts -->
-          <button class="rdc-borne__type-button" data-category-target="tshirts">
-            <div class="rdc-borne__type-image">
-              {% if section.settings.tshirt_image != blank %}
-                <img src="{{ section.settings.tshirt_image | img_url: '400x400', crop: 'center' }}" alt="T-shirts" loading="lazy">
-              {% endif %}
-            </div>
-            <h2>T-shirts</h2>
-            <p>{{ section.settings.tshirt_description }}</p>
-          </button>
-
-          <!-- Catégorie Débardeurs -->
-          <button class="rdc-borne__type-button" data-category-target="debardeurs">
-            <div class="rdc-borne__type-image">
-              {% if section.settings.debardeur_image != blank %}
-                <img src="{{ section.settings.debardeur_image | img_url: '400x400', crop: 'center' }}" alt="Débardeurs" loading="lazy">
-              {% endif %}
-            </div>
-            <h2>Débardeurs</h2>
-            <p>{{ section.settings.debardeur_description }}</p>
-          </button>
-
-          <!-- Catégorie Sweatshirts -->
-          <button class="rdc-borne__type-button" data-category-target="sweatshirts">
-            <div class="rdc-borne__type-image">
-              {% if section.settings.sweatshirt_image != blank %}
-                <img src="{{ section.settings.sweatshirt_image | img_url: '400x400', crop: 'center' }}" alt="Sweatshirts" loading="lazy">
-              {% endif %}
-            </div>
-            <h2>Sweatshirts</h2>
-            <p>{{ section.settings.sweatshirt_description }}</p>
-          </button>
+          {%- assign categories = section.settings.categories | split: ',' -%}
+          {%- for category in categories -%}
+            {%- assign category_name = category | strip -%}
+            {%- assign category_handle = category_name | handleize -%}
+            <button class="rdc-borne__type-button" data-category-target="{{ category_handle }}">
+              <div class="rdc-borne__type-image">
+                <img src="{{ category_handle | append: '.webp' | file_url }}" alt="{{ category_name }}" loading="lazy">
+              </div>
+              <h2>{{ category_name }}</h2>
+            </button>
+          {%- endfor -%}
         </div>
-    </div>
 
-    <!-- Slide 2: Types de produits -->
-    {% assign current_category = '' %}
-    <div class="rdc-borne__slide" data-slide="types">
-        <div class="rdc-borne__slide-header">
-          <h1>Commençons par choisir une base 🌿</h1>
-          <p style="font-size: 1.5rem;">Vous pourrez choisir le motif ensuite.</p>
-        </div>
-        <div class="rdc-borne__types-grid">
-          {% for type in product_types %}
-            {% assign type_lower = type | downcase %}
-            {% assign collection_id = '' %}
-            {% assign type_debardeur_femme = section.settings.type_debardeur_femme | downcase %}
-            {% assign type_debardeur_homme = section.settings.type_debardeur_homme | downcase %}
-            {% assign type_hoodie = section.settings.type_hoodie | downcase %}
-            {% assign type_iconique = section.settings.type_iconique | downcase %}
-            {% assign type_zippe = section.settings.type_zippe | downcase %}
-            {% assign type_leger = section.settings.type_leger | downcase %}
-            {% assign type_inebranlable = section.settings.type_inebranlable | downcase %}
-            {% assign type_solide = section.settings.type_solide | downcase %}
-
-            {% if type_lower == type_debardeur_femme %}
-              {% assign collection_id = 'collection_debardeur_femme' %}
-            {% elsif type_lower == type_debardeur_homme %}
-              {% assign collection_id = 'collection_debardeur_homme' %}
-            {% elsif type_lower == type_hoodie %}
-              {% assign collection_id = 'collection_hoodie' %}
-            {% elsif type_lower == type_iconique %}
-              {% assign collection_id = 'collection_iconique' %}
-            {% elsif type_lower == type_zippe %}
-              {% assign collection_id = 'collection_zippe' %}
-            {% elsif type_lower == type_leger %}
-              {% assign collection_id = 'collection_leger' %}
-            {% elsif type_lower == type_inebranlable %}
-              {% assign collection_id = 'collection_inebranlable' %}
-            {% elsif type_lower == type_solide %}
-              {% assign collection_id = 'collection_solide' %}
-            {% endif %}
-
-            {% assign type_collection = section.settings[collection_id] %}
-
-            {% comment %}Détermine la catégorie du type{% endcomment %}
-            {% assign type_category = 'tshirts' %}
-            {% if type_lower contains 'débardeur' %}
-              {% assign type_category = 'debardeurs' %}
-            {% elsif type_lower contains 'hoodie' or type_lower contains 'zippé' or type_lower contains 'sweat' or type_lower contains 'solide' %}
-              {% assign type_category = 'sweatshirts' %}
-            {% endif %}
-
-            <button class="rdc-borne__type-button" data-type-target="{{ type | handleize }}" data-category="{{ type_category }}">
-                <div class="rdc-borne__type-image">
-                  {% if type_collection != blank %}
-                    {% if type_collection.image %}
-                      <img src="{{ type_collection.image | img_url: '400x400', crop: 'center' }}" alt="{{ type }}" loading="lazy">
-                    {% else %}
-                      {% assign first_product = type_collection.products.first %}
-                      {% if first_product.featured_image %}
-                        <img src="{{ first_product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ type }}" loading="lazy">
-                      {% endif %}
-                    {% endif %}
-                  {% else %}
-                    <p style="color: red;">Collection non sélectionnée pour {{ type }}</p>
-                  {% endif %}
-                </div>
-                <h2>{{ type }}</h2>
-                {% assign description_id = 'description_' | append: collection_id | replace: 'collection_', '' %}
-                {% if section.settings[description_id] != blank %}
-                  <p class="rdc-borne__type-description">{{ section.settings[description_id] }}</p>
-                {% endif %}
-                <p class="rdc-borne__type-description">{{ section.settings.collection.products | where: 'type', type | size }} produits</p>
-              </button>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- Slide 2: Liste des produits par type -->
-      {% for type in product_types %}
-        <div class="rdc-borne__slide" data-slide="products" data-type="{{ type | handleize }}">
+      <!-- Slide 2: Liste des produits par catégorie -->
+      {%- assign categories = section.settings.categories | split: ',' -%}
+      {%- for category in categories -%}
+        {%- assign category_name = category | strip -%}
+        {%- assign category_handle = category_name | handleize -%}
+        <div class="rdc-borne__slide" data-slide="products" data-category="{{ category_handle }}">
           <div class="rdc-borne__slide-header">
             <h1>On y est presque ! 🎉</h1>
-            <p style="font-size: 1.5rem;">Choisissez votre futur {{ type | downcase }} préféré</p>
+            <p style="font-size: 1.5rem;">Choisissez votre {{ category_name | downcase }} préféré</p>
           </div>
           <div class="rdc-borne__products-grid">
-            {% assign type_products = section.settings.collection.products | where: "type", type %}
-            {% for product in type_products %}
+            {% assign category_products = section.settings.collection.products | where: "product_type", category_name %}
+            {% for product in category_products %}
               <button class="rdc-borne__product" data-product-target="{{ product.id }}">
                 <div class="rdc-borne__product-image">
                   <img 
@@ -609,9 +333,7 @@
       </div>
     {% endfor %}
 
-  {% else %}
-    <p>Veuillez sélectionner une collection dans les paramètres de la section.</p>
-  {% endif %}
+
 
   <div class="background-forest">
     <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_gauche.webp?v=1740164842" alt="foret immersive gauche">
