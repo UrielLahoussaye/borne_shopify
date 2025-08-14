@@ -1,0 +1,625 @@
+{% schema %}
+{
+  "name": "Borne RDC",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection à afficher"
+    },
+    {
+      "type": "header",
+      "content": "Catégories principales"
+    },
+    {
+      "type": "image_picker",
+      "id": "tshirt_image",
+      "label": "Image catégorie T-shirts"
+    },
+    {
+      "type": "textarea",
+      "id": "tshirt_description",
+      "label": "Description T-shirts",
+      "default": "Nos t-shirts confortables et élégants"
+    },
+    {
+      "type": "image_picker",
+      "id": "debardeur_image",
+      "label": "Image catégorie Débardeurs"
+    },
+    {
+      "type": "textarea",
+      "id": "debardeur_description",
+      "label": "Description Débardeurs",
+      "default": "Nos débardeurs légers et stylés"
+    },
+    {
+      "type": "image_picker",
+      "id": "sweatshirt_image",
+      "label": "Image catégorie Sweatshirts"
+    },
+    {
+      "type": "textarea",
+      "id": "sweatshirt_description",
+      "label": "Description Sweatshirts",
+      "default": "Nos sweatshirts chauds et confortables"
+    },
+    {
+      "type": "header",
+      "content": "Types de produits"
+    },
+    {
+      "type": "text",
+      "id": "type_debardeur_femme",
+      "label": "Type pour Débardeur femme",
+      "default": "Débardeur femme"
+    },
+    {
+      "type": "textarea",
+      "id": "description_debardeur_femme",
+      "label": "Description Débardeur femme",
+      "default": "Coupe ajustée et confortable pour femme"
+    },
+    {
+      "type": "text",
+      "id": "type_hoodie",
+      "label": "Type pour Hoodie",
+      "default": "Le Hoodie"
+    },
+    {
+      "type": "textarea",
+      "id": "description_hoodie",
+      "label": "Description Hoodie",
+      "default": "Le sweat à capuche idéal pour toutes les saisons"
+    },
+    {
+      "type": "text",
+      "id": "type_iconique",
+      "label": "Type pour Iconique",
+      "default": "L'iconique"
+    },
+    {
+      "type": "textarea",
+      "id": "description_iconique",
+      "label": "Description Iconique",
+      "default": "Notre modèle emblématique, un classique intemporel"
+    },
+    {
+      "type": "text",
+      "id": "type_zippe",
+      "label": "Type pour Zippé",
+      "default": "Le Zippé"
+    },
+    {
+      "type": "textarea",
+      "id": "description_zippe",
+      "label": "Description Zippé",
+      "default": "Pratique et stylé avec sa fermeture éclair"
+    },
+    {
+      "type": "text",
+      "id": "type_debardeur_homme",
+      "label": "Type pour Débardeur homme",
+      "default": "Débardeur homme"
+    },
+    {
+      "type": "textarea",
+      "id": "description_debardeur_homme",
+      "label": "Description Débardeur homme",
+      "default": "Coupe ajustée et confortable pour homme"
+    },
+    {
+      "type": "text",
+      "id": "type_leger",
+      "label": "Type pour Le léger",
+      "default": "Le léger"
+    },
+    {
+      "type": "textarea",
+      "id": "description_leger",
+      "label": "Description Le léger",
+      "default": "Notre modèle ultra léger et respirant"
+    },
+    {
+      "type": "text",
+      "id": "type_inebranlable",
+      "label": "Type pour L'inébranlable",
+      "default": "L'inébranlable"
+    },
+    {
+      "type": "textarea",
+      "id": "description_inebranlable",
+      "label": "Description L'inébranlable",
+      "default": "Notre modèle le plus robuste et durable"
+    },
+    {
+      "type": "text",
+      "id": "type_solide",
+      "label": "Type pour Le solide",
+      "default": "Le solide"
+    },
+    {
+      "type": "textarea",
+      "id": "description_solide",
+      "label": "Description Le solide",
+      "default": "Notre modèle fiable et résistant"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Borne RDC",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}
+<div class="overlay-loading" style="position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 99999; background: #F7F7F4;"></div>
+<button type="button" class="rdc-borne__cart-button" data-cart-toggle>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="21" r="1"></circle>
+    <circle cx="20" cy="21" r="1"></circle>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+  </svg>
+  <span class="rdc-borne__cart-count" data-cart-count></span>
+</button>
+
+<div class="rdc-borne__cart" data-cart>
+  <div class="rdc-borne__cart-header">
+    <h2>Votre panier</h2>
+    <div class="rdc-borne__cart-header-buttons">
+      <button type="button" class="rdc-borne__cart-clear" data-cart-clear title="Vider le panier">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+        </svg>
+      </button>
+      <button type="button" class="rdc-borne__cart-close" data-cart-toggle>×</button>
+    </div>
+  </div>
+  
+  <div class="rdc-borne__cart-items">
+    {%- if cart.item_count > 0 -%}
+      {%- for item in cart.items -%}
+        <div class="rdc-borne__cart-item" data-cart-item="{{ item.key }}">
+          {%- if item.image -%}
+            <img src="{{ item.image | image_url: width: 100 }}" alt="{{ item.title | escape }}" loading="lazy" width="100" height="100">
+          {%- endif -%}
+          
+          <div class="rdc-borne__cart-item-info">
+            <h3>{{ item.product.title }}</h3>
+            {%- unless item.variant.title contains 'Default' -%}
+              <p>{{ item.variant.title }}</p>
+            {%- endunless -%}
+            <div class="rdc-borne__cart-item-price">
+              {%- if item.original_price > item.final_price -%}
+                <span class="rdc-borne__cart-item-original-price">{{ item.original_line_price | money }}</span>
+              {%- endif -%}
+              <span class="rdc-borne__cart-item-final-price">{{ item.final_line_price | money }}</span>
+            </div>
+            <div class="rdc-borne__cart-item-quantity">
+              <button type="button" data-quantity-minus>-</button>
+              <input type="number" value="{{ item.quantity }}" min="0" data-quantity-input>
+              <button type="button" data-quantity-plus>+</button>
+            </div>
+          </div>
+
+          <button type="button" class="rdc-borne__cart-item-remove" data-cart-remove="{{ item.key }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      {%- endfor -%}
+
+      <div class="rdc-borne__cart-footer">
+        {%- assign items_count = cart.item_count -%}
+        {%- if items_count > 0 and items_count < 4 -%}
+          {%- assign next_threshold = 0 -%}
+          {%- assign next_discount = 0 -%}
+          
+          {%- if items_count == 1 -%}
+            {%- assign next_threshold = 2 -%}
+            {%- assign next_discount = 5 -%}
+          {%- elsif items_count == 2 -%}
+            {%- assign next_threshold = 3 -%}
+            {%- assign next_discount = 10 -%}
+          {%- elsif items_count == 3 -%}
+            {%- assign next_threshold = 4 -%}
+            {%- assign next_discount = 15 -%}
+          {%- endif -%}
+
+          {%- assign items_needed = next_threshold | minus: items_count -%}
+          
+          <div class="rdc-borne__cart-incentive">
+            <div class="rdc-borne__cart-incentive-progress">
+              <div class="rdc-borne__cart-incentive-bar" style="width: {{ items_count | times: 25 }}%"></div>
+            </div>
+            <p>
+              {%- if items_needed == 1 -%}
+                Plus qu'<strong>1 article</strong> pour obtenir <strong>{{ next_discount }}% de remise</strong> !
+              {%- else -%}
+                Encore <strong>{{ items_needed }} articles</strong> pour obtenir <strong>{{ next_discount }}% de remise</strong> !
+              {%- endif -%}
+            </p>
+          </div>
+        {%- elsif items_count >= 4 -%}
+          <div class="rdc-borne__cart-incentive">
+            <div class="rdc-borne__cart-incentive-progress">
+              <div class="rdc-borne__cart-incentive-bar" style="width: 100%"></div>
+            </div>
+            <p>Félicitations ! Vous bénéficiez de la remise maximale de <strong>15%</strong> !</p>
+          </div>
+        {%- endif -%}
+
+        <div class="rdc-borne__cart-total">
+          {%- if cart.original_total_price > cart.total_price -%}
+            <div class="rdc-borne__cart-subtotal">
+              <span>Sous-total</span>
+              <span>{{ cart.original_total_price | money }}</span>
+            </div>
+            <div class="rdc-borne__cart-discount">
+              <span>Réduction</span>
+              <span>-{{ cart.original_total_price | minus: cart.total_price | money }}</span>
+            </div>
+          {%- endif -%}
+          <div class="rdc-borne__cart-final-total">
+            <span>Total</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+        </div>
+        <a href="/checkout" class="rdc-borne__cart-checkout" data-cart-checkout>
+          Passer la commande
+        </a>
+        <p class="rdc-borne__cart-note">Toute commande passée sur la Borne sera imprimée et expédiée sous 15 à 21 jours</p>
+      </div>
+
+    {%- else -%}
+      <div class="rdc-borne__cart-empty">
+        <p>Votre panier est vide</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="rdc-borne__checkout-popup">
+  <div class="rdc-borne__checkout-popup-content">
+    <div class="rdc-borne__checkout-loader"></div>
+    <h2>Félicitations !</h2>
+    <p>Nous préparons votre commande...</p>
+  </div>
+</div>
+
+<div class="rdc-borne" data-borne>
+  <button type="button" class="rdc-borne__back-button" data-back="categories">
+  </button>
+
+  <button type="button" class="rdc-borne__back-button" data-back="types">
+  </button>
+
+  <button type="button" class="rdc-borne__back-button" data-back="products">
+  </button>
+
+  {%- if section.settings.collection != blank -%}
+    {% paginate section.settings.collection.products by 250 %}
+    {%- assign product_types = section.settings.collection.products | map: 'type' | uniq -%}
+    
+    <!-- Slide 1: Catégories principales -->
+    <div class="rdc-borne__slide" data-slide="categories">
+        <div class="rdc-borne__slide-header">
+          <h1>Quelle catégorie vous intéresse ? 🌱</h1>
+          <p style="font-size: 1.5rem;">Choisissez votre style préféré.</p>
+        </div>
+        <div class="rdc-borne__types-grid">
+          <!-- Catégorie T-shirts -->
+          <button class="rdc-borne__type-button" data-category-target="tshirts">
+            <div class="rdc-borne__type-image">
+              {% if section.settings.tshirt_image != blank %}
+                <img src="{{ section.settings.tshirt_image | img_url: '400x400', crop: 'center' }}" alt="T-shirts" loading="lazy">
+              {% endif %}
+            </div>
+            <h2>T-shirts</h2>
+            <p>{{ section.settings.tshirt_description }}</p>
+          </button>
+
+          <!-- Catégorie Débardeurs -->
+          <button class="rdc-borne__type-button" data-category-target="debardeurs">
+            <div class="rdc-borne__type-image">
+              {% if section.settings.debardeur_image != blank %}
+                <img src="{{ section.settings.debardeur_image | img_url: '400x400', crop: 'center' }}" alt="Débardeurs" loading="lazy">
+              {% endif %}
+            </div>
+            <h2>Débardeurs</h2>
+            <p>{{ section.settings.debardeur_description }}</p>
+          </button>
+
+          <!-- Catégorie Sweatshirts -->
+          <button class="rdc-borne__type-button" data-category-target="sweatshirts">
+            <div class="rdc-borne__type-image">
+              {% if section.settings.sweatshirt_image != blank %}
+                <img src="{{ section.settings.sweatshirt_image | img_url: '400x400', crop: 'center' }}" alt="Sweatshirts" loading="lazy">
+              {% endif %}
+            </div>
+            <h2>Sweatshirts</h2>
+            <p>{{ section.settings.sweatshirt_description }}</p>
+          </button>
+        </div>
+    </div>
+
+    <!-- Slide 2: Types de produits -->
+    {% assign current_category = '' %}
+    <div class="rdc-borne__slide" data-slide="types">
+        <div class="rdc-borne__slide-header">
+          <h1>Commençons par choisir une base 🌿</h1>
+          <p style="font-size: 1.5rem;">Vous pourrez choisir le motif ensuite.</p>
+        </div>
+        <div class="rdc-borne__types-grid">
+          {% for type in product_types %}
+            {% assign type_lower = type | downcase %}
+
+            {% comment %}Détermine la catégorie du type{% endcomment %}
+            {% assign type_category = 'tshirts' %}
+            {% if type_lower contains 'débardeur' %}
+              {% assign type_category = 'debardeurs' %}
+            {% elsif type_lower contains 'hoodie' or type_lower contains 'zippé' or type_lower contains 'sweat' or type_lower contains 'solide' %}
+              {% assign type_category = 'sweatshirts' %}
+            {% endif %}
+
+            <button class="rdc-borne__type-button" data-type-target="{{ type | handleize }}" data-category="{{ type_category }}">
+                <div class="rdc-borne__type-image">
+                  {% assign normalized_type = type | downcase | strip %}
+                  {% assign type_products = '' | split: '' %}
+                  {% if type == "L'iconique" %}
+                    <script>
+                      console.log('Analyzing L\'iconique products:');
+                      console.log('Normalized type:', '{{ normalized_type }}');
+                    </script>
+                  {% endif %}
+                  {% for product in section.settings.collection.products %}
+                    {% assign product_type_normalized = product.type | downcase | strip %}
+                    {% if type == "L'iconique" %}
+                      <script>
+                        console.log('Product:', '{{ product.title }}');
+                        console.log('Original type:', '{{ product.type }}');
+                        console.log('Normalized type:', '{{ product_type_normalized }}');
+                        console.log('Match?:', {{ product_type_normalized == normalized_type }});
+                      </script>
+                    {% endif %}
+                    {% if product_type_normalized == normalized_type %}
+                      {% assign type_products = type_products | concat: product %}
+                    {% endif %}
+                  {% endfor %}
+                  {% assign first_product = type_products | first %}
+                  {% if first_product.featured_image %}
+                    <img src="{{ first_product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ type }}" loading="lazy">
+                  {% endif %}
+                </div>
+                <h2>{{ type }}</h2>
+                <p class="rdc-borne__type-description">{{ type_products.size }} produits</p>
+              </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Slide 2: Liste des produits par type -->
+      {% for type in product_types %}
+        <div class="rdc-borne__slide" data-slide="products" data-type="{{ type | handleize }}">
+          <div class="rdc-borne__slide-header">
+            <h1>On y est presque ! 🎉</h1>
+            <p style="font-size: 1.5rem;">Choisissez votre futur {{ type | downcase }} préféré</p>
+          </div>
+          <div class="rdc-borne__products-grid">
+            {% comment %}Debug: Liste tous les types de produits non mappés{% endcomment %}
+            {% if forloop.first %}
+              {% assign all_unmapped_types = section.settings.collection.products | map: 'type' | uniq %}
+              {% assign mapped_types = product_types %}
+              <script>
+                console.log('Types de produits dans la collection:', {{ all_unmapped_types | json }});
+                console.log('Types mappés:', {{ mapped_types | json }});
+              </script>
+            {% endif %}
+
+            {% comment %}Debug: Afficher les types de produits non mappés{% endcomment %}
+            {% if forloop.first %}
+              <script>
+                console.log('Collection sélectionnée:', '{{ section.settings.collection.title }}');
+                console.log('Nombre total de produits dans la collection:', {{ section.settings.collection.products.size }});
+              </script>
+            {% endif %}
+
+            {% assign normalized_type = type | downcase | strip %}
+            {% assign type_products = section.settings.collection.products | where: "type", type %}
+            
+            {% comment %}Vérification des produits avec type similaire si aucun trouvé{% endcomment %}
+            {% if type_products.size == 0 %}
+              {% assign temp_products = '' | split: '' %}
+              {% for product in section.settings.collection.products %}
+                {% assign product_type_normalized = product.type | downcase | strip %}
+                {% if product_type_normalized == normalized_type %}
+                  {% assign temp_products = temp_products | concat: product %}
+                {% endif %}
+              {% endfor %}
+              {% assign type_products = temp_products %}
+              {% if temp_products.size > 0 %}
+                <script>
+                  console.log('Produits trouvés avec type similaire pour "{{ type }}":', {{ temp_products.size }});
+                </script>
+              {% endif %}
+            {% endif %}
+            {% comment %}Essaie de trouver des produits avec un type similaire si aucun n'est trouvé{% endcomment %}
+            {% if type_products.size == 0 %}
+              {% assign type_lower = type | downcase | strip %}
+              {% for product in section.settings.collection.products %}
+                {% assign product_type_lower = product.type | downcase | strip %}
+                {% if product_type_lower == type_lower %}
+                  {% assign type_products = type_products | concat: product %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {% for product in type_products %}
+              <button class="rdc-borne__product" data-product-target="{{ product.id }}">
+                <div class="rdc-borne__product-image">
+                  <img 
+                    src="{{ product.featured_image | img_url: 'large' }}" 
+                    alt="{{ product.title | escape }}" 
+                    loading="lazy"
+                  />
+                </div>
+                <div class="rdc-borne__product-info">
+                  <h3>{{ product.title }}</h3>
+                  <p class="rdc-borne__product-price">{{ product.price | money }}</p>
+                  {% assign color_option = product.options_with_values | where: "name", "Couleur" | first %}
+                  {% if color_option %}
+                    <div class="rdc-borne__product-colors">
+                      {% for value in color_option.values limit: 3 %}
+                        <span class="rdc-borne__product-color" 
+                          {% if value.swatch.image %}
+                            style="background-image: url({{ value.swatch.image | img_url: '50x' }})"
+                          {% else %}
+                            style="background-color: {{ value.swatch.color }}"
+                          {% endif %}
+                        >
+                          <span class="visually-hidden">{{ value }}</span>
+                        </span>
+                      {% endfor %}
+                      {% assign remaining_colors = color_option.values.size | minus: 3 %}
+                      {% if remaining_colors > 0 %}
+                        <span class="rdc-borne__product-color-count">+{{ remaining_colors }}</span>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+
+    <!-- Slide 3: Fiche produit -->
+    {% for product in section.settings.collection.products %}
+      <div class="rdc-borne__slide" data-slide="product-details" data-product-id="{{ product.id }}">
+        <div class="rdc-borne__product-content">
+          <div>          
+            <h2>{{ product.title }}</h2>
+            <p class="rdc-borne__product-subtitle">
+              <span data-selected-color="{{ product.id }}">{% if product.variants.first.options[1] %}{{ product.variants.first.options[1] }}{% else %}--{% endif %}</span>
+            </p>
+            <p class="rdc-borne__product-price">
+              <span data-product-price="{{ product.id }}">{{ product.variants.first.price | money }}</span>
+            </p>
+          </div>
+          
+          <div class="rdc-borne__product-images">
+            <img 
+              class="rdc-borne__product-main-image" 
+              src="{{ product.featured_image | img_url: 'large' }}" 
+              alt="{{ product.title | escape }}"
+              data-main-image="{{ product.id }}"
+            />
+            {% comment %}Préchargement des images des variantes{% endcomment %}
+            {% for variant in product.variants %}
+              {% if variant.image %}
+                <link rel="preload" as="image" href="{{ variant.image | img_url: 'large' }}">
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <form data-product-form="{{ product.id }}" class="rdc-borne__product-form" action="/cart/add" method="post" data-ajax="false">
+            <input type="hidden" name="return_to" value="{{ request.path }}">
+            <div class="rdc-borne__variants">
+              {% for option in product.options_with_values %}
+                {% if option.name == 'Couleur' %}
+                  <div class="rdc-borne__option-wrapper">
+                    <div class="rdc-borne__option-values rdc-borne__option-values--color">
+                      {% for value in option.values %}
+                        <input type="radio" 
+                          id="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                          name="{{ product.id }}-{{ option.name | handleize }}"
+                          value="{{ value | escape }}"
+                          {% if forloop.first %}checked{% endif %}
+                          data-option-trigger
+                          data-product-id="{{ product.id }}"
+                        >
+                        <label for="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                          class="rdc-borne__option-value rdc-borne__option-value--color"
+                          {% if value.swatch.image %}
+                            style="background-image: url({{ value.swatch.image | img_url: '50x' }})"
+                          {% else %}
+                            style="background-color: {{ value.swatch.color }}"
+                          {% endif %}
+                        >
+                          <span class="visually-hidden">{{ value }}</span>
+                        </label>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+                {% if option.name == 'Taille' %}
+                  <div class="rdc-borne__option-wrapper">
+                    <div class="rdc-borne__option-values">
+                      {% for value in option.values %}
+                        <input type="radio" 
+                          id="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                          name="{{ product.id }}-{{ option.name | handleize }}"
+                          value="{{ value | escape }}"
+                          {% if forloop.first %}checked{% endif %}
+                          data-option-trigger
+                          data-product-id="{{ product.id }}"
+                          data-size-option
+                        >
+                        <label for="{{ product.id }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                          class="rdc-borne__option-value"
+                        >
+                          {{ value }}
+                        </label>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+
+              <select name="id" data-variant-select="{{ product.id }}" style="display: none;">
+                {% for variant in product.variants %}
+                  <option 
+                    value="{{ variant.id }}"
+                    data-sku="{{ variant.sku }}"
+                    data-image-url="{{ variant.image | img_url: 'large' }}"
+                    data-price="{{ variant.price }}"
+                  >
+                    {{ variant.title }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              <button type="submit" class="rdc-borne__add-to-cart" name="add">
+                Ajouter au panier
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+
+  {% else %}
+    <p>Veuillez sélectionner une collection dans les paramètres de la section.</p>
+  {% endif %}
+  {% endpaginate %}
+
+  <div class="background-forest">
+    <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_gauche.webp?v=1740164842" alt="foret immersive gauche">
+    <img style="position: absolute; top: 0; right: 0;" src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_droite.webp?v=1740164852" alt="foret immersive droite">
+  </div>
+</div>
+
+<!-- Overlay de confirmation -->
+<div class="rdc-borne__confirmation-overlay" data-confirmation-overlay>
+  <div class="rdc-borne__confirmation-content">
+    <div class="rdc-borne__confirmation-emoji">🎉</div>
+    <h2>Article ajouté au panier</h2>
+    <p class="rdc-borne__confirmation-wait">Veuillez patienter.</p>
+  </div>
+</div>
+
+{{ 'rdc_borne.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_borne.js' | asset_url | script_tag }}
