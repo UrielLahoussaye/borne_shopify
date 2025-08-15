@@ -132,7 +132,7 @@
     <div class="rdc-borne__content">
       <h1 class="rdc-borne__collection-title"></h1>
       {% for collection in section.settings.collections %}
-        <div class="rdc-borne__products" data-collection="{{ collection.handle }}" style="display: none;">
+        <div class="rdc-borne__products inactive" data-collection="{{ collection.handle }}">
           {% paginate collection.products by 24 %}
             {% for product in collection.products %}
               <div class="rdc-borne__product" data-handle="{{ product.handle }}" data-product-json="{{ product | json | escape }}">

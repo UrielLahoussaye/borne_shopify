@@ -247,7 +247,7 @@ footer::-webkit-scrollbar,
   background: #e0e0e0;
 }
 
-/* Écran 3: Produits */
+/* Écran 3: Produits - Par défaut en Flex pour mobile */
 .rdc-borne__products {
   display: flex;
   flex-direction: row;
@@ -261,6 +261,25 @@ footer::-webkit-scrollbar,
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Gestion de la visibilité des collections */
+.rdc-borne__products.active {
+  display: flex;
+}
+
+.rdc-borne__products.inactive {
+  display: none !important;
+}
+
+/* Forcer l'affichage en Grid sur desktop uniquement */
+@media screen and (min-width: 768px) {
+  .rdc-borne__products.active {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2rem;
+    overflow-x: hidden;
+  }
 }
 
 .rdc-borne__products::-webkit-scrollbar {

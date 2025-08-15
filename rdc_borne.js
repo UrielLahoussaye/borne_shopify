@@ -150,8 +150,13 @@ document.addEventListener("DOMContentLoaded", function () {
       // Afficher uniquement les produits de la collection sélectionnée
       const productGrids = document.querySelectorAll(".rdc-borne__products");
       productGrids.forEach((grid) => {
-        grid.style.display =
-          grid.dataset.collection === collectionHandle ? "flex" : "none";
+        if (grid.dataset.collection === collectionHandle) {
+          grid.classList.add("active");
+          grid.classList.remove("inactive");
+        } else {
+          grid.classList.add("inactive");
+          grid.classList.remove("active");
+        }
       });
 
       navigateToScreen("3");
