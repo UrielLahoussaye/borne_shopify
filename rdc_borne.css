@@ -51,13 +51,14 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   width: 100%;
   left: 0;
   right: 0;
+  top: 0;
   min-height: 100vh;
   pointer-events: none;
 }
 
 .rdc-borne__screen[data-active="true"] {
   opacity: 1;
-  position: relative;
+  position: absolute;
   pointer-events: auto;
   padding: 20px;
 }
@@ -100,13 +101,13 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   flex-wrap: nowrap;
   overflow-x: auto;
   gap: 2rem;
-  width: 100%;
-  padding-bottom: 1rem;
+  padding: 2rem;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
   scroll-behavior: smooth;
-  /* Styles pour la scrollbar */
+  scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
+  margin-bottom: 2rem;
+  justify-content: center;
 }
 
 /* Styles pour la scrollbar sur WebKit pour la slide 1 */
@@ -185,6 +186,9 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   scroll-behavior: smooth;
   /* Styles pour la scrollbar */
   scrollbar-color: #888 #f1f1f1;
+  justify-content: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 /* Styles pour la scrollbar sur WebKit */
@@ -254,6 +258,9 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   padding: 2rem;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 @media (max-width: 1024px) {
