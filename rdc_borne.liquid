@@ -118,7 +118,7 @@
       <div class="rdc-borne__collections">
         {% for collection in section.settings.collections %}
           <div class="rdc-borne__collection" data-handle="{{ collection.handle }}">
-            <img src="{{ collection.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
+            <img src="{{ collection.featured_image | img_url: '600x' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
             <h3>{{ collection.title }}</h3>
           </div>
         {% endfor %}
@@ -136,7 +136,7 @@
           {% paginate collection.products by 24 %}
             {% for product in collection.products %}
               <div class="rdc-borne__product" data-handle="{{ product.handle }}" data-product-json="{{ product | json | escape }}">
-                <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
+                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
                 <h3>{{ product.title }}</h3>
                 
                 {% comment %}Affichage des swatches de couleurs{% endcomment %}
@@ -242,7 +242,7 @@
                 <div class="rdc-borne__selected-color">Couleur: <span class="rdc-borne__color-name">{{ product.variants.first.options[0] }}</span></div>
                 <div class="rdc-borne__selected-size">Taille: <span class="rdc-borne__size-name"></span></div>
               </div>
-              <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x800', crop: 'center' }}" alt="{{ product.title }}">
+              <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title }}">
             </div>
             <div class="rdc-borne__product-info">
               <h1 class="rdc-borne__product-title">{{ product.title }}</h1>
