@@ -87,22 +87,8 @@
   <!-- Écran 3: Produits de la collection -->
   <div class="rdc-borne__screen" data-screen="3" data-active="false">
     <div class="rdc-borne__content">
-      {% if request.url contains 'collection=' %}
-        {% assign collection_handle = request.url | split: 'collection=' | last | split: '&' | first %}
-        {% assign collection = collections[collection_handle] %}
-        <h1>{{ collection.title }}</h1>
-        <div class="rdc-borne__products">
-          {% for product in collection.products %}
-            <div class="rdc-borne__product" data-handle="{{ product.handle }}">
-              <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
-              <h3>{{ product.title }}</h3>
-              <p class="rdc-borne__product-price">{{ product.price | money }}</p>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <h1>Aucune collection sélectionnée</h1>
-      {% endif %}
+      <h1 class="rdc-borne__collection-title"></h1>
+      <div class="rdc-borne__products"></div>
     </div>
     <button class="rdc-borne__next-button" data-action="next" data-target="4">Suivant</button>
   </div>

@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
     return categories;
   }
 
+  // Fonction pour formater les prix
+  function formatPrice(price) {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(price);
+  }
+
   // Récupérer et parser les données
   const collectionLinksText = document.getElementById('rdc-borne-data').textContent;
   const categoryCollections = parseCollectionLinks(collectionLinksText);
@@ -73,9 +81,32 @@ document.addEventListener('DOMContentLoaded', function() {
     if (collection) {
       const collectionHandle = collection.dataset.handle;
       selectedCollection = collection.querySelector('h3').textContent;
-      const url = new URL(window.location.pathname, window.location.origin);
-      url.searchParams.set('collection', collectionHandle);
-      window.history.pushState({}, '', url.pathname + '?' + url.searchParams.toString());
+      
+      // Mettre à jour le titre de la collection
+      document.querySelector('.rdc-borne__collection-title').textContent = selectedCollection;
+      
+      // Charger les produits de la collection
+      fetch(`/collections/${collectionHandle}/products.json`)
+        .then(response => response.json())
+        .then(data => {
+          const productsContainer = document.querySelector('.rdc-borne__products');
+          productsContainer.innerHTML = '';
+          
+          data.products.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.className = 'rdc-borne__product';
+            productElement.dataset.handle = product.handle;
+            
+            productElement.innerHTML = `
+              <img src="${product.featured_image ? product.featured_image.src : ''}" alt="${product.title}" class="rdc-borne__product-image">
+              <h3>${product.title}</h3>
+              <p class="rdc-borne__product-price">${formatPrice(product.variants[0].price)}</p>
+            `;
+            
+            productsContainer.appendChild(productElement);
+          });
+        });
+      
       navigateToScreen('3');
       return;
     }
