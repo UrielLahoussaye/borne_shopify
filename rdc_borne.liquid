@@ -120,49 +120,80 @@
               <div class="rdc-borne__product-description">{{ product.description }}</div>
               
               {% if product.variants.size > 1 %}
-                {% assign option_index = 0 %}
                 {% for option in product.options_with_values %}
-                  {% if option.name contains 'Couleur' or option.name contains 'Color' %}
-                    <div class="rdc-borne__color-swatches">
-                      <span class="rdc-borne__option-name">{{ option.name }}</span>
-                      <div class="rdc-borne__swatch-container">
-                        {% for value in option.values %}
-                          {% assign matching_variant = nil %}
-                          {% for variant in product.variants %}
-                            {% if variant.options[option_index] == value %}
-                              {% assign matching_variant = variant %}
+                  {% assign option_index = forloop.index0 %}
+                  {% if option.name == 'Couleur' %}
+                  <div class="rdc-borne__option-wrapper">
+                    <div class="rdc-borne__option-values rdc-borne__option-values--color">
+                      {% for value in option.values %}
+                        {% for variant in product.variants %}
+                          {% if variant.options[option_index] == value %}
+                            {% assign matching_variant = variant %}
+                            {% break %}
+                          {% endif %}
+                        {% endfor %}
+                        {% assign color_option = value | handleize %}
+                        {% assign variant_image = nil %}
+                        {% assign swatch_image = nil %}
+                        
+                        {% comment %}Chercher dans le metafield Couleur{% endcomment %}
+                        {% assign color_data = product.metafields.custom.couleur.value %}
+                        {% if color_data != blank %}
+                          {% for color in color_data %}
+                            {% if color.label == value %}
+                              {% assign variant_image = color.image %}
+                              {% assign swatch_image = color.image %}
                               {% break %}
                             {% endif %}
                           {% endfor %}
-                          <button 
-                            class="rdc-borne__swatch" 
-                            data-color="{{ value | handleize }}"
-                            data-variant-id="{{ matching_variant.id }}"
-                            {% if matching_variant.image %}
-                              data-image-url="{{ matching_variant.image | img_url: '800x800', crop: 'center' }}"
-                            {% endif %}>
-                            <img 
-                              src="{{ matching_variant.image | img_url: '100x100', crop: 'center' }}" 
-                              alt="{{ value }}" 
-                              class="rdc-borne__swatch-image">
-                            <span class="rdc-borne__swatch-label">{{ value }}</span>
-                          </button>
-                        {% endfor %}
-                      </div>
+                        {% endif %}
+                        
+                        {% comment %}Si pas d'image dans les metafields, utiliser l'image de la variante{% endcomment %}
+                        {% unless swatch_image %}
+                          {% for variant in product.variants %}
+                            {% if variant.options[option_index] == value %}
+                              {% if variant.image %}
+                                {% assign variant_image = variant.image %}
+                                {% assign swatch_image = variant.image %}
+                                {% break %}
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endunless %}
+                        
+                        {% comment %}Si toujours pas d'image, utiliser l'image principale{% endcomment %}
+                        {% unless variant_image %}
+                          {% assign variant_image = product.featured_image %}
+                          {% assign swatch_image = product.featured_image %}
+                        {% endunless %}
+                        
+                        <button 
+                          class="rdc-borne__swatch{% unless matching_variant.available %} sold-out{% endunless %}" 
+                          {% unless matching_variant.available %}disabled{% endunless %}
+                          data-color="{{ color_option }}"
+                          data-variant-id="{{ matching_variant.id }}"
+                          data-image-url="{{ variant_image | image_url: width: 600 }}">
+                          <img 
+                            src="{{ swatch_image | image_url: width: 50 }}"
+                            alt="{{ value }}" 
+                            class="rdc-borne__swatch-image">
+                        </button>
+                      {% endfor %}
                     </div>
-                  {% else %}
-                    <div class="rdc-borne__option-select">
-                      <label for="option-{{ option.name | handleize }}">{{ option.name }}</label>
-                      <select id="option-{{ option.name | handleize }}" class="rdc-borne__variant-select" data-option-index="{{ option_index }}">
-                        {% for value in option.values %}
-                          <option value="{{ value }}">{{ value }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  {% endif %}
-                  {% assign option_index = option_index | plus: 1 %}
-                {% endfor %}
-              {% endif %}
+                  </div>
+                {% else %}
+                  <div class="rdc-borne__option-select">
+                    <label for="option-{{ option.name | handleize }}">{{ option.name }}</label>
+                    <select id="option-{{ option.name | handleize }}" class="rdc-borne__variant-select" data-option-index="{{ option_index }}">
+                      {% for value in option.values %}
+                        <option value="{{ value }}">{{ value }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endif %}
+                {% assign option_index = option_index | plus: 1 %}
+              {% endfor %}
+            {% endif %}
               
               <button class="rdc-borne__add-to-cart" data-variant-id="{{ product.first_available_variant.id }}">Ajouter au panier</button>
             </div>
