@@ -112,7 +112,10 @@
         {% for product in collection.products %}
           <div class="rdc-borne__product-detail" data-product-handle="{{ product.handle }}" style="display: none;">
             <div class="rdc-borne__product-images">
-              <div class="rdc-borne__selected-color">Couleur: <span class="rdc-borne__color-name">{{ product.variants.first.options[0] }}</span></div>
+              <div class="rdc-borne__selected-options">
+                <div class="rdc-borne__selected-color">Couleur: <span class="rdc-borne__color-name">{{ product.variants.first.options[0] }}</span></div>
+                <div class="rdc-borne__selected-size">Taille: <span class="rdc-borne__size-name"></span></div>
+              </div>
               <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x800', crop: 'center' }}" alt="{{ product.title }}">
             </div>
             <div class="rdc-borne__product-info">
@@ -178,6 +181,16 @@
                             src="{{ swatch_image | image_url: width: 50 }}"
                             alt="{{ value }}" 
                             class="rdc-borne__swatch-image">
+                        </button>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% elsif option.name == 'Taille' %}
+                  <div class="rdc-borne__option-wrapper">
+                    <div class="rdc-borne__option-values rdc-borne__option-values--size">
+                      {% for value in option.values %}
+                        <button class="rdc-borne__swatch--size" data-size="{{ value | escape }}">
+                          {{ value }}
                         </button>
                       {% endfor %}
                     </div>

@@ -93,6 +93,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // Simuler le clic sur le premier swatch
             firstSwatch.click();
             firstSwatch.classList.add('active');
+            
+            // Sélectionner automatiquement la taille M si disponible
+            const sizeSwatches = detail.querySelectorAll('.rdc-borne__swatch--size');
+            const mSizeSwatch = Array.from(sizeSwatches).find(swatch => 
+              swatch.textContent.trim().toUpperCase() === 'M' && !swatch.disabled
+            );
+            
+            if (mSizeSwatch) {
+              mSizeSwatch.click();
+              mSizeSwatch.classList.add('active');
+            } else if (sizeSwatches.length > 0) {
+              // Si M n'est pas disponible, sélectionner la première taille disponible
+              const firstAvailableSize = Array.from(sizeSwatches).find(swatch => !swatch.disabled);
+              if (firstAvailableSize) {
+                firstAvailableSize.click();
+                firstAvailableSize.classList.add('active');
+              }
+            }
           }
         } else {
           detail.style.display = 'none';
@@ -103,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Gestion des clics sur les swatches
+    // Gestion des clics sur les swatches de couleur
     const swatch = event.target.closest('.rdc-borne__swatch');
     if (swatch) {
       const productDetail = swatch.closest('.rdc-borne__product-detail');
@@ -142,6 +160,37 @@ document.addEventListener('DOMContentLoaded', function() {
       // Mettre à jour l'état actif des swatches
       swatches.forEach(s => s.classList.remove('active'));
       swatch.classList.add('active');
+      return;
+    }
+    
+    // Gestion des clics sur les swatches de taille
+    const sizeSwatch = event.target.closest('.rdc-borne__swatch--size');
+    if (sizeSwatch) {
+      const productDetail = sizeSwatch.closest('.rdc-borne__product-detail');
+      const sizeSwatches = productDetail.querySelectorAll('.rdc-borne__swatch--size');
+      const addToCartButton = productDetail.querySelector('.rdc-borne__add-to-cart');
+      const selectedColor = productDetail.querySelector('.rdc-borne__swatch.active')?.dataset.color;
+      const sizeNameElement = productDetail.querySelector('.rdc-borne__size-name');
+      
+      // Mettre à jour l'état actif des swatches de taille
+      sizeSwatches.forEach(s => s.classList.remove('active'));
+      sizeSwatch.classList.add('active');
+      
+      // Mettre à jour l'affichage de la taille sélectionnée
+      const selectedSize = sizeSwatch.dataset.size;
+      if (sizeNameElement) {
+        sizeNameElement.textContent = selectedSize;
+      }
+      
+      // Si on a une couleur et une taille sélectionnées, on peut mettre à jour le bouton d'ajout au panier
+      if (selectedColor && selectedSize) {
+        // Trouver la variante correspondante et mettre à jour le bouton d'ajout au panier
+        const activeColorSwatch = productDetail.querySelector('.rdc-borne__swatch.active');
+        if (activeColorSwatch && activeColorSwatch.dataset.variantId) {
+          addToCartButton.dataset.variantId = activeColorSwatch.dataset.variantId;
+        }
+      }
+      
       return;
     }
 

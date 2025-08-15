@@ -203,17 +203,26 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   position: relative;
 }
 
-.rdc-borne__selected-color {
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 500;
+.rdc-borne__selected-options {
+  display: flex;
+  justify-content: space-around;
   margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.rdc-borne__selected-color,
+.rdc-borne__selected-size {
+  flex: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 400;
   padding: 0.5rem;
   background-color: #f8f8f8;
   border-radius: 4px;
 }
 
-.rdc-borne__color-name {
+.rdc-borne__color-name,
+.rdc-borne__size-name {
   font-weight: 700;
   color: #333;
 }
@@ -306,6 +315,46 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 
 .rdc-borne__swatch:hover .rdc-borne__swatch-label {
   opacity: 1;
+}
+
+.rdc-borne__option-wrapper {
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.rdc-borne__option-values--size {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+
+.rdc-borne__swatch--size {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.rdc-borne__swatch--size:hover {
+  border-color: #333;
+  background-color: #f0f0f0;
+}
+
+.rdc-borne__swatch--size.active {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+.rdc-borne__swatch--size[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: line-through;
 }
 
 .rdc-borne__option-select {
