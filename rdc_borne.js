@@ -4,6 +4,27 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Gestion de l'overlay de chargement
+  const loadingOverlay = document.getElementById('rdc-loading-overlay');
+  
+  // S'assurer que l'overlay est bien visible avant de le masquer
+  if (loadingOverlay) {
+    // Forçer un reflow pour s'assurer que l'overlay est bien rendu
+    void loadingOverlay.offsetWidth;
+    
+    // Masquer l'overlay après 1 seconde
+    setTimeout(() => {
+      // Ajouter la propriété opacity directement pour éviter les conflits avec le style inline
+      loadingOverlay.style.opacity = '0';
+      loadingOverlay.style.pointerEvents = 'none';
+      
+      // Supprimer complètement l'overlay après la fin de l'animation
+      setTimeout(() => {
+        loadingOverlay.remove();
+      }, 500); // Correspond à la durée de la transition CSS
+    }, 1000);
+  }
+
   // Appliquer les URLs des swatches via l'attribut data-swatch-url
   function applySwatchUrls() {
     const swatches = document.querySelectorAll(".swatch[data-swatch-url]");

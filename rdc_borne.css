@@ -3,6 +3,16 @@
  * Styles pour l'interface de la borne tactile
  */
 
+/* Overlay de chargement */
+.rdc-loading-overlay {
+  transition: opacity 0.5s ease-out;
+}
+
+.rdc-loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Masquer les éléments de la boutique non nécessaires pour la borne */
 header, footer, .announcement-bar, .forest, .section-text-with-icons {
   display: none;
@@ -110,7 +120,7 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 
 .rdc-borne__category {
   width: 300px;
-  height: 500px;
+  max-height: 500px;
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
@@ -198,7 +208,7 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   flex-direction: column;
   justify-content: space-between;
   width: 300px;
-  height: 500px;
+  max-height: 500px;
   flex-shrink: 0;
 }
 
