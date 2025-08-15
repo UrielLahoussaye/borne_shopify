@@ -250,15 +250,30 @@ document.addEventListener("DOMContentLoaded", function () {
           availableSize.classList.remove("disabled");
         });
 
-        // Sélection automatique de la taille M si disponible, sinon première taille disponible
-        const mSize = availableSizes.find(
-          (size) => size.textContent.trim().toUpperCase() === "M"
-        );
-        const sizeToSelect = mSize || availableSizes[0];
+        // Vérifier si une taille était déjà sélectionnée
+        const currentlySelectedSize = Array.from(sizeSwatches).find(size => size.classList.contains('active'));
+        let sizeToSelect;
+        
+        if (currentlySelectedSize && !currentlySelectedSize.disabled) {
+          // Si la taille précédemment sélectionnée est toujours disponible, la conserver
+          sizeToSelect = currentlySelectedSize;
+        } else {
+          // Sinon, sélectionner la taille M si disponible, ou la première taille disponible
+          const mSize = availableSizes.find(
+            (size) => size.textContent.trim().toUpperCase() === "M"
+          );
+          sizeToSelect = mSize || availableSizes[0];
+        }
 
         if (sizeToSelect) {
-          sizeToSelect.click();
+          // Retirer la classe active de toutes les tailles
+          sizeSwatches.forEach(s => s.classList.remove("active"));
+          
+          // Ajouter la classe active à la taille sélectionnée
           sizeToSelect.classList.add("active");
+          
+          // Déclencher l'événement de clic pour mettre à jour les données de variante
+          sizeToSelect.click();
 
           // Mise à jour de l'affichage de la taille sélectionnée
           const sizeNameElement = productDetail.querySelector(

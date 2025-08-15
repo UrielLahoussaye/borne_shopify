@@ -216,15 +216,6 @@
                           {% assign variant_image = product.featured_image %}
                         {% endunless %}
                         
-                        {% assign seasonal_label = nil %}
-                        {% comment %}Déterminer si la couleur a un label saisonnier{% endcomment %}
-                        {% case value | downcase %}
-                          {% when 'prune' %}
-                            {% assign seasonal_label = '2025' %}
-                          {% when 'ocre' or 'blanc ancien' %}
-                            {% assign seasonal_label = 'ÉTÉ ☀️' %}
-                        {% endcase %}
-                        
                         <button 
                           class="rdc-borne__swatch{% unless matching_variant.available %} sold-out{% endunless %}" 
                           {% unless matching_variant.available %}disabled{% endunless %}
@@ -234,9 +225,6 @@
                           <span class="rdc-borne__swatch-image-wrapper">
                             <span class="swatch" style="background-image: url({{ swatch_url }}); --swatch-focal-point: 50.0% 50.0%;"></span>
                           </span>
-                          {% if seasonal_label %}
-                            <div class="rdc-borne__seasonal-label">{{ seasonal_label }}</div>
-                          {% endif %}
                         </button>
                       {% endfor %}
                     </div>
