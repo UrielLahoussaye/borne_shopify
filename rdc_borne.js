@@ -75,6 +75,22 @@ document.addEventListener('DOMContentLoaded', function() {
           // Sélectionner la première swatch disponible
           const firstSwatch = detail.querySelector('.rdc-borne__swatch');
           if (firstSwatch) {
+            // Initialiser le nom de la couleur avant de cliquer sur le swatch
+            const colorNameElement = detail.querySelector('.rdc-borne__color-name');
+            if (colorNameElement) {
+              const colorName = firstSwatch.getAttribute('data-color');
+              if (colorName) {
+                const readableColorName = colorName
+                  .split('-')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ');
+                colorNameElement.textContent = readableColorName;
+              } else if (firstSwatch.querySelector('img')) {
+                colorNameElement.textContent = firstSwatch.querySelector('img').alt;
+              }
+            }
+            
+            // Simuler le clic sur le premier swatch
             firstSwatch.click();
             firstSwatch.classList.add('active');
           }
@@ -94,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const mainImage = productDetail.querySelector('.rdc-borne__product-main-image');
       const addToCartButton = productDetail.querySelector('.rdc-borne__add-to-cart');
       const swatches = productDetail.querySelectorAll('.rdc-borne__swatch');
+      const colorNameElement = productDetail.querySelector('.rdc-borne__color-name');
       
       // Mettre à jour l'image si disponible
       if (swatch.dataset.imageUrl) {
@@ -103,6 +120,23 @@ document.addEventListener('DOMContentLoaded', function() {
       // Mettre à jour le variant ID pour le panier
       if (swatch.dataset.variantId) {
         addToCartButton.dataset.variantId = swatch.dataset.variantId;
+      }
+      
+      // Mettre à jour le nom de la couleur
+      if (colorNameElement) {
+        // Utiliser l'attribut data-color qui contient le nom de la couleur
+        const colorName = swatch.getAttribute('data-color');
+        if (colorName) {
+          // Convertir le format handleize en format lisible (ex: "bleu-clair" -> "Bleu Clair")
+          const readableColorName = colorName
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+          colorNameElement.textContent = readableColorName;
+        } else if (swatch.querySelector('img')) {
+          // Fallback sur l'alt de l'image si data-color n'est pas disponible
+          colorNameElement.textContent = swatch.querySelector('img').alt;
+        }
       }
       
       // Mettre à jour l'état actif des swatches
