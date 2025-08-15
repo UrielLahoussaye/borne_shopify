@@ -140,36 +140,83 @@
                         {% assign variant_image = nil %}
                         {% assign swatch_image = nil %}
                         
-                        {% comment %}Chercher dans le metafield Couleur{% endcomment %}
-                        {% assign color_data = product.metafields.custom.couleur.value %}
-                        {% if color_data != blank %}
-                          {% for color in color_data %}
-                            {% if color.label == value %}
-                              {% assign variant_image = color.image %}
-                              {% assign swatch_image = color.image %}
+                        {% comment %}Récupérer l'image du swatch depuis les métaobjets{% endcomment %}
+                        {% assign color_handle = value | handleize %}
+                        {% assign swatch_url = nil %}
+                        
+                        {% comment %}Récupérer le métaobjet de couleur correspondant{% endcomment %}
+                        {% for color in shop.metaobjects.couleur.values %}
+                          {% assign color_name_handle = color.name.value | handleize %}
+                          {% if color_name_handle == color_handle %}
+                            {% if color.image != blank %}
+                              {% assign swatch_url = color.image %}
                               {% break %}
                             {% endif %}
-                          {% endfor %}
-                        {% endif %}
+                          {% endif %}
+                        {% endfor %}
                         
-                        {% comment %}Si pas d'image dans les metafields, utiliser l'image de la variante{% endcomment %}
-                        {% unless swatch_image %}
-                          {% for variant in product.variants %}
-                            {% if variant.options[option_index] == value %}
-                              {% if variant.image %}
-                                {% assign variant_image = variant.image %}
-                                {% assign swatch_image = variant.image %}
-                                {% break %}
-                              {% endif %}
-                            {% endif %}
-                          {% endfor %}
+                        {% comment %}Fallback si le métaobjet n'est pas trouvé{% endcomment %}
+                        {% unless swatch_url %}
+                          {% case color_handle %}
+                            {% when 'noir' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Black_465238b9-f944-4407-867a-62046490be11.png?v=1751386268" %}
+                            {% when 'prune' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Prune.png" %}
+                            {% when 'kaki' or 'khaki' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Kaki.png" %}
+                            {% when 'vert' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Vert_ancien.png" %}
+                            {% when 'vert-foret' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Vert_foret.png" %}
+                            {% when 'terra-cotta' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Terra-cotta.png" %}
+                            {% when 'latte' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Latte.png" %}
+                            {% when 'ocre' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Ocre.png" %}
+                            {% when 'desert' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Desert.png" %}
+                            {% when 'blanc' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/White.png" %}
+                            {% when 'blanc-ancien' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Blanc_ancien.png" %}
+                            {% when 'bleu-marine' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/French_navy.png" %}
+                            {% when 'bleu-rose' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Bleu_rose.png" %}
+                            {% when 'latte-antique' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Latte_antique.png" %}
+                            {% when 'noir-antique' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Noir_antique.png" %}
+                            {% when 'argile' %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Argile.png" %}
+                            {% else %}
+                              {% assign swatch_url = "//runesdechene.com/cdn/shop/files/" | append: value | append: ".png" %}
+                          {% endcase %}
                         {% endunless %}
                         
-                        {% comment %}Si toujours pas d'image, utiliser l'image principale{% endcomment %}
+                        {% comment %}Trouver l'image de la variante pour l'affichage du produit{% endcomment %}
+                        {% for variant in product.variants %}
+                          {% if variant.options[option_index] == value %}
+                            {% if variant.image %}
+                              {% assign variant_image = variant.image %}
+                              {% break %}
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                        
                         {% unless variant_image %}
                           {% assign variant_image = product.featured_image %}
-                          {% assign swatch_image = product.featured_image %}
                         {% endunless %}
+                        
+                        {% assign seasonal_label = nil %}
+                        {% comment %}Déterminer si la couleur a un label saisonnier{% endcomment %}
+                        {% case value | downcase %}
+                          {% when 'prune' %}
+                            {% assign seasonal_label = '2025' %}
+                          {% when 'ocre' or 'blanc ancien' %}
+                            {% assign seasonal_label = 'ÉTÉ ☀️' %}
+                        {% endcase %}
                         
                         <button 
                           class="rdc-borne__swatch{% unless matching_variant.available %} sold-out{% endunless %}" 
@@ -177,10 +224,12 @@
                           data-color="{{ value | handleize }}"
                           data-variant-id="{{ matching_variant.id }}"
                           data-image-url="{{ variant_image | image_url: width: 600 }}">
-                          <img 
-                            src="{{ swatch_image | image_url: width: 50 }}"
-                            alt="{{ value }}" 
-                            class="rdc-borne__swatch-image">
+                          <span class="rdc-borne__swatch-image-wrapper">
+                            <span class="swatch" style="background-image: url({{ swatch_url }}); --swatch-focal-point: 50.0% 50.0%;"></span>
+                          </span>
+                          {% if seasonal_label %}
+                            <div class="rdc-borne__seasonal-label">{{ seasonal_label }}</div>
+                          {% endif %}
                         </button>
                       {% endfor %}
                     </div>
