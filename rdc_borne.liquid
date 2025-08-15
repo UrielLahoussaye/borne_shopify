@@ -44,6 +44,30 @@
   <button class="rdc-borne__back-button" data-action="back">
     <span class="rdc-borne__back-icon">&larr;</span> Retour
   </button>
+  
+  <!-- Bouton du panier flottant -->
+  <button class="rdc-borne__cart-button" data-action="toggle-cart">
+    <span class="rdc-borne__cart-icon">🛒</span>
+    <span class="rdc-borne__cart-count">0</span>
+  </button>
+  
+  <!-- Drawer du panier -->
+  <div class="rdc-borne__cart-drawer" data-open="false">
+    <div class="rdc-borne__cart-header">
+      <h2>Votre panier</h2>
+      <button class="rdc-borne__cart-close" data-action="toggle-cart">&times;</button>
+    </div>
+    <div class="rdc-borne__cart-items">
+      <!-- Les produits du panier seront ajoutés ici dynamiquement -->
+    </div>
+    <div class="rdc-borne__cart-footer">
+      <div class="rdc-borne__cart-total">
+        <span>Total:</span>
+        <span class="rdc-borne__cart-total-price">0,00 €</span>
+      </div>
+      <button class="rdc-borne__cart-checkout" data-action="checkout">Passer la commande</button>
+    </div>
+  </div>
 
   <!-- Écran 1: Sélection de catégorie -->
   <div class="rdc-borne__screen" data-screen="1" data-active="true">

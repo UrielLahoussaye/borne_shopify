@@ -7,11 +7,18 @@ document.addEventListener("DOMContentLoaded", function () {
   // Éléments principaux
   const borne = document.querySelector(".rdc-borne");
   const backButton = borne.querySelector(".rdc-borne__back-button");
+  const cartButton = borne.querySelector(".rdc-borne__cart-button");
+  const cartDrawer = borne.querySelector(".rdc-borne__cart-drawer");
+  const cartItemsContainer = borne.querySelector(".rdc-borne__cart-items");
+  const cartCountBadge = borne.querySelector(".rdc-borne__cart-count");
+  const cartTotalPrice = borne.querySelector(".rdc-borne__cart-total-price");
+  const checkoutButton = borne.querySelector(".rdc-borne__cart-checkout");
 
   // Variables de gestion de la navigation et du panier
   const history = [];
   let isAddingToCart = false;
   let addToCartTimeout;
+  let cart = { items: [], total: 0 };
 
   /**
    * Récupération et parsing des données de configuration
@@ -328,6 +335,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (addToCartButton && !isAddingToCart) {
       const variantId = addToCartButton.dataset.variantId;
       const quantity = 1;
+      
+      // Récupérer les informations du produit
+      const productDetail = addToCartButton.closest(".rdc-borne__product-detail");
+      const productTitle = productDetail.querySelector(".rdc-borne__product-title").textContent;
+      const productPrice = productDetail.querySelector(".rdc-borne__product-price").textContent;
+      const productImage = productDetail.querySelector(".rdc-borne__product-main-image").src;
+      const colorName = productDetail.querySelector(".rdc-borne__color-name").textContent;
+      const sizeName = productDetail.querySelector(".rdc-borne__size-name").textContent;
 
       if (variantId) {
         // Prévention des clics multiples pendant le processus d'ajout
@@ -361,6 +376,31 @@ document.addEventListener("DOMContentLoaded", function () {
             addToCartButton.textContent = "Ajouté !";
             addToCartButton.classList.remove("adding");
             addToCartButton.classList.add("added");
+            
+            // Ajouter le produit à notre état local du panier
+            const item = {
+              id: variantId,
+              title: productTitle,
+              price: parseFloat(productPrice.replace(/[^0-9.,]/g, '').replace(',', '.')),
+              image: productImage,
+              color: colorName,
+              size: sizeName,
+              quantity: quantity
+            };
+            
+            // Vérifier si le produit existe déjà dans le panier
+            const existingItemIndex = cart.items.findIndex(i => i.id === variantId);
+            
+            if (existingItemIndex !== -1) {
+              // Incrémenter la quantité si le produit existe déjà
+              cart.items[existingItemIndex].quantity += quantity;
+            } else {
+              // Ajouter le nouveau produit au panier
+              cart.items.push(item);
+            }
+            
+            // Mettre à jour le total et l'affichage du panier
+            updateCart();
 
             // Réinitialisation de l'état du bouton après 2 secondes
             clearTimeout(addToCartTimeout);
@@ -386,12 +426,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       return;
     }
+    
+    // Gestion du clic sur le bouton de toggle du panier
+    if (event.target.closest('[data-action="toggle-cart"]')) {
+      toggleCartDrawer();
+      return;
+    }  
 
     // Navigation vers l'écran suivant avec les boutons data-action="next"
     if (nextButton) {
       const nextScreenNumber = nextButton.dataset.target;
       navigateToScreen(nextScreenNumber);
-    }
+    }  
   });
 
   /**
@@ -423,5 +469,229 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     }
+  });
+  
+  /**
+   * Initialisation du panier
+   * Récupère l'état actuel du panier Shopify et met à jour l'interface
+   */
+  function initCart() {
+    // Récupérer l'état du panier depuis Shopify
+    fetch("/cart.js", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    })
+      .then((response) => response.json())
+      .then((shopifyCart) => {
+        // Convertir les données du panier Shopify en notre format interne
+        cart.items = shopifyCart.items.map((item) => {
+          // Extraire les informations de variante (couleur, taille)
+          const variantTitle = item.variant_title ? item.variant_title.split(' / ') : [];
+          const color = variantTitle[0] || '';
+          const size = variantTitle[1] || '';
+          
+          return {
+            id: item.variant_id,
+            title: item.product_title,
+            price: item.price / 100, // Shopify stocke les prix en centimes
+            image: item.image,
+            color: color,
+            size: size,
+            quantity: item.quantity
+          };
+        });
+        
+        // Mettre à jour l'affichage du panier
+        updateCart();
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération du panier:", error);
+      });
+  }
+  
+  /**
+   * Met à jour l'affichage du panier
+   * Calcule le total, met à jour le compteur et le contenu du drawer
+   */
+  function updateCart() {
+    // Calculer le total du panier
+    cart.total = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    // Mettre à jour le compteur d'articles
+    const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    cartCountBadge.textContent = totalItems;
+    
+    // Mettre à jour le prix total
+    cartTotalPrice.textContent = formatPrice(cart.total);
+    
+    // Mettre à jour le contenu du panier
+    renderCartItems();
+  }
+  
+  /**
+   * Affiche les articles du panier dans le drawer
+   */
+  function renderCartItems() {
+    // Vider le conteneur
+    cartItemsContainer.innerHTML = "";
+    
+    if (cart.items.length === 0) {
+      // Afficher un message si le panier est vide
+      cartItemsContainer.innerHTML = `
+        <div class="rdc-borne__cart-empty">
+          <div class="rdc-borne__cart-empty-icon">🛒</div>
+          <p class="rdc-borne__cart-empty-message">Votre panier est vide</p>
+          <button class="rdc-borne__cart-continue-shopping" data-action="toggle-cart">Continuer vos achats</button>
+        </div>
+      `;
+      return;
+    }
+    
+    // Créer un élément pour chaque article du panier
+    cart.items.forEach((item) => {
+      const cartItemElement = document.createElement("div");
+      cartItemElement.className = "rdc-borne__cart-item";
+      cartItemElement.dataset.variantId = item.id;
+      
+      cartItemElement.innerHTML = `
+        <img src="${item.image}" alt="${item.title}" class="rdc-borne__cart-item-image">
+        <div class="rdc-borne__cart-item-details">
+          <h3 class="rdc-borne__cart-item-title">${item.title}</h3>
+          <p class="rdc-borne__cart-item-variant">${item.color} / ${item.size}</p>
+          <p class="rdc-borne__cart-item-price">${formatPrice(item.price)}</p>
+          <div class="rdc-borne__cart-item-quantity">
+            <button class="rdc-borne__cart-item-quantity-button" data-action="decrease-quantity" data-variant-id="${item.id}">-</button>
+            <span class="rdc-borne__cart-item-quantity-value">${item.quantity}</span>
+            <button class="rdc-borne__cart-item-quantity-button" data-action="increase-quantity" data-variant-id="${item.id}">+</button>
+          </div>
+          <button class="rdc-borne__cart-item-remove" data-action="remove-item" data-variant-id="${item.id}">Supprimer</button>
+        </div>
+      `;
+      
+      cartItemsContainer.appendChild(cartItemElement);
+    });
+    
+    // Ajouter des écouteurs d'événements pour les boutons de quantité et de suppression
+    cartItemsContainer.querySelectorAll('[data-action="decrease-quantity"]').forEach(button => {
+      button.addEventListener('click', function() {
+        const variantId = this.dataset.variantId;
+        updateItemQuantity(variantId, -1);
+      });
+    });
+    
+    cartItemsContainer.querySelectorAll('[data-action="increase-quantity"]').forEach(button => {
+      button.addEventListener('click', function() {
+        const variantId = this.dataset.variantId;
+        updateItemQuantity(variantId, 1);
+      });
+    });
+    
+    cartItemsContainer.querySelectorAll('[data-action="remove-item"]').forEach(button => {
+      button.addEventListener('click', function() {
+        const variantId = this.dataset.variantId;
+        removeItemFromCart(variantId);
+      });
+    });
+  }
+  
+  /**
+   * Met à jour la quantité d'un article dans le panier
+   * @param {string} variantId - ID de la variante à mettre à jour
+   * @param {number} change - Changement de quantité (+1 ou -1)
+   */
+  function updateItemQuantity(variantId, change) {
+    const itemIndex = cart.items.findIndex(item => item.id === variantId);
+    
+    if (itemIndex === -1) return;
+    
+    const newQuantity = cart.items[itemIndex].quantity + change;
+    
+    if (newQuantity <= 0) {
+      // Si la quantité devient 0 ou négative, supprimer l'article
+      removeItemFromCart(variantId);
+      return;
+    }
+    
+    // Mettre à jour la quantité dans notre état local
+    cart.items[itemIndex].quantity = newQuantity;
+    
+    // Mettre à jour la quantité dans le panier Shopify
+    fetch("/cart/change.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: newQuantity
+      }),
+    })
+      .then(response => response.json())
+      .then(() => {
+        // Mettre à jour l'affichage du panier
+        updateCart();
+      })
+      .catch(error => {
+        console.error("Erreur lors de la mise à jour de la quantité:", error);
+      });
+  }
+  
+  /**
+   * Supprime un article du panier
+   * @param {string} variantId - ID de la variante à supprimer
+   */
+  function removeItemFromCart(variantId) {
+    // Supprimer l'article de notre état local
+    cart.items = cart.items.filter(item => item.id !== variantId);
+    
+    // Supprimer l'article du panier Shopify
+    fetch("/cart/change.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: 0
+      }),
+    })
+      .then(response => response.json())
+      .then(() => {
+        // Mettre à jour l'affichage du panier
+        updateCart();
+      })
+      .catch(error => {
+        console.error("Erreur lors de la suppression de l'article:", error);
+      });
+  }
+  
+  /**
+   * Ouvre ou ferme le drawer du panier
+   */
+  function toggleCartDrawer() {
+    const isOpen = cartDrawer.dataset.open === "true";
+    cartDrawer.dataset.open = !isOpen;
+  }
+  
+  /**
+   * Formate un prix en euros
+   * @param {number} price - Prix à formater
+   * @returns {string} - Prix formaté (ex: "42,99 €")
+   */
+  function formatPrice(price) {
+    return price.toFixed(2).replace('.', ',') + ' €';
+  }
+  
+  // Initialiser le panier au chargement de la page
+  initCart();
+  
+  // Ajouter un écouteur d'événement pour le bouton de passage à la caisse
+  checkoutButton.addEventListener('click', function() {
+    window.location.href = '/checkout';
   });
 });
