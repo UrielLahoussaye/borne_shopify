@@ -89,8 +89,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (currentScreen && nextScreen) {
       history.push(currentScreen.dataset.screen);
+      
+      // Préparation de l'écran suivant avant la transition
+      nextScreen.style.display = 'flex';
+      
+      // Forcer un reflow pour s'assurer que les changements sont appliqués
+      void nextScreen.offsetWidth;
+      
+      // Désactiver l'écran actuel (déclenchera la transition d'opacité)
       currentScreen.dataset.active = "false";
-      nextScreen.dataset.active = "true";
+      
+      // Attendre la fin de la transition avant de masquer complètement l'ancien écran
+      setTimeout(() => {
+        // Activer le nouvel écran (déclenchera la transition d'opacité)
+        nextScreen.dataset.active = "true";
+      }, 50);
     }
   }
 
@@ -106,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const swatch = event.target.closest(".rdc-borne__swatch");
     const sizeSwatch = event.target.closest(".rdc-borne__swatch--size");
     const addToCartButton = event.target.closest(".rdc-borne__add-to-cart");
-    const nextButton = event.target.closest('[data-action="next"]');
 
     // Gestion des clics sur une catégorie (Écran 1 -> 2)
     if (category) {
@@ -492,11 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Navigation vers l'écran suivant avec les boutons data-action="next"
-    if (nextButton) {
-      const nextScreenNumber = nextButton.dataset.target;
-      navigateToScreen(nextScreenNumber);
-    }
+    // La navigation entre écrans se fait maintenant directement via les éléments cliquables
   });
 
   /**
@@ -514,18 +522,30 @@ document.addEventListener("DOMContentLoaded", function () {
       );
 
       if (currentScreen && previousScreen) {
+        // Préparation de l'écran précédent avant la transition
+        previousScreen.style.display = 'flex';
+        
+        // Forcer un reflow pour s'assurer que les changements sont appliqués
+        void previousScreen.offsetWidth;
+        
+        // Désactiver l'écran actuel (déclenchera la transition d'opacité)
         currentScreen.dataset.active = "false";
-        previousScreen.dataset.active = "true";
-
-        // Nettoyage spécifique lors du retour à l'écran des produits
-        if (previousScreenNumber === "3") {
-          const productDetails = document.querySelectorAll(
-            ".rdc-borne__product-detail"
-          );
-          productDetails.forEach((detail) => {
-            detail.style.display = "none";
-          });
-        }
+        
+        // Attendre la fin de la transition avant de masquer complètement l'ancien écran
+        setTimeout(() => {
+          // Activer le nouvel écran (déclenchera la transition d'opacité)
+          previousScreen.dataset.active = "true";
+          
+          // Nettoyage spécifique lors du retour à l'écran des produits
+          if (previousScreenNumber === "3") {
+            const productDetails = document.querySelectorAll(
+              ".rdc-borne__product-detail"
+            );
+            productDetails.forEach((detail) => {
+              detail.style.display = "none";
+            });
+          }
+        }, 50);
       }
     }
   });
