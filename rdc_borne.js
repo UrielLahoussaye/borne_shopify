@@ -70,23 +70,44 @@ document.addEventListener('DOMContentLoaded', function() {
       // Afficher les détails du produit
       const productDetails = document.querySelectorAll('.rdc-borne__product-detail');
       productDetails.forEach(detail => {
-        detail.style.display = detail.dataset.productHandle === handle ? 'grid' : 'none';
+        if (detail.dataset.productHandle === handle) {
+          detail.style.display = 'grid';
+          // Sélectionner la première swatch disponible
+          const firstSwatch = detail.querySelector('.rdc-borne__swatch');
+          if (firstSwatch) {
+            firstSwatch.click();
+            firstSwatch.classList.add('active');
+          }
+        } else {
+          detail.style.display = 'none';
+        }
       });
       
       navigateToScreen('4');
       return;
     }
 
-    // Gestion des clics sur les miniatures
-    const thumbnail = event.target.closest('.rdc-borne__product-thumbnail');
-    if (thumbnail) {
-      const mainImage = thumbnail.closest('.rdc-borne__product-images').querySelector('.rdc-borne__product-main-image');
-      mainImage.src = thumbnail.dataset.fullUrl;
+    // Gestion des clics sur les swatches
+    const swatch = event.target.closest('.rdc-borne__swatch');
+    if (swatch) {
+      const productDetail = swatch.closest('.rdc-borne__product-detail');
+      const mainImage = productDetail.querySelector('.rdc-borne__product-main-image');
+      const addToCartButton = productDetail.querySelector('.rdc-borne__add-to-cart');
+      const swatches = productDetail.querySelectorAll('.rdc-borne__swatch');
       
-      // Mettre à jour l'opacité des miniatures
-      const thumbnails = thumbnail.closest('.rdc-borne__product-thumbnails').querySelectorAll('.rdc-borne__product-thumbnail');
-      thumbnails.forEach(thumb => thumb.style.opacity = '0.7');
-      thumbnail.style.opacity = '1';
+      // Mettre à jour l'image si disponible
+      if (swatch.dataset.imageUrl) {
+        mainImage.src = swatch.dataset.imageUrl;
+      }
+      
+      // Mettre à jour le variant ID pour le panier
+      if (swatch.dataset.variantId) {
+        addToCartButton.dataset.variantId = swatch.dataset.variantId;
+      }
+      
+      // Mettre à jour l'état actif des swatches
+      swatches.forEach(s => s.classList.remove('active'));
+      swatch.classList.add('active');
       return;
     }
 

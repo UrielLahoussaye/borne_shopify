@@ -188,13 +188,15 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 
 /* Détail produit */
 .rdc-borne__product-detail {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-  padding: 2rem;
+  padding: 1rem;
   background: white;
   border-radius: 12px;
-  margin: 2rem;
+  margin: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .rdc-borne__product-images {
@@ -208,26 +210,77 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   border-radius: 8px;
 }
 
-.rdc-borne__product-thumbnails {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  overflow-x: auto;
-  padding: 0.5rem;
+.rdc-borne__color-swatches {
+  margin: 1.5rem 0;
 }
 
-.rdc-borne__product-thumbnail {
+.rdc-borne__option-name {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.rdc-borne__swatch-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rdc-borne__swatch {
   width: 80px;
   height: 80px;
-  object-fit: cover;
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
   cursor: pointer;
-  opacity: 0.7;
+  padding: 0;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  background: white;
+  margin-bottom: 25px;
+}
+
+.rdc-borne__swatch-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.rdc-borne__swatch:hover {
+  transform: scale(1.05);
+  border-color: #666;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.rdc-borne__swatch.active {
+  border-color: #000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.rdc-borne__swatch-label {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
   transition: opacity 0.2s;
 }
 
-.rdc-borne__product-thumbnail:hover {
+.rdc-borne__swatch:hover .rdc-borne__swatch-label {
   opacity: 1;
+}
+
+.rdc-borne__option-select {
+  margin: 1rem 0;
+}
+
+.rdc-borne__option-select label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 .rdc-borne__product-info {

@@ -113,26 +113,57 @@
           <div class="rdc-borne__product-detail" data-product-handle="{{ product.handle }}" style="display: none;">
             <div class="rdc-borne__product-images">
               <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x800', crop: 'center' }}" alt="{{ product.title }}">
-              <div class="rdc-borne__product-thumbnails">
-                {% for image in product.images %}
-                  <img src="{{ image | img_url: '150x150', crop: 'center' }}" 
-                       alt="{{ product.title }} - Image {{ forloop.index }}"
-                       class="rdc-borne__product-thumbnail"
-                       data-full-url="{{ image | img_url: '800x800', crop: 'center' }}">
-                {% endfor %}
-              </div>
             </div>
             <div class="rdc-borne__product-info">
               <h1 class="rdc-borne__product-title">{{ product.title }}</h1>
               <div class="rdc-borne__product-price">{{ product.price | money }}</div>
               <div class="rdc-borne__product-description">{{ product.description }}</div>
+              
               {% if product.variants.size > 1 %}
-                <select class="rdc-borne__variant-select" data-product-handle="{{ product.handle }}">
-                  {% for variant in product.variants %}
-                    <option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
-                  {% endfor %}
-                </select>
+                {% assign option_index = 0 %}
+                {% for option in product.options_with_values %}
+                  {% if option.name contains 'Couleur' or option.name contains 'Color' %}
+                    <div class="rdc-borne__color-swatches">
+                      <span class="rdc-borne__option-name">{{ option.name }}</span>
+                      <div class="rdc-borne__swatch-container">
+                        {% for value in option.values %}
+                          {% assign matching_variant = nil %}
+                          {% for variant in product.variants %}
+                            {% if variant.options[option_index] == value %}
+                              {% assign matching_variant = variant %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                          <button 
+                            class="rdc-borne__swatch" 
+                            data-color="{{ value | handleize }}"
+                            data-variant-id="{{ matching_variant.id }}"
+                            {% if matching_variant.image %}
+                              data-image-url="{{ matching_variant.image | img_url: '800x800', crop: 'center' }}"
+                            {% endif %}>
+                            <img 
+                              src="{{ matching_variant.image | img_url: '100x100', crop: 'center' }}" 
+                              alt="{{ value }}" 
+                              class="rdc-borne__swatch-image">
+                            <span class="rdc-borne__swatch-label">{{ value }}</span>
+                          </button>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="rdc-borne__option-select">
+                      <label for="option-{{ option.name | handleize }}">{{ option.name }}</label>
+                      <select id="option-{{ option.name | handleize }}" class="rdc-borne__variant-select" data-option-index="{{ option_index }}">
+                        {% for value in option.values %}
+                          <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endif %}
+                  {% assign option_index = option_index | plus: 1 %}
+                {% endfor %}
               {% endif %}
+              
               <button class="rdc-borne__add-to-cart" data-variant-id="{{ product.first_available_variant.id }}">Ajouter au panier</button>
             </div>
           </div>
