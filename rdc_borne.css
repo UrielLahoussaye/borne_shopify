@@ -43,6 +43,13 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   margin-bottom: 2rem;
 }
 
+.rdc-borne__selected-category {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
 .rdc-borne__categories {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

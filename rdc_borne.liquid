@@ -50,7 +50,7 @@
         {% assign categories = section.settings.categories | split: ',' %}
         {% for category in categories %}
           {% assign category_clean = category | strip %}
-          <div class="rdc-borne__category" data-category="{{ category_clean | handleize }}">
+          <div class="rdc-borne__category" data-category="{{ category_clean }}">
             <div class="rdc-borne__category-inner">
               <img src="{{ category_clean | handleize | append: '.webp' | file_url }}" alt="{{ category_clean }}" class="rdc-borne__category-image">
               <h2 class="rdc-borne__category-title">{{ category_clean }}</h2>
@@ -63,34 +63,21 @@
 
   <!-- Écran 2 -->
   <div class="rdc-borne__screen" data-screen="2" data-active="false">
+    <input type="hidden" id="selected-category" value="">
     <div class="rdc-borne__content">
-      <h1>Collections</h1>
-      <div class="rdc-borne__collections">
-        {% assign category = '' %}
-        {% if request.path contains '?' %}
-          {% assign params = request.path | split: '?' | last | split: '&' %}
-          {% for param in params %}
-            {% if param contains 'category=' %}
-              {% assign category = param | split: '=' | last %}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
+      {% assign category = '' %}
 
-        {% assign selected_collections = section.settings.collection_links | split: '|' %}
+      {% assign selected_collections = section.settings.collection_links | split: '|' %}
+
+      <h1>Collections</h1>
+      <p class="rdc-borne__selected-category">{{ category_clean }}</p>
+
+      <div class="rdc-borne__collections">
         {% for collection in section.settings.collections %}
-          {% assign show_collection = false %}
-          {% for mapping in selected_collections %}
-            {% if mapping contains category and mapping contains collection.title %}
-              {% assign show_collection = true %}
-              {% break %}
-            {% endif %}
-          {% endfor %}
-          {% if show_collection %}
-            <div class="rdc-borne__collection">
-              <img src="{{ collection.image | img_url: '600x600', crop: 'center' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
-              <h3>{{ collection.title }}</h3>
-            </div>
-          {% endif %}
+          <div class="rdc-borne__collection" data-handle="{{ collection.handle }}">
+            <img src="{{ collection.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
+            <h3>{{ collection.title }}</h3>
+          </div>
         {% endfor %}
       </div>
     </div>
@@ -100,13 +87,13 @@
   <!-- Écran 3: Produits de la collection -->
   <div class="rdc-borne__screen" data-screen="3" data-active="false">
     <div class="rdc-borne__content">
-      {% if request.path contains 'collection=' %}
-        {% assign collection_handle = request.path | split: 'collection=' | last | split: '&' | first %}
+      {% if request.url contains 'collection=' %}
+        {% assign collection_handle = request.url | split: 'collection=' | last | split: '&' | first %}
         {% assign collection = collections[collection_handle] %}
         <h1>{{ collection.title }}</h1>
         <div class="rdc-borne__products">
           {% for product in collection.products %}
-            <div class="rdc-borne__product">
+            <div class="rdc-borne__product" data-handle="{{ product.handle }}">
               <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
               <h3>{{ product.title }}</h3>
               <p class="rdc-borne__product-price">{{ product.price | money }}</p>
@@ -146,7 +133,7 @@
 <script type="application/json" id="rdc-borne-collection-images">
   {% assign collection_images = '' %}
   {% for collection in section.settings.collections %}
-    {% assign collection_images = collection_images | append: collection.title | append: ':' | append: collection.image | img_url: '600x600', crop: 'center' %}
+    {% assign collection_images = collection_images | append: collection.title | append: ':' | append: collection.featured_image | img_url: '600x600', crop: 'center' %}
     {% unless forloop.last %}
       {% assign collection_images = collection_images | append: '|' %}
     {% endunless %}
