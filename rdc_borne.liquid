@@ -88,7 +88,19 @@
   <div class="rdc-borne__screen" data-screen="3" data-active="false">
     <div class="rdc-borne__content">
       <h1 class="rdc-borne__collection-title"></h1>
-      <div class="rdc-borne__products"></div>
+      {% for collection in section.settings.collections %}
+        <div class="rdc-borne__products" data-collection="{{ collection.handle }}" style="display: none;">
+          {% paginate collection.products by 24 %}
+            {% for product in collection.products %}
+              <div class="rdc-borne__product" data-handle="{{ product.handle }}" data-product-json="{{ product | json | escape }}">
+                <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
+                <h3>{{ product.title }}</h3>
+                <p class="rdc-borne__product-price">{{ product.price | money }}</p>
+              </div>
+            {% endfor %}
+          {% endpaginate %}
+        </div>
+      {% endfor %}
     </div>
     <button class="rdc-borne__next-button" data-action="next" data-target="4">Suivant</button>
   </div>
@@ -96,18 +108,36 @@
   <!-- Écran 4: Détail produit -->
   <div class="rdc-borne__screen" data-screen="4" data-active="false">
     <div class="rdc-borne__content">
-      <div class="rdc-borne__product-detail">
-        <div class="rdc-borne__product-images">
-          <img class="rdc-borne__product-main-image" src="" alt="">
-          <div class="rdc-borne__product-thumbnails"></div>
-        </div>
-        <div class="rdc-borne__product-info">
-          <h1 class="rdc-borne__product-title"></h1>
-          <div class="rdc-borne__product-price"></div>
-          <div class="rdc-borne__product-description"></div>
-          <div class="rdc-borne__product-variants"></div>
-        </div>
-      </div>
+      {% for collection in section.settings.collections %}
+        {% for product in collection.products %}
+          <div class="rdc-borne__product-detail" data-product-handle="{{ product.handle }}" style="display: none;">
+            <div class="rdc-borne__product-images">
+              <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x800', crop: 'center' }}" alt="{{ product.title }}">
+              <div class="rdc-borne__product-thumbnails">
+                {% for image in product.images %}
+                  <img src="{{ image | img_url: '150x150', crop: 'center' }}" 
+                       alt="{{ product.title }} - Image {{ forloop.index }}"
+                       class="rdc-borne__product-thumbnail"
+                       data-full-url="{{ image | img_url: '800x800', crop: 'center' }}">
+                {% endfor %}
+              </div>
+            </div>
+            <div class="rdc-borne__product-info">
+              <h1 class="rdc-borne__product-title">{{ product.title }}</h1>
+              <div class="rdc-borne__product-price">{{ product.price | money }}</div>
+              <div class="rdc-borne__product-description">{{ product.description }}</div>
+              {% if product.variants.size > 1 %}
+                <select class="rdc-borne__variant-select" data-product-handle="{{ product.handle }}">
+                  {% for variant in product.variants %}
+                    <option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+              <button class="rdc-borne__add-to-cart" data-variant-id="{{ product.first_available_variant.id }}">Ajouter au panier</button>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </div>

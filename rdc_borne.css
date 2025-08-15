@@ -139,9 +139,21 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 /* Produits */
 .rdc-borne__products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   padding: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .rdc-borne__products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .rdc-borne__products {
+    grid-template-columns: 1fr;
+  }
 }
 
 .rdc-borne__product {
@@ -244,5 +256,37 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-top: 1rem;
+  margin-bottom: 1rem;
   font-size: 1rem;
+}
+
+.rdc-borne__add-to-cart {
+  width: 100%;
+  padding: 1rem;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rdc-borne__add-to-cart:hover {
+  background: #45a049;
+}
+
+.rdc-borne__add-to-cart:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.rdc-borne__add-to-cart.success {
+  background: #45a049;
+  pointer-events: none;
+}
+
+.rdc-borne__add-to-cart.error {
+  background: #f44336;
+  pointer-events: none;
 }
