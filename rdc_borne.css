@@ -18,12 +18,37 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   display: none;
 }
 
+/* Styles pour masquer la scrollbar tout en permettant le défilement */
+html, body, div, main, section, article, aside, nav, header, footer, .rdc-borne, .rdc-borne__screen, .rdc-borne__products, .main-content {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar, 
+div::-webkit-scrollbar, 
+main::-webkit-scrollbar, 
+section::-webkit-scrollbar, 
+article::-webkit-scrollbar, 
+aside::-webkit-scrollbar, 
+nav::-webkit-scrollbar, 
+header::-webkit-scrollbar, 
+footer::-webkit-scrollbar, 
+.rdc-borne::-webkit-scrollbar, 
+.rdc-borne__screen::-webkit-scrollbar, 
+.rdc-borne__products::-webkit-scrollbar, 
+.main-content::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* Conteneur principal */
 .rdc-borne {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden; /* Empêcher le débordement horizontal */
-  overflow-y: hidden; /* Empêcher le débordement vertical */
+  /* Permettre le défilement vertical */
 }
 
 /* Navigation et contrôles */
@@ -104,29 +129,15 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   padding: 2rem;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
   margin-bottom: 2rem;
   justify-content: center;
 }
 
-/* Styles pour la scrollbar sur WebKit pour la slide 1 */
+/* Masquer la scrollbar sur WebKit pour la slide 1 */
 .rdc-borne__categories::-webkit-scrollbar {
-  height: 8px;
-}
-
-.rdc-borne__categories::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.rdc-borne__categories::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-}
-
-.rdc-borne__categories::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  display: none;
 }
 
 .rdc-borne__category {
@@ -182,32 +193,17 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   margin-top: 2rem;
   padding-bottom: 1rem;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
   scroll-behavior: smooth;
-  /* Styles pour la scrollbar */
-  scrollbar-color: #888 #f1f1f1;
   justify-content: center;
   padding-left: 2rem;
   padding-right: 2rem;
 }
 
-/* Styles pour la scrollbar sur WebKit */
+/* Masquer la scrollbar sur WebKit */
 .rdc-borne__collections::-webkit-scrollbar {
-  height: 8px;
-}
-
-.rdc-borne__collections::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.rdc-borne__collections::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-}
-
-.rdc-borne__collections::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  display: none;
 }
 
 .rdc-borne__collection {
@@ -261,6 +257,12 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   justify-content: center;
   margin: 0 auto;
   max-width: 1200px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.rdc-borne__products::-webkit-scrollbar {
+  display: none;
 }
 
 @media (max-width: 1024px) {
@@ -533,6 +535,12 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 .rdc-borne__option-wrapper {
   margin: 1rem 0;
   overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.rdc-borne__option-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .rdc-borne__option-values--size {
@@ -753,6 +761,12 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.rdc-borne__cart-items::-webkit-scrollbar {
+  display: none;
 }
 
 .rdc-borne__cart-item {
@@ -978,12 +992,12 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 .rdc-borne__option-wrapper {
   margin: 1rem 0;
   overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-.rdc-borne__option-values--size {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.rdc-borne__option-wrapper::-webkit-scrollbar {
+  display: none;
   margin-top: 0.5rem;
   justify-content: center;
 }

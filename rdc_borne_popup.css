@@ -1,3 +1,15 @@
+/* Styles pour masquer les scrollbars */
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* Styles pour le popup de confirmation */
 .rdc-borne__popup {
   position: fixed;
