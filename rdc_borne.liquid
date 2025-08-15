@@ -138,6 +138,89 @@
               <div class="rdc-borne__product" data-handle="{{ product.handle }}" data-product-json="{{ product | json | escape }}">
                 <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
                 <h3>{{ product.title }}</h3>
+                
+                {% comment %}Affichage des swatches de couleurs{% endcomment %}
+                {% if product.options_with_values.size > 0 %}
+                  {% for option in product.options_with_values %}
+                    {% if option.name == 'Couleur' %}
+                      <div class="rdc-borne__product-swatches">
+                        {% assign option_index = forloop.index0 %}
+                        {% for value in option.values limit: 4 %}
+                          {% for variant in product.variants %}
+                            {% if variant.options[option_index] == value %}
+                              {% assign matching_variant = variant %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                          
+                          {% assign color_handle = value | handleize %}
+                          {% assign swatch_url = nil %}
+                          
+                          {% comment %}Récupération du métaobjet de couleur correspondant{% endcomment %}
+                          {% for color in shop.metaobjects.couleur.values %}
+                            {% assign color_name_handle = color.name.value | handleize %}
+                            {% if color_name_handle == color_handle %}
+                              {% if color.image != blank %}
+                                {% assign swatch_url = color.image %}
+                                {% break %}
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                          
+                          {% comment %}Fallback si le métaobjet n'est pas trouvé{% endcomment %}
+                          {% unless swatch_url %}
+                            {% case color_handle %}
+                              {% when 'noir' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Black_465238b9-f944-4407-867a-62046490be11.png?v=1751386268" %}
+                              {% when 'prune' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Prune.png" %}
+                              {% when 'kaki' or 'khaki' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Kaki.png" %}
+                              {% when 'vert' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Vert_ancien.png" %}
+                              {% when 'vert-foret' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Vert_foret.png" %}
+                              {% when 'terra-cotta' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Terra-cotta.png" %}
+                              {% when 'latte' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Latte.png" %}
+                              {% when 'ocre' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Ocre.png" %}
+                              {% when 'desert' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Desert.png" %}
+                              {% when 'blanc' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/White.png" %}
+                              {% when 'blanc-ancien' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Blanc_ancien.png" %}
+                              {% when 'bleu-marine' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/French_navy.png" %}
+                              {% when 'bleu-rose' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Bleu_rose.png" %}
+                              {% when 'latte-antique' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Latte_antique.png" %}
+                              {% when 'noir-antique' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Noir_antique.png" %}
+                              {% when 'argile' %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/Argile.png" %}
+                              {% else %}
+                                {% assign swatch_url = "//runesdechene.com/cdn/shop/files/" | append: value | append: ".png" %}
+                            {% endcase %}
+                          {% endunless %}
+                          
+                          <span class="rdc-borne__product-swatch{% unless matching_variant.available %} sold-out{% endunless %}">
+                            <span class="swatch" data-swatch-url="{{ swatch_url }}"></span>
+                          </span>
+                        {% endfor %}
+                        
+                        {% if option.values.size > 4 %}
+                          <span class="rdc-borne__product-swatch-more">+{{ option.values.size | minus: 4 }}</span>
+                        {% endif %}
+                      </div>
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                
                 <p class="rdc-borne__product-price">{{ product.price | money }}</p>
               </div>
             {% endfor %}
@@ -263,7 +346,7 @@
                           data-variant-id="{{ matching_variant.id }}"
                           data-image-url="{{ variant_image | image_url: width: 600 }}">
                           <span class="rdc-borne__swatch-image-wrapper">
-                            <span class="swatch" style="background-image: url({{ swatch_url }}); --swatch-focal-point: 50.0% 50.0%;"></span>
+                            <span class="swatch" data-swatch-url="{{ swatch_url }}"></span>
                           </span>
                         </button>
                       {% endfor %}

@@ -4,6 +4,18 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Appliquer les URLs des swatches via l'attribut data-swatch-url
+  function applySwatchUrls() {
+    const swatches = document.querySelectorAll(".swatch[data-swatch-url]");
+    swatches.forEach((swatch) => {
+      const url = swatch.getAttribute("data-swatch-url");
+      swatch.style.setProperty("--swatch-bg-image", `url(${url})`);
+    });
+  }
+
+  // Exécuter la fonction au chargement
+  applySwatchUrls();
+
   // Éléments principaux
   const borne = document.querySelector(".rdc-borne");
   const backButton = borne.querySelector(".rdc-borne__back-button");
