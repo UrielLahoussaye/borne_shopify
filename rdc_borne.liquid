@@ -19,28 +19,14 @@
       "type": "textarea",
       "id": "collection_descriptions",
       "label": "Descriptions personnalisées des collections",
+      "info": "Format : Collection:Description|etc... "
     },
     {
-      "type": "collection",
-      "id": "collection_1_2",
-      "label": "Collection 2 de catégorie 1"
+      "type": "textarea",
+      "id": "collection_links",
+      "label": "Mapping",
+      "info": "Liens des catégories avec les collections. Format : Catégorie:Collection,Collection|etc...",
     },
-    {
-      "type": "text",
-      "id": "category_2",
-      "label": "Catégorie 2",
-      "default": "Sweats"
-    },
-    {
-      "type": "collection",
-      "id": "collection_2_1",
-      "label": "Collection 1 de catégorie 2"
-    },
-    {
-      "type": "collection",
-      "id": "collection_2_2",
-      "label": "Collection 2 de catégorie 2"
-    }
   ],
   "presets": [
     {
@@ -66,7 +52,7 @@
           {% assign category_clean = category | strip %}
           <div class="rdc-borne__category" data-category="{{ category_clean | handleize }}">
             <div class="rdc-borne__category-inner">
-              <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/{{ category_clean | handleize }}.webp?v=1755198090" alt="{{ category_clean }}" class="rdc-borne__category-image">
+              <img src="{{ category_clean | handleize | append: '.webp' | file_url }}" alt="{{ category_clean }}" class="rdc-borne__category-image">
               <h2 class="rdc-borne__category-title">{{ category_clean }}</h2>
             </div>
           </div>
@@ -78,7 +64,8 @@
   <!-- Écran 2 -->
   <div class="rdc-borne__screen" data-screen="2" data-active="false">
     <div class="rdc-borne__content">
-      <h1>Deuxième écran</h1>
+      <h1>Produits</h1>
+      <div class="rdc-borne__collections"></div>
     </div>
     <button class="rdc-borne__next-button" data-action="next" data-target="3">Suivant</button>
   </div>
@@ -100,33 +87,7 @@
 </div>
 
 <script type="application/json" id="rdc-borne-data">
-  {
-    "categories": [
-      {% for i in (1..2) %}
-        {% assign category_key = 'category_' | append: i %}
-        {% assign category_name = section.settings[category_key] %}
-        {% if category_name != blank %}
-          {
-            "id": {{ i }},
-            "name": {{ category_name | json }},
-            "collections": [
-              {% for j in (1..2) %}
-                {% assign collection_key = 'collection_' | append: i | append: '_' | append: j %}
-                {% assign collection = section.settings[collection_key] %}
-                {% if collection != blank %}
-                  {
-                    "id": {{ collection.id | json }},
-                    "title": {{ collection.title | json }},
-                    "handle": {{ collection.handle | json }}
-                  }{% unless forloop.last %},{% endunless %}
-                {% endif %}
-              {% endfor %}
-            ]
-          }{% unless forloop.last %},{% endunless %}
-        {% endif %}
-      {% endfor %}
-    ]
-  }
+  {{ section.settings.collection_links }}
 </script>
 
 {{ 'rdc_borne.css' | asset_url | stylesheet_tag }}

@@ -75,6 +75,34 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
   object-fit: cover;
 }
 
+.rdc-borne__collections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.rdc-borne__collection {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rdc-borne__collection:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rdc-borne__collection h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+  text-align: center;
+}
+
 .rdc-borne__category-title {
   position: absolute;
   bottom: 0;
