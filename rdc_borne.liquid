@@ -17,16 +17,10 @@
     },
     {
       "type": "textarea",
-      "id": "collection_descriptions",
-      "label": "Descriptions personnalisées des collections",
-      "info": "Format : Collection:Description|etc... "
-    },
-    {
-      "type": "textarea",
       "id": "collection_links",
       "label": "Mapping",
-      "info": "Liens des catégories avec les collections. Format : Catégorie:Collection,Collection|etc...",
-    },
+      "info": "Liens des catégories avec les collections. Format : Catégorie:Collection,Collection|etc..."
+    }
   ],
   "presets": [
     {
@@ -37,12 +31,21 @@
 }
 {% endschema %}
 
+{% comment %}
+/**
+ * Borne interactive Runes de Chêne
+ * 
+ * Application permettant aux clients de naviguer dans les collections et produits
+ * via une interface tactile en magasin.
+ */
+{% endcomment %}
+
 <div class="rdc-borne">
   <button class="rdc-borne__back-button" data-action="back">
     <span class="rdc-borne__back-icon">&larr;</span> Retour
   </button>
 
-  <!-- Écran 1: Catégories -->
+  <!-- Écran 1: Sélection de catégorie -->
   <div class="rdc-borne__screen" data-screen="1" data-active="true">
     <div class="rdc-borne__content">
       <h1 class="rdc-borne__title">Choisissez votre catégorie</h1>
@@ -61,7 +64,7 @@
     </div>
   </div>
 
-  <!-- Écran 2 -->
+  <!-- Écran 2: Sélection de collection -->
   <div class="rdc-borne__screen" data-screen="2" data-active="false">
     <input type="hidden" id="selected-category" value="">
     <div class="rdc-borne__content">
@@ -84,7 +87,7 @@
     <button class="rdc-borne__next-button" data-action="next" data-target="3">Suivant</button>
   </div>
 
-  <!-- Écran 3: Produits de la collection -->
+  <!-- Écran 3: Liste des produits de la collection -->
   <div class="rdc-borne__screen" data-screen="3" data-active="false">
     <div class="rdc-borne__content">
       <h1 class="rdc-borne__collection-title"></h1>
@@ -105,7 +108,7 @@
     <button class="rdc-borne__next-button" data-action="next" data-target="4">Suivant</button>
   </div>
 
-  <!-- Écran 4: Détail produit -->
+  <!-- Écran 4: Détail du produit et sélection de variantes -->
   <div class="rdc-borne__screen" data-screen="4" data-active="false">
     <div class="rdc-borne__content">
       {% for collection in section.settings.collections %}
@@ -140,11 +143,15 @@
                         {% assign variant_image = nil %}
                         {% assign swatch_image = nil %}
                         
-                        {% comment %}Récupérer l'image du swatch depuis les métaobjets{% endcomment %}
+                        {% comment %}
+                        Système de gestion des couleurs:
+                        1. Récupération de l'image du swatch depuis les métaobjets Shopify
+                        2. Fallback sur les URLs hardcodées si le métaobjet n'existe pas
+                        {% endcomment %}
                         {% assign color_handle = value | handleize %}
                         {% assign swatch_url = nil %}
                         
-                        {% comment %}Récupérer le métaobjet de couleur correspondant{% endcomment %}
+                        {% comment %}Récupération du métaobjet de couleur correspondant{% endcomment %}
                         {% for color in shop.metaobjects.couleur.values %}
                           {% assign color_name_handle = color.name.value | handleize %}
                           {% if color_name_handle == color_handle %}
@@ -293,20 +300,17 @@
   </div>
 </div>
 
+{% comment %}
+Données JSON pour le JavaScript
+- collection_links: mapping entre catégories et collections
+{% endcomment %}
 <script type="application/json" id="rdc-borne-data">
   {{ section.settings.collection_links }}
 </script>
 
-<script type="application/json" id="rdc-borne-collection-images">
-  {% assign collection_images = '' %}
-  {% for collection in section.settings.collections %}
-    {% assign collection_images = collection_images | append: collection.title | append: ':' | append: collection.featured_image | img_url: '600x600', crop: 'center' %}
-    {% unless forloop.last %}
-      {% assign collection_images = collection_images | append: '|' %}
-    {% endunless %}
-  {% endfor %}
-  {{ collection_images }}
-</script>
+{% comment %}
+Chargement des ressources CSS et JS
+{% endcomment %}
 
 {{ 'rdc_borne.css' | asset_url | stylesheet_tag }}
 {{ 'rdc_borne.js' | asset_url | script_tag }}
