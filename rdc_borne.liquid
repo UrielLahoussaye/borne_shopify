@@ -54,7 +54,10 @@
   <!-- Drawer du panier -->
   <div class="rdc-borne__cart-drawer" data-open="false">
     <div class="rdc-borne__cart-header">
-      <h2>Votre panier</h2>
+      <div class="rdc-borne__cart-header-title">
+        <h2>Votre panier</h2>
+        <button class="rdc-borne__cart-clear" data-action="clear-cart">Vider le panier</button>
+      </div>
       <button class="rdc-borne__cart-close" data-action="toggle-cart">&times;</button>
     </div>
     <div class="rdc-borne__cart-items">
@@ -66,6 +69,19 @@
         <span class="rdc-borne__cart-total-price">0,00 €</span>
       </div>
       <button class="rdc-borne__cart-checkout" data-action="checkout">Passer la commande</button>
+    </div>
+  </div>
+  
+  <!-- Popup de confirmation d'ajout au panier -->
+  <div class="rdc-borne__popup" id="cart-confirmation-popup" data-visible="false">
+    <div class="rdc-borne__popup-content">
+      <div class="rdc-borne__popup-icon">✓</div>
+      <h3 class="rdc-borne__popup-title">Produit ajouté au panier</h3>
+      <p class="rdc-borne__popup-product-name"></p>
+      <div class="rdc-borne__popup-buttons">
+        <button class="rdc-borne__popup-button rdc-borne__popup-button--primary" data-action="continue-shopping">Continuer vos achats</button>
+        <button class="rdc-borne__popup-button" data-action="view-cart">Voir le panier</button>
+      </div>
     </div>
   </div>
 
@@ -325,4 +341,5 @@ Chargement des ressources CSS et JS
 {% endcomment %}
 
 {{ 'rdc_borne.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_borne_popup.css' | asset_url | stylesheet_tag }}
 {{ 'rdc_borne.js' | asset_url | script_tag }}
