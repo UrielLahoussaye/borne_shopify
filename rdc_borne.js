@@ -5,19 +5,19 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   // Gestion de l'overlay de chargement
-  const loadingOverlay = document.getElementById('rdc-loading-overlay');
-  
+  const loadingOverlay = document.getElementById("rdc-loading-overlay");
+
   // S'assurer que l'overlay est bien visible avant de le masquer
   if (loadingOverlay) {
     // Forçer un reflow pour s'assurer que l'overlay est bien rendu
     void loadingOverlay.offsetWidth;
-    
+
     // Masquer l'overlay après 1 seconde
     setTimeout(() => {
       // Ajouter la propriété opacity directement pour éviter les conflits avec le style inline
-      loadingOverlay.style.opacity = '0';
-      loadingOverlay.style.pointerEvents = 'none';
-      
+      loadingOverlay.style.opacity = "0";
+      loadingOverlay.style.pointerEvents = "none";
+
       // Supprimer complètement l'overlay après la fin de l'animation
       setTimeout(() => {
         loadingOverlay.remove();
@@ -89,16 +89,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (currentScreen && nextScreen) {
       history.push(currentScreen.dataset.screen);
-      
+
       // Préparation de l'écran suivant avant la transition
-      nextScreen.style.display = 'flex';
-      
+      nextScreen.style.display = "flex";
+
       // Forcer un reflow pour s'assurer que les changements sont appliqués
       void nextScreen.offsetWidth;
-      
+
       // Désactiver l'écran actuel (déclenchera la transition d'opacité)
       currentScreen.dataset.active = "false";
-      
+
       // Attendre la fin de la transition avant de masquer complètement l'ancien écran
       setTimeout(() => {
         // Activer le nouvel écran (déclenchera la transition d'opacité)
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const productGrids = document.querySelectorAll(".rdc-borne__products");
       productGrids.forEach((grid) => {
         grid.style.display =
-          grid.dataset.collection === collectionHandle ? "grid" : "none";
+          grid.dataset.collection === collectionHandle ? "flex" : "none";
       });
 
       navigateToScreen("3");
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       productDetails.forEach((detail) => {
         if (detail.dataset.productHandle === handle) {
-          detail.style.display = "grid";
+          detail.style.display = "flex";
 
           // Sélection automatique de la première couleur disponible
           const firstSwatch = detail.querySelector(".rdc-borne__swatch");
@@ -523,19 +523,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (currentScreen && previousScreen) {
         // Préparation de l'écran précédent avant la transition
-        previousScreen.style.display = 'flex';
-        
+        previousScreen.style.display = "flex";
+
         // Forcer un reflow pour s'assurer que les changements sont appliqués
         void previousScreen.offsetWidth;
-        
+
         // Désactiver l'écran actuel (déclenchera la transition d'opacité)
         currentScreen.dataset.active = "false";
-        
+
         // Attendre la fin de la transition avant de masquer complètement l'ancien écran
         setTimeout(() => {
           // Activer le nouvel écran (déclenchera la transition d'opacité)
           previousScreen.dataset.active = "true";
-          
+
           // Nettoyage spécifique lors du retour à l'écran des produits
           if (previousScreenNumber === "3") {
             const productDetails = document.querySelectorAll(
@@ -771,7 +771,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Erreur lors de la suppression de l'article:", error);
       });
   }
-  
+
   /**
    * Vide complètement le panier
    */
@@ -779,7 +779,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Vider notre état local du panier
     cart.items = [];
     cart.total = 0;
-    
+
     // Envoyer la requête à l'API Shopify pour vider le panier
     fetch("/cart/clear.js", {
       method: "POST",
@@ -792,15 +792,16 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(() => {
         // Mettre à jour l'affichage du panier
         updateCart();
-        
+
         // Afficher un message de confirmation temporaire
         const cartItems = cartItemsContainer;
-        cartItems.innerHTML = '<div class="rdc-borne__cart-empty">Votre panier a été vidé</div>';
-        
+        cartItems.innerHTML =
+          '<div class="rdc-borne__cart-empty">Votre panier a été vidé</div>';
+
         // Retourner à la slide 1 après un court délai
         setTimeout(() => {
           toggleCartDrawer(true); // Fermer le drawer
-          navigateToScreen(1);    // Retourner à l'écran des catégories
+          navigateToScreen(1); // Retourner à l'écran des catégories
         }, 1500);
       })
       .catch((error) => {
@@ -824,7 +825,7 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function toggleCartDrawer(forceClose) {
     const isOpen = cartDrawer.dataset.open === "true";
-    
+
     if (forceClose) {
       cartDrawer.dataset.open = false;
       return;
@@ -932,7 +933,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Ajouter un écouteur d'événement pour le bouton de vidage du panier
-  clearCartButton.addEventListener("click", function() {
+  clearCartButton.addEventListener("click", function () {
     clearCart();
   });
 });

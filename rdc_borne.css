@@ -102,9 +102,8 @@ footer::-webkit-scrollbar,
 /* Conteneur de contenu */
 .rdc-borne__content {
   text-align: center;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
+  margin: 0 auto;
 }
 
 /* Typographie */
@@ -250,31 +249,22 @@ footer::-webkit-scrollbar,
 
 /* Écran 3: Produits */
 .rdc-borne__products {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: 2rem;
   padding: 2rem;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 0 auto;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .rdc-borne__products::-webkit-scrollbar {
   display: none;
-}
-
-@media (max-width: 1024px) {
-  .rdc-borne__products {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .rdc-borne__products {
-    grid-template-columns: 1fr;
-  }
 }
 
 .rdc-borne__product {
@@ -284,6 +274,8 @@ footer::-webkit-scrollbar,
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   cursor: pointer;
   transition: transform 0.2s;
+  min-width: 300px;
+  flex-shrink: 0;
 }
 
 .rdc-borne__product:hover {
