@@ -64,30 +64,94 @@
   <!-- Écran 2 -->
   <div class="rdc-borne__screen" data-screen="2" data-active="false">
     <div class="rdc-borne__content">
-      <h1>Produits</h1>
-      <div class="rdc-borne__collections"></div>
+      <h1>Collections</h1>
+      <div class="rdc-borne__collections">
+        {% assign category = '' %}
+        {% if request.path contains '?' %}
+          {% assign params = request.path | split: '?' | last | split: '&' %}
+          {% for param in params %}
+            {% if param contains 'category=' %}
+              {% assign category = param | split: '=' | last %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        {% assign selected_collections = section.settings.collection_links | split: '|' %}
+        {% for collection in section.settings.collections %}
+          {% assign show_collection = false %}
+          {% for mapping in selected_collections %}
+            {% if mapping contains category and mapping contains collection.title %}
+              {% assign show_collection = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          {% if show_collection %}
+            <div class="rdc-borne__collection">
+              <img src="{{ collection.image | img_url: '600x600', crop: 'center' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
+              <h3>{{ collection.title }}</h3>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
     <button class="rdc-borne__next-button" data-action="next" data-target="3">Suivant</button>
   </div>
 
-  <!-- Écran 3 -->
+  <!-- Écran 3: Produits de la collection -->
   <div class="rdc-borne__screen" data-screen="3" data-active="false">
     <div class="rdc-borne__content">
-      <h1>Troisième écran</h1>
+      {% if request.path contains 'collection=' %}
+        {% assign collection_handle = request.path | split: 'collection=' | last | split: '&' | first %}
+        {% assign collection = collections[collection_handle] %}
+        <h1>{{ collection.title }}</h1>
+        <div class="rdc-borne__products">
+          {% for product in collection.products %}
+            <div class="rdc-borne__product">
+              <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" alt="{{ product.title }}" class="rdc-borne__product-image">
+              <h3>{{ product.title }}</h3>
+              <p class="rdc-borne__product-price">{{ product.price | money }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <h1>Aucune collection sélectionnée</h1>
+      {% endif %}
     </div>
     <button class="rdc-borne__next-button" data-action="next" data-target="4">Suivant</button>
   </div>
 
-  <!-- Écran 4 -->
+  <!-- Écran 4: Détail produit -->
   <div class="rdc-borne__screen" data-screen="4" data-active="false">
     <div class="rdc-borne__content">
-      <h1>Quatrième écran</h1>
+      <div class="rdc-borne__product-detail">
+        <div class="rdc-borne__product-images">
+          <img class="rdc-borne__product-main-image" src="" alt="">
+          <div class="rdc-borne__product-thumbnails"></div>
+        </div>
+        <div class="rdc-borne__product-info">
+          <h1 class="rdc-borne__product-title"></h1>
+          <div class="rdc-borne__product-price"></div>
+          <div class="rdc-borne__product-description"></div>
+          <div class="rdc-borne__product-variants"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script type="application/json" id="rdc-borne-data">
   {{ section.settings.collection_links }}
+</script>
+
+<script type="application/json" id="rdc-borne-collection-images">
+  {% assign collection_images = '' %}
+  {% for collection in section.settings.collections %}
+    {% assign collection_images = collection_images | append: collection.title | append: ':' | append: collection.image | img_url: '600x600', crop: 'center' %}
+    {% unless forloop.last %}
+      {% assign collection_images = collection_images | append: '|' %}
+    {% endunless %}
+  {% endfor %}
+  {{ collection_images }}
 </script>
 
 {{ 'rdc_borne.css' | asset_url | stylesheet_tag }}

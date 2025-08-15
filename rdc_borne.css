@@ -85,10 +85,19 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 .rdc-borne__collection {
   background: white;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+}
+
+.rdc-borne__collection-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1rem;
 }
 
 .rdc-borne__collection:hover {
@@ -118,4 +127,115 @@ header, footer, .announcement-bar, .forest, .section-text-with-icons {
 .rdc-borne__back-button:hover,
 .rdc-borne__next-button:hover {
   background: #e0e0e0;
+}
+
+/* Produits */
+.rdc-borne__products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.rdc-borne__product {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.rdc-borne__product:hover {
+  transform: translateY(-5px);
+}
+
+.rdc-borne__product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.rdc-borne__product h3 {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+}
+
+.rdc-borne__product-price {
+  font-weight: bold;
+  color: #2a2a2a;
+}
+
+/* Détail produit */
+.rdc-borne__product-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  margin: 2rem;
+}
+
+.rdc-borne__product-images {
+  position: relative;
+}
+
+.rdc-borne__product-main-image {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.rdc-borne__product-thumbnails {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
+.rdc-borne__product-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.rdc-borne__product-thumbnail:hover {
+  opacity: 1;
+}
+
+.rdc-borne__product-info {
+  padding: 1rem;
+}
+
+.rdc-borne__product-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.rdc-borne__product-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+.rdc-borne__product-description {
+  margin: 1.5rem 0;
+  line-height: 1.6;
+}
+
+.rdc-borne__variant-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 1rem;
+  font-size: 1rem;
 }
