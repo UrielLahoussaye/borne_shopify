@@ -265,7 +265,7 @@ footer::-webkit-scrollbar,
 
 /* Gestion de la visibilité des collections */
 .rdc-borne__products.active {
-  display: flex;
+  display: flex !important;
 }
 
 .rdc-borne__products.inactive {
