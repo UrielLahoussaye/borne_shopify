@@ -710,6 +710,26 @@ footer::-webkit-scrollbar,
   font-size: 24px;
 }
 
+.rdc-borne__back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 1.4rem;
+  background: white;
+  border: 1px solid grey;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Masquer le bouton RETOUR sur la slide 1 */
+.rdc-borne:has(.rdc-borne__screen[data-screen="1"][data-active="true"]) .rdc-borne__back-button {
+  display: none;
+}
+
 .rdc-borne__cart-count {
   position: absolute;
   top: -5px;
@@ -908,6 +928,27 @@ footer::-webkit-scrollbar,
 
 .rdc-borne__cart-checkout:hover {
   background-color: #45a049;
+}
+
+.rdc-borne__festival-promo {
+  margin: 15px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.rdc-borne__festival-promo h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.rdc-borne__festival-promo p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 .rdc-borne__cart-empty {
