@@ -129,17 +129,19 @@ document.addEventListener('DOMContentLoaded', function() {
       const addToCartButton = productDetail.querySelector('.rdc-borne__add-to-cart');
       const swatches = productDetail.querySelectorAll('.rdc-borne__swatch');
       const colorNameElement = productDetail.querySelector('.rdc-borne__color-name');
-      
+      const sizeSwatches = productDetail.querySelectorAll('.rdc-borne__swatch--size');
+      const selectedColor = swatch.dataset.color;
+
       // Mettre à jour l'image si disponible
       if (swatch.dataset.imageUrl) {
         mainImage.src = swatch.dataset.imageUrl;
       }
-      
+
       // Mettre à jour le variant ID pour le panier
       if (swatch.dataset.variantId) {
         addToCartButton.dataset.variantId = swatch.dataset.variantId;
       }
-      
+
       // Mettre à jour le nom de la couleur
       if (colorNameElement) {
         // Utiliser l'attribut data-color qui contient le nom de la couleur
@@ -156,10 +158,60 @@ document.addEventListener('DOMContentLoaded', function() {
           colorNameElement.textContent = swatch.querySelector('img').alt;
         }
       }
-      
+
       // Mettre à jour l'état actif des swatches
       swatches.forEach(s => s.classList.remove('active'));
       swatch.classList.add('active');
+
+      // Mettre à jour la disponibilité des tailles en fonction de la couleur sélectionnée
+      if (selectedColor) {
+        console.log('Selected color:', selectedColor);
+        console.log('All size swatches:', sizeSwatches.length);
+        
+        // Désactiver toutes les tailles d'abord
+        sizeSwatches.forEach(sizeSwatch => {
+          sizeSwatch.disabled = true;
+          sizeSwatch.classList.add('disabled');
+        });
+
+        // Activer uniquement les tailles disponibles pour cette couleur
+        const availableSizes = Array.from(sizeSwatches).filter(sizeSwatch => {
+          const size = sizeSwatch.dataset.size;
+          const availableColors = sizeSwatch.dataset.availableColors || '';
+          
+          // Vérifier si cette taille est disponible pour la couleur sélectionnée
+          const colorsList = availableColors.split(',');
+          const isAvailable = colorsList.some(color => 
+            color && color.toLowerCase() === selectedColor.toLowerCase()
+          );
+          
+          console.log(`Size ${size} is ${isAvailable ? 'available' : 'not available'} for color ${selectedColor}`);
+          console.log('Available colors for this size:', availableColors);
+          
+          return isAvailable;
+        });
+
+        // Activer les tailles disponibles
+        availableSizes.forEach(availableSize => {
+          availableSize.disabled = false;
+          availableSize.classList.remove('disabled');
+        });
+
+        // Sélectionner automatiquement la première taille disponible (ou M si disponible)
+        const mSize = availableSizes.find(size => size.textContent.trim().toUpperCase() === 'M');
+        const sizeToSelect = mSize || availableSizes[0];
+        
+        if (sizeToSelect) {
+          sizeToSelect.click();
+          sizeToSelect.classList.add('active');
+          
+          // Mettre à jour l'affichage de la taille sélectionnée
+          const sizeNameElement = productDetail.querySelector('.rdc-borne__size-name');
+          if (sizeNameElement) {
+            sizeNameElement.textContent = sizeToSelect.dataset.size;
+          }
+        }
+      }
       return;
     }
     
@@ -184,10 +236,18 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Si on a une couleur et une taille sélectionnées, on peut mettre à jour le bouton d'ajout au panier
       if (selectedColor && selectedSize) {
-        // Trouver la variante correspondante et mettre à jour le bouton d'ajout au panier
-        const activeColorSwatch = productDetail.querySelector('.rdc-borne__swatch.active');
-        if (activeColorSwatch && activeColorSwatch.dataset.variantId) {
-          addToCartButton.dataset.variantId = activeColorSwatch.dataset.variantId;
+        // Trouver la variante correspondante en utilisant les attributs data-variant-ids
+        const variantIdsStr = sizeSwatch.dataset.variantIds || '';
+        const variantPairs = variantIdsStr.split(',').filter(pair => pair);
+        
+        // Chercher la variante qui correspond à la couleur sélectionnée
+        for (const pair of variantPairs) {
+          const [variantId, color] = pair.split(':');
+          if (color && color.toLowerCase() === selectedColor.toLowerCase()) {
+            addToCartButton.dataset.variantId = variantId;
+            console.log(`Variant ID updated to ${variantId} for size ${selectedSize} and color ${selectedColor}`);
+            break;
+          }
         }
       }
       

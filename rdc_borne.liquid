@@ -174,7 +174,7 @@
                         <button 
                           class="rdc-borne__swatch{% unless matching_variant.available %} sold-out{% endunless %}" 
                           {% unless matching_variant.available %}disabled{% endunless %}
-                          data-color="{{ color_option }}"
+                          data-color="{{ value | handleize }}"
                           data-variant-id="{{ matching_variant.id }}"
                           data-image-url="{{ variant_image | image_url: width: 600 }}">
                           <img 
@@ -188,8 +188,34 @@
                 {% elsif option.name == 'Taille' %}
                   <div class="rdc-borne__option-wrapper">
                     <div class="rdc-borne__option-values rdc-borne__option-values--size">
+                      {% assign color_option_index = 0 %}
+                      {% assign size_option_index = 1 %}
+                      {% for product_option in product.options %}
+                        {% if product_option == 'Couleur' %}
+                          {% assign color_option_index = forloop.index0 %}
+                        {% endif %}
+                        {% if product_option == 'Taille' %}
+                          {% assign size_option_index = forloop.index0 %}
+                        {% endif %}
+                      {% endfor %}
+                      
                       {% for value in option.values %}
-                        <button class="rdc-borne__swatch--size" data-size="{{ value | escape }}">
+                        {% assign available_colors_for_size = '' %}
+                        {% assign variant_ids_for_size = '' %}
+                        
+                        {% comment %}Collecter toutes les couleurs disponibles pour cette taille{% endcomment %}
+                        {% for variant in product.variants %}
+                          {% if variant.options[size_option_index] == value and variant.available %}
+                            {% assign color_value = variant.options[color_option_index] | handleize %}
+                            {% assign available_colors_for_size = available_colors_for_size | append: ',' | append: color_value %}
+                            {% assign variant_ids_for_size = variant_ids_for_size | append: ',' | append: variant.id | append: ':' | append: color_value %}
+                          {% endif %}
+                        {% endfor %}
+                        
+                        <button class="rdc-borne__swatch--size" 
+                          data-size="{{ value | escape }}" 
+                          data-available-colors="{{ available_colors_for_size }}" 
+                          data-variant-ids="{{ variant_ids_for_size }}">
                           {{ value }}
                         </button>
                       {% endfor %}
