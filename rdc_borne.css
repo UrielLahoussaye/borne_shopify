@@ -79,6 +79,8 @@ footer::-webkit-scrollbar,
   right: 0;
   top: 0;
   min-height: 100vh;
+  height: 0;
+  overflow: hidden;
   pointer-events: none;
   padding: 20px;
 }
@@ -86,6 +88,8 @@ footer::-webkit-scrollbar,
 .rdc-borne__screen[data-active="true"] {
   opacity: 1;
   position: absolute;
+  height: auto;
+  overflow: visible;
   pointer-events: auto;
 }
 
