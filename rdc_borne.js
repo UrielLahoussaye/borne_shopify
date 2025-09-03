@@ -650,6 +650,9 @@ document.addEventListener("DOMContentLoaded", function () {
         item.title
       }" class="rdc-borne__cart-item-image">
         <div class="rdc-borne__cart-item-details">
+          <button class="rdc-borne__cart-item-remove" data-action="remove-item" data-variant-id="${
+            item.id
+          }"><img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/TRASH.webp?v=1756905699" /></button>
           <h3 class="rdc-borne__cart-item-title">${item.title}</h3>
           <p class="rdc-borne__cart-item-variant">${item.color} / ${
         item.size
@@ -666,9 +669,6 @@ document.addEventListener("DOMContentLoaded", function () {
               item.id
             }">+</button>
           </div>
-          <button class="rdc-borne__cart-item-remove" data-action="remove-item" data-variant-id="${
-            item.id
-          }">Supprimer</button>
         </div>
       `;
 

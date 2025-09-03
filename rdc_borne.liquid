@@ -97,7 +97,6 @@
       <div class="rdc-borne__festival-promo">
         <h3>Vous êtes sur un stand nomade ?</h3>
         <p>Vous bénéficiez des réductions de festival, à demander auprès d'un vendeur !</p>
-        <p>15% de remise sur le second article, 20% de remise sur le troisième article.</p>
       </div>
       
       <button class="rdc-borne__cart-checkout" data-action="checkout">Passer la commande</button>
@@ -334,15 +333,15 @@
         {% for product in collection.products %}
           <div class="rdc-borne__product-detail" data-product-handle="{{ product.handle }}" style="display: none;">
             <div class="rdc-borne__product-images">
-              <div class="rdc-borne__selected-options">
-                <div class="rdc-borne__selected-color">Couleur: <span class="rdc-borne__color-name">{{ product.variants.first.options[0] }}</span></div>
-                <div class="rdc-borne__selected-size">Taille: <span class="rdc-borne__size-name"></span></div>
-              </div>
               <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title }}">
             </div>
             <div class="rdc-borne__product-info">
               <h1 class="rdc-borne__product-title">{{ product.title }}</h1>
               <div class="rdc-borne__product-price">{{ product.price | money }}</div>
+              <div class="rdc-borne__selected-options">
+                <div class="rdc-borne__selected-color"><span class="rdc-borne__color-name">{{ product.variants.first.options[0] }}</span></div>
+                <div class="rdc-borne__selected-size"><span class="rdc-borne__size-name"></span></div>
+              </div>
               <div class="rdc-borne__product-description">{{ product.description }}</div>
               
               {% if product.variants.size > 1 %}
@@ -497,7 +496,6 @@
                 {% assign option_index = option_index | plus: 1 %}
               {% endfor %}
             {% endif %}
-              
               <button class="rdc-borne__add-to-cart" data-variant-id="{{ product.first_available_variant.id }}">Ajouter au panier</button>
             </div>
           </div>
