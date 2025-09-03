@@ -20,6 +20,12 @@
       "id": "collection_links",
       "label": "Mapping",
       "info": "Liens des catégories avec les collections. Format : Catégorie:Collection,Collection|etc..."
+    },
+    {
+      "type": "textarea",
+      "id": "collection_descriptions",
+      "label": "Descriptions des collections",
+      "info": "Format : Nom de la collection:description|Nom de la collection:description"
     }
   ],
   "presets": [
@@ -43,7 +49,7 @@
 <div id="rdc-loading-overlay" class="rdc-loading-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 9999;"></div>
 <div class="rdc-borne">
   <button class="rdc-borne__back-button" data-action="back">
-    <span class="rdc-borne__back-icon">&larr;</span> Retour
+   <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/RETURN_borne.webp?v=1756894249" />
   </button>
   
   <!-- Bouton du panier flottant -->
@@ -109,9 +115,9 @@
           </div>
         {% endfor %}
       </div>
-    </div>
+    </div> 
   </div>
-
+ 
   <!-- Écran 2: Sélection de collection -->
   <div class="rdc-borne__screen" data-screen="2" data-active="false">
     <input type="hidden" id="selected-category" value="">
@@ -120,14 +126,31 @@
 
       {% assign selected_collections = section.settings.collection_links | split: '|' %}
 
-      <h1>Collections</h1>
-      <p class="rdc-borne__selected-category">{{ category_clean }}</p>
+      <h1 class="rdc-borne__title">Quelle coupe ?</h1>
+      <div class="rdc-borne__selected-category">{{ category_clean }}</div>
 
+      {% assign collection_descriptions_mapping = section.settings.collection_descriptions | split: '|' %}
+      
       <div class="rdc-borne__collections">
         {% for collection in section.settings.collections %}
+          {% assign collection_description = nil %}
+          {% for mapping in collection_descriptions_mapping %}
+            {% assign parts = mapping | split: ':' %}
+            {% if parts.size == 2 %}
+              {% assign collection_name = parts[0] | strip %}
+              {% if collection_name == collection.title %}
+                {% assign collection_description = parts[1] | strip %}
+                {% break %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
           <div class="rdc-borne__collection" data-handle="{{ collection.handle }}">
             <img src="{{ collection.featured_image | img_url: '600x' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
             <h3>{{ collection.title }}</h3>
+            {% if collection_description %}
+              <p class="rdc-borne__collection-description">{{ collection_description }}</p>
+            {% endif %}
           </div>
         {% endfor %}
       </div>
