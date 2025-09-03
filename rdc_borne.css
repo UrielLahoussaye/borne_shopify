@@ -46,6 +46,7 @@ footer::-webkit-scrollbar,
 /* Conteneur principal */
 .rdc-borne {
   min-height: 100vh;
+  height: auto;
   position: relative;
   overflow-x: hidden; /* Empêcher le débordement horizontal */
   /* Permettre le défilement vertical */
@@ -262,10 +263,6 @@ footer::-webkit-scrollbar,
   text-align: center;
 }
 
-/* Boutons de navigation */
-.rdc-borne__back-button:hover {
-  background: #e0e0e0;
-}
 
 /* Écran 3: Produits - Par défaut en Flex pour mobile */
 .rdc-borne__products {
@@ -689,7 +686,7 @@ footer::-webkit-scrollbar,
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #4CAF50;
+  background-color: #29252b;
   color: white;
   border: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -703,7 +700,7 @@ footer::-webkit-scrollbar,
 
 .rdc-borne__cart-button:hover {
   transform: scale(1.05);
-  background-color: #45a049;
+  background-color: #29252b;
 }
 
 .rdc-borne__cart-icon {
@@ -714,15 +711,30 @@ footer::-webkit-scrollbar,
   position: fixed;
   top: 20px;
   left: 20px;
-  background-color: transparent;
-  border: none;
   font-size: 1.4rem;
-  background: white;
-  border: 1px solid grey;
+  font-family: var(--font-heading-family);
+  background: #e7e1dd;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: uppercase;
   cursor: pointer;
   display: flex;
   align-items: center;
   z-index: 1000;
+  line-height: 1.5rem;
+  transition: all 0.3s;
+}
+
+/* Boutons de navigation */
+.rdc-borne__back-button:hover {
+  background:rgb(224, 215, 208)
+}
+
+.rdc-borne__back-button img {
+  height: 40px;
+  margin-right: 10px;
 }
 
 /* Masquer le bouton RETOUR sur la slide 1 */
