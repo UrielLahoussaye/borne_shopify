@@ -245,6 +245,7 @@ footer::-webkit-scrollbar,
   justify-content: center;
   padding-left: 2rem;
   padding-right: 2rem;
+  padding-top: 20px;
 }
 
 @media screen and (max-width: 767px) {
