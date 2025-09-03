@@ -96,7 +96,6 @@ footer::-webkit-scrollbar,
   height: 0;
   overflow: hidden;
   pointer-events: none;
-  padding: 20px;
 }
 
 .rdc-borne__screen[data-active="true"] {
@@ -131,6 +130,26 @@ footer::-webkit-scrollbar,
   }
 }
 
+
+/* SPECIAL MOBILE PADDING */
+@media screen and (max-width: 767px) {
+.rdc-borne__title,
+.special_title, rdc-borne__selected-category, rdc-borne__collection-title {
+  padding-left: 20px;
+}
+
+.rdc-borne__product-title, rdc-borne__product-price
+{
+  text-align: center;
+}
+
+.rdc-borne__category, .rdc-borne__collection, .rdc-borne__product
+{
+  margin-left: 20px;
+}
+}
+
+
 /* Typographie */
 .rdc-borne__title {
   font-size: 2.5rem;
@@ -156,7 +175,6 @@ footer::-webkit-scrollbar,
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 2rem;
   padding: 2rem;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -235,7 +253,6 @@ footer::-webkit-scrollbar,
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 2rem;
   margin-top: 2rem;
   padding-bottom: 1rem;
   -webkit-overflow-scrolling: touch;
@@ -360,7 +377,6 @@ footer::-webkit-scrollbar,
 .rdc-borne__products {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
   padding: 2rem;
   padding-left: 0;
   justify-content: flex-start;
@@ -414,7 +430,7 @@ footer::-webkit-scrollbar,
 
   padding: 1rem;
   cursor: pointer;
-  min-width: 300px;
+  max-width: 220px;
   flex-shrink: 0;
 }
 
