@@ -26,6 +26,24 @@
       "id": "collection_descriptions",
       "label": "Descriptions des collections",
       "info": "Format : Nom de la collection:description|Nom de la collection:description"
+    },
+    {
+      "type": "text",
+      "id": "tag_unisexe",
+      "label": "Collections Unisexe",
+      "info": "Noms des collections séparés par des virgules"
+    },
+    {
+      "type": "text",
+      "id": "tag_femme",
+      "label": "Collections Femme",
+      "info": "Noms des collections séparés par des virgules"
+    },
+    {
+      "type": "text",
+      "id": "tag_oversize",
+      "label": "Collections Oversize",
+      "info": "Noms des collections séparés par des virgules"
     }
   ],
   "presets": [
@@ -131,6 +149,11 @@
 
       {% assign collection_descriptions_mapping = section.settings.collection_descriptions | split: '|' %}
       
+      {% comment %}Préparation des listes de tags{% endcomment %}
+      {% assign unisexe_collections = section.settings.tag_unisexe | split: ',' %}
+      {% assign femme_collections = section.settings.tag_femme | split: ',' %}
+      {% assign oversize_collections = section.settings.tag_oversize | split: ',' %}
+      
       <div class="rdc-borne__collections">
         {% for collection in section.settings.collections %}
           {% assign collection_description = nil %}
@@ -145,11 +168,55 @@
             {% endif %}
           {% endfor %}
           
+          {% comment %}Vérification des tags pour cette collection{% endcomment %}
+          {% assign has_unisexe_tag = false %}
+          {% assign has_femme_tag = false %}
+          {% assign has_oversize_tag = false %}
+          
+          {% for unisexe_collection in unisexe_collections %}
+            {% assign clean_name = unisexe_collection | strip %}
+            {% if clean_name == collection.title %}
+              {% assign has_unisexe_tag = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          
+          {% for femme_collection in femme_collections %}
+            {% assign clean_name = femme_collection | strip %}
+            {% if clean_name == collection.title %}
+              {% assign has_femme_tag = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          
+          {% for oversize_collection in oversize_collections %}
+            {% assign clean_name = oversize_collection | strip %}
+            {% if clean_name == collection.title %}
+              {% assign has_oversize_tag = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          
           <div class="rdc-borne__collection" data-handle="{{ collection.handle }}">
             <img src="{{ collection.featured_image | img_url: '600x' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
             <h3>{{ collection.title }}</h3>
             {% if collection_description %}
               <p class="rdc-borne__collection-description">{{ collection_description }}</p>
+            {% endif %}
+            
+            {% comment %}Affichage des tags{% endcomment %}
+            {% if has_unisexe_tag or has_femme_tag or has_oversize_tag %}
+              <div class="rdc-borne__collection-tags">
+                {% if has_unisexe_tag %}
+                  <span class="rdc-borne__collection-tag rdc-borne__collection-tag--unisexe">Unisexe</span>
+                {% endif %}
+                {% if has_femme_tag %}
+                  <span class="rdc-borne__collection-tag rdc-borne__collection-tag--femme">Femme</span>
+                {% endif %}
+                {% if has_oversize_tag %}
+                  <span class="rdc-borne__collection-tag rdc-borne__collection-tag--oversize">Oversize</span>
+                {% endif %}
+              </div>
             {% endif %}
           </div>
         {% endfor %}
