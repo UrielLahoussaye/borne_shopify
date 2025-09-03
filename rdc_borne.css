@@ -29,6 +29,28 @@ body
   background:rgb(238, 236, 233);
 }
 
+.special_title
+{
+  font-size: 4rem;
+  font-family: var(--font-heading-family);
+  color:rgba(207, 202, 194, 0.95);
+}
+
+.immersif_gauche
+{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.immersif_droite
+{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+
 html::-webkit-scrollbar, 
 body::-webkit-scrollbar, 
 div::-webkit-scrollbar, 
@@ -282,7 +304,7 @@ footer::-webkit-scrollbar,
   text-align: center;
 }
 
-.rdc-borne__collection-description {
+.rdc-borne__collection-description p {
   margin: 0 auto;
   padding: 0 1.5rem;
   font-size: 1.4rem;

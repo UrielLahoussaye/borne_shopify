@@ -22,12 +22,6 @@
       "info": "Liens des catégories avec les collections. Format : Catégorie:Collection,Collection|etc..."
     },
     {
-      "type": "textarea",
-      "id": "collection_descriptions",
-      "label": "Descriptions des collections",
-      "info": "Format : Nom de la collection:description|Nom de la collection:description"
-    },
-    {
       "type": "text",
       "id": "tag_unisexe",
       "label": "Collections Unisexe",
@@ -66,6 +60,12 @@
 
 <div id="rdc-loading-overlay" class="rdc-loading-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 9999;"></div>
 <div class="rdc-borne">
+  <div class="immersif_gauche">
+    <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_gauche.webp?v=1740164842" />  
+  </div> 
+  <div class="immersif_droite">
+      <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/foret_immersive_droite.webp?v=1740164852" />  
+  </div>
   <button class="rdc-borne__back-button" data-action="back">
    <img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/RETURN_borne.webp?v=1756894249" />
   </button>
@@ -119,6 +119,7 @@
   <!-- Écran 1: Sélection de catégorie -->
   <div class="rdc-borne__screen" data-screen="1" data-active="true">
     <div class="rdc-borne__content">
+      <p class="special_title">BORNE A LA DEMANDE</p>
       <h1 class="rdc-borne__title">Choisissez votre catégorie</h1>
       <div class="rdc-borne__categories">
         {% assign categories = section.settings.categories | split: ',' %}
@@ -146,7 +147,7 @@
       <h1 class="rdc-borne__title">Quelle coupe ?</h1>
       <div class="rdc-borne__selected-category">{{ category_clean }}</div>
 
-      {% assign collection_descriptions_mapping = section.settings.collection_descriptions | split: '|' %}
+      {% comment %}Utilisation directe des descriptions de collections de Shopify{% endcomment %}
       
       {% comment %}Préparation des listes de tags{% endcomment %}
       {% assign unisexe_collections = section.settings.tag_unisexe | split: ',' %}
@@ -155,17 +156,7 @@
       
       <div class="rdc-borne__collections">
         {% for collection in section.settings.collections %}
-          {% assign collection_description = nil %}
-          {% for mapping in collection_descriptions_mapping %}
-            {% assign parts = mapping | split: ':' %}
-            {% if parts.size == 2 %}
-              {% assign collection_name = parts[0] | strip %}
-              {% if collection_name == collection.title %}
-                {% assign collection_description = parts[1] | strip %}
-                {% break %}
-              {% endif %}
-            {% endif %}
-          {% endfor %}
+          {% comment %}Utilisation directe de la description de la collection de Shopify{% endcomment %}
           
           {% comment %}Vérification des tags pour cette collection{% endcomment %}
           {% assign has_unisexe_tag = false %}
@@ -199,8 +190,8 @@
           <div class="rdc-borne__collection" data-handle="{{ collection.handle }}">
             <img src="{{ collection.featured_image | img_url: '600x' }}" alt="{{ collection.title }}" class="rdc-borne__collection-image">
             <h3>{{ collection.title }}</h3>
-            {% if collection_description %}
-              <p class="rdc-borne__collection-description">{{ collection_description }}</p>
+            {% if collection.description != blank %}
+              <span class="rdc-borne__collection-description">{{ collection.description }}</span>
             {% endif %}
             
             {% comment %}Affichage des tags{% endcomment %}
