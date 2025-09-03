@@ -234,6 +234,7 @@ footer::-webkit-scrollbar,
 .rdc-borne__collections {
   display: flex;
   flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 2rem;
   margin-top: 2rem;
   padding-bottom: 1rem;
