@@ -419,6 +419,32 @@ document.addEventListener("DOMContentLoaded", function () {
         addToCartButton.classList.add("adding");
 
         // Requête AJAX vers l'API Shopify pour ajouter au panier
+        // Get the currently selected size swatch to ensure we have the right variant
+        const selectedSize = productDetail.querySelector(
+          ".rdc-borne__swatch--size.active"
+        );
+        const selectedColor = productDetail.querySelector(
+          ".rdc-borne__swatch:not(.rdc-borne__swatch--size).active"
+        );
+
+        // Get the correct variant ID based on the selected color and size
+        let finalVariantId = variantId;
+        if (selectedSize && selectedColor) {
+          const variantIds = selectedSize.getAttribute("data-variant-ids");
+          const selectedColorHandle = selectedColor.getAttribute("data-color");
+
+          if (variantIds) {
+            const variants = variantIds.split(",").filter((v) => v);
+            for (const variant of variants) {
+              const [vid, color] = variant.split(":");
+              if (color === selectedColorHandle) {
+                finalVariantId = vid;
+                break;
+              }
+            }
+          }
+        }
+
         fetch("/cart/add.js", {
           method: "POST",
           headers: {
@@ -428,7 +454,7 @@ document.addEventListener("DOMContentLoaded", function () {
           body: JSON.stringify({
             items: [
               {
-                id: variantId,
+                id: finalVariantId,
                 quantity: quantity,
               },
             ],
