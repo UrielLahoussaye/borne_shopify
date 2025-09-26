@@ -3,40 +3,100 @@
  * Handles filtering, modal viewing, and video playback
  */
 
-function initGalerieRessources() {
-  // DOM elements - Get all sections instead of just one
-  const galerieSections = document.querySelectorAll('[data-galerie-ressources]');
-  if (!galerieSections.length) return;
+// Global modal management
+let globalModal = null;
+
+// Create a single modal for all sections
+function createGlobalModal() {
+  if (globalModal) return globalModal;
   
-  // Create a global event listener for escape key to close any active modal
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      const activeModal = document.querySelector('.galerie-ressources__modal.active');
-      if (activeModal) closeModal(activeModal);
+  const modal = document.createElement('div');
+  modal.className = 'galerie-ressources__modal';
+  
+  const modalContent = document.createElement('div');
+  modalContent.className = 'galerie-ressources__modal-content';
+  
+  const closeButton = document.createElement('button');
+  closeButton.className = 'galerie-ressources__modal-close';
+  closeButton.innerHTML = '&times;';
+  closeButton.setAttribute('aria-label', 'Fermer');
+  
+  modalContent.appendChild(closeButton);
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+  
+  // Close modal on button click
+  closeButton.addEventListener('click', () => closeGlobalModal());
+  
+  // Close modal on background click
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      closeGlobalModal();
     }
   });
   
-  // Initialize each section separately
-  galerieSections.forEach(galerieSection => {
-    initSection(galerieSection);
+  // Close modal on escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closeGlobalModal();
+    }
   });
+  
+  globalModal = modal;
+  return modal;
 }
 
-// Global close modal function
-function closeModal(modal) {
+// Open global modal with content
+function openGlobalModal(content) {
+  const modal = createGlobalModal();
+  const modalContent = modal.querySelector('.galerie-ressources__modal-content');
+  
+  // Clear previous content (except close button)
+  const closeButton = modalContent.querySelector('.galerie-ressources__modal-close');
+  modalContent.innerHTML = '';
+  modalContent.appendChild(closeButton);
+  
+  // Add new content
+  modalContent.appendChild(content);
+  
+  // Show modal
+  modal.classList.add('active');
+  
+  // Prevent body scrolling
+  document.body.style.overflow = 'hidden';
+}
+
+// Close global modal
+function closeGlobalModal() {
+  if (!globalModal) return;
+  
   // Hide modal
-  modal.classList.remove('active');
+  globalModal.classList.remove('active');
   
   // Allow body scrolling
   document.body.style.overflow = '';
   
   // Clear content after animation
   setTimeout(() => {
-    const modalContent = modal.querySelector('.galerie-ressources__modal-content');
+    const modalContent = globalModal.querySelector('.galerie-ressources__modal-content');
     const closeButton = modalContent.querySelector('.galerie-ressources__modal-close');
     modalContent.innerHTML = '';
     modalContent.appendChild(closeButton);
   }, 300);
+}
+
+function initGalerieRessources() {
+  // DOM elements - Get all sections instead of just one
+  const galerieSections = document.querySelectorAll('[data-galerie-ressources]');
+  if (!galerieSections.length) return;
+  
+  // Create the global modal
+  createGlobalModal();
+  
+  // Initialize each section separately
+  galerieSections.forEach(galerieSection => {
+    initSection(galerieSection);
+  });
 }
 
 function initSection(galerieSection) {
@@ -49,11 +109,8 @@ function initSection(galerieSection) {
   // Initialize video previews
   initVideoPreviews();
   
-  // Create a unique modal for this section
-  const sectionModal = createModal(galerieSection);
-  
-  // Initialize view buttons with the section's modal
-  initViewButtons(sectionModal);
+  // Initialize view buttons
+  initViewButtons();
 
   // Initialize category filtering
   initCategoryFilters();
@@ -70,12 +127,12 @@ function initSection(galerieSection) {
         
         // Check if it's YouTube or Vimeo
         if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-          openYouTubeVideo(videoUrl, sectionModal);
+          openYouTubeVideo(videoUrl);
         } else if (videoUrl.includes('vimeo.com')) {
-          openVimeoVideo(videoUrl, sectionModal);
+          openVimeoVideo(videoUrl);
         } else {
           // Assume it's a direct video file
-          openVideoFile(videoUrl, sectionModal);
+          openVideoFile(videoUrl);
         }
       });
     });
@@ -84,7 +141,7 @@ function initSection(galerieSection) {
   /**
    * Open YouTube video in modal
    */
-  function openYouTubeVideo(url, modal) {
+  function openYouTubeVideo(url) {
     // Extract YouTube ID
     let videoId = '';
     
@@ -105,14 +162,14 @@ function initSection(galerieSection) {
     iframe.allowFullscreen = true;
     iframe.classList.add('galerie-ressources__modal-video');
     
-    // Open in modal
-    openModal(iframe, modal);
+    // Open in global modal
+    openGlobalModal(iframe);
   }
 
   /**
    * Open Vimeo video in modal
    */
-  function openVimeoVideo(url, modal) {
+  function openVimeoVideo(url) {
     // Extract Vimeo ID
     const vimeoId = url.split('vimeo.com/')[1].split('?')[0];
     
@@ -127,14 +184,14 @@ function initSection(galerieSection) {
     iframe.allowFullscreen = true;
     iframe.classList.add('galerie-ressources__modal-video');
     
-    // Open in modal
-    openModal(iframe, modal);
+    // Open in global modal
+    openGlobalModal(iframe);
   }
 
   /**
    * Open video file in modal
    */
-  function openVideoFile(url, modal) {
+  function openVideoFile(url) {
     // Create video element
     const video = document.createElement('video');
     video.src = url;
@@ -142,65 +199,11 @@ function initSection(galerieSection) {
     video.autoplay = true;
     video.classList.add('galerie-ressources__modal-video');
     
-    // Open in modal
-    openModal(video, modal);
+    // Open in global modal
+    openGlobalModal(video);
   }
 
-  /**
-   * Create a modal for this section
-   */
-  function createModal(section) {
-    // Create a unique modal for this section
-    const modal = document.createElement('div');
-    modal.className = 'galerie-ressources__modal';
-    
-    const modalContent = document.createElement('div');
-    modalContent.className = 'galerie-ressources__modal-content';
-    
-    const closeButton = document.createElement('button');
-    closeButton.className = 'galerie-ressources__modal-close';
-    closeButton.innerHTML = '&times;';
-    closeButton.setAttribute('aria-label', 'Fermer');
-    
-    modalContent.appendChild(closeButton);
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    
-    // Close modal on button click
-    closeButton.addEventListener('click', () => closeModal(modal));
-    
-    // Close modal on background click
-    modal.addEventListener('click', function(event) {
-      if (event.target === modal) {
-        closeModal(modal);
-      }
-    });
-    
-    return modal;
-  }
-
-  /**
-   * Open modal with content
-   */
-  function openModal(content, modal) {
-    const modalContent = modal.querySelector('.galerie-ressources__modal-content');
-    
-    // Clear previous content (except close button)
-    const closeButton = modalContent.querySelector('.galerie-ressources__modal-close');
-    modalContent.innerHTML = '';
-    modalContent.appendChild(closeButton);
-    
-    // Add new content
-    modalContent.appendChild(content);
-    
-    // Show modal
-    modal.classList.add('active');
-    
-    // Prevent body scrolling
-    document.body.style.overflow = 'hidden';
-  }
-
-  // Use the global closeModal function
+  // Modal functions removed - using global modal
   
   /**
    * Initialize category filters
@@ -257,7 +260,7 @@ function initSection(galerieSection) {
   /**
    * Initialize view buttons for images and videos
    */
-  function initViewButtons(sectionModal) {
+  function initViewButtons() {
     // Handle image view buttons
     viewImageButtons.forEach(button => {
       button.addEventListener('click', function() {
@@ -270,8 +273,8 @@ function initSection(galerieSection) {
         img.classList.add('galerie-ressources__modal-image');
         img.alt = this.closest('.galerie-ressources__item').querySelector('.galerie-ressources__item-title')?.textContent || 'Image';
         
-        // Open in modal
-        openModal(img, sectionModal);
+        // Open in global modal
+        openGlobalModal(img);
       });
     });
     
@@ -283,12 +286,12 @@ function initSection(galerieSection) {
         
         // Check if it's YouTube or Vimeo
         if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-          openYouTubeVideo(videoUrl, sectionModal);
+          openYouTubeVideo(videoUrl);
         } else if (videoUrl.includes('vimeo.com')) {
-          openVimeoVideo(videoUrl, sectionModal);
+          openVimeoVideo(videoUrl);
         } else {
           // Assume it's a direct video file
-          openVideoFile(videoUrl, sectionModal);
+          openVideoFile(videoUrl);
         }
       });
     });
