@@ -1,0 +1,294 @@
+{{ 'rdc_galerie-ressources.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'rdc_galerie-ressources.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign section_width = section.settings.section_width
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+-%}
+
+<div class="section-galerie-ressources section-padding section-bg isolate" {% render 'section-properties' %} data-galerie-ressources>
+  <div class="galerie-ressources {{ section_width }}">
+    <div class="galerie-ressources__header">
+      {% if heading != blank %}
+        <h2 class="galerie-ressources__heading {{ section.settings.heading_size }}">{{ heading }}</h2>
+      {% endif %}
+      {% if subheading != blank %}
+        <div class="galerie-ressources__subheading">{{ subheading }}</div>
+      {% endif %}
+    </div>
+
+    <div class="galerie-ressources__filters">
+      <button class="galerie-ressources__filter-btn active" data-filter="all">Tout</button>
+      <button class="galerie-ressources__filter-btn" data-filter="image">Images</button>
+      <button class="galerie-ressources__filter-btn" data-filter="video">Vidéos</button>
+    </div>
+
+    <div class="galerie-ressources__grid">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'image' %}
+            <div class="galerie-ressources__item galerie-ressources__item--image" data-type="image" {{ block.shopify_attributes }}>
+              <div class="galerie-ressources__item-inner">
+                <div class="galerie-ressources__image-container">
+                  {% if block.settings.image != blank %}
+                    {{ block.settings.image | image_url: width: 800 | image_tag: 
+                      loading: 'lazy',
+                      class: 'galerie-ressources__image',
+                      alt: block.settings.title
+                    }}
+                  {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'galerie-ressources__image placeholder' }}
+                  {% endif %}
+                  <div class="galerie-ressources__overlay">
+                    <div class="galerie-ressources__actions">
+                      <a href="{{ block.settings.image | image_url }}" class="galerie-ressources__action-btn galerie-ressources__action-view" target="_blank" download>
+                        <span class="visually-hidden">Voir</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </a>
+                      <a href="{{ block.settings.image | image_url }}" class="galerie-ressources__action-btn galerie-ressources__action-download" download>
+                        <span class="visually-hidden">Télécharger</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {% if block.settings.title != blank %}
+                  <h3 class="galerie-ressources__item-title">{{ block.settings.title }}</h3>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                  <div class="galerie-ressources__item-description">{{ block.settings.description }}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% when 'video' %}
+            <div class="galerie-ressources__item galerie-ressources__item--video" data-type="video" {{ block.shopify_attributes }}>
+              <div class="galerie-ressources__item-inner">
+                <div class="galerie-ressources__video-container">
+                  {% if block.settings.video_url != blank %}
+                    <div class="galerie-ressources__video-wrapper" data-video-url="{{ block.settings.video_url }}">
+                      {% if block.settings.video_thumbnail != blank %}
+                        {{ block.settings.video_thumbnail | image_url: width: 800 | image_tag: 
+                          loading: 'lazy',
+                          class: 'galerie-ressources__video-thumbnail',
+                          alt: block.settings.title
+                        }}
+                      {% else %}
+                        <div class="galerie-ressources__video-placeholder">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
+                      {% endif %}
+                      <div class="galerie-ressources__play-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="galerie-ressources__video-placeholder">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </div>
+                  {% endif %}
+                  <div class="galerie-ressources__overlay">
+                    <div class="galerie-ressources__actions">
+                      <a href="{{ block.settings.video_url }}" class="galerie-ressources__action-btn galerie-ressources__action-view" target="_blank">
+                        <span class="visually-hidden">Voir</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </a>
+                      <a href="{{ block.settings.video_url }}" class="galerie-ressources__action-btn galerie-ressources__action-download" download>
+                        <span class="visually-hidden">Télécharger</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {% if block.settings.title != blank %}
+                  <h3 class="galerie-ressources__item-title">{{ block.settings.title }}</h3>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                  <div class="galerie-ressources__item-description">{{ block.settings.description }}</div>
+                {% endif %}
+              </div>
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    initGalerieRessources();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "RDC Galerie Ressources",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "aside"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Largeur",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Étendue"
+        },
+        {
+          "value": "w-full",
+          "label": "Pleine largeur"
+        }
+      ],
+      "default": "container"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Ressources pour ambassadeurs"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "<p>Téléchargez nos ressources graphiques et vidéos pour promouvoir notre marque.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Taille du titre",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Titre 1"
+        },
+        {
+          "value": "h2",
+          "label": "Titre 2"
+        },
+        {
+          "value": "h3",
+          "label": "Titre 3"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Arrière-plan"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte"
+    },
+    {
+      "type": "header",
+      "content": "Espacement de section"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Titre de l'image"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Description courte de cette ressource."
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Vidéo",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "URL de la vidéo",
+          "info": "Lien YouTube, Vimeo ou fichier MP4"
+        },
+        {
+          "type": "image_picker",
+          "id": "video_thumbnail",
+          "label": "Miniature de la vidéo"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Titre de la vidéo"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Description courte de cette ressource."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "RDC Galerie Ressources",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "video"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
