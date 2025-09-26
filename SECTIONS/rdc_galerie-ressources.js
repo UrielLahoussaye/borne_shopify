@@ -4,9 +4,42 @@
  */
 
 function initGalerieRessources() {
-  // DOM elements
-  const galerieSection = document.querySelector('[data-galerie-ressources]');
-  if (!galerieSection) return;
+  // DOM elements - Get all sections instead of just one
+  const galerieSections = document.querySelectorAll('[data-galerie-ressources]');
+  if (!galerieSections.length) return;
+  
+  // Create a global event listener for escape key to close any active modal
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      const activeModal = document.querySelector('.galerie-ressources__modal.active');
+      if (activeModal) closeModal(activeModal);
+    }
+  });
+  
+  // Initialize each section separately
+  galerieSections.forEach(galerieSection => {
+    initSection(galerieSection);
+  });
+}
+
+// Global close modal function
+function closeModal(modal) {
+  // Hide modal
+  modal.classList.remove('active');
+  
+  // Allow body scrolling
+  document.body.style.overflow = '';
+  
+  // Clear content after animation
+  setTimeout(() => {
+    const modalContent = modal.querySelector('.galerie-ressources__modal-content');
+    const closeButton = modalContent.querySelector('.galerie-ressources__modal-close');
+    modalContent.innerHTML = '';
+    modalContent.appendChild(closeButton);
+  }, 300);
+}
+
+function initSection(galerieSection) {
 
   const items = galerieSection.querySelectorAll('.galerie-ressources__item');
   const videoWrappers = galerieSection.querySelectorAll('.galerie-ressources__video-wrapper');
@@ -16,11 +49,11 @@ function initGalerieRessources() {
   // Initialize video previews
   initVideoPreviews();
   
-  // Initialize modal viewing
-  initModal();
+  // Create a unique modal for this section
+  const sectionModal = createModal(galerieSection);
   
-  // Initialize view buttons
-  initViewButtons();
+  // Initialize view buttons with the section's modal
+  initViewButtons(sectionModal);
 
   // Initialize category filtering
   initCategoryFilters();
@@ -37,12 +70,12 @@ function initGalerieRessources() {
         
         // Check if it's YouTube or Vimeo
         if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-          openYouTubeVideo(videoUrl);
+          openYouTubeVideo(videoUrl, sectionModal);
         } else if (videoUrl.includes('vimeo.com')) {
-          openVimeoVideo(videoUrl);
+          openVimeoVideo(videoUrl, sectionModal);
         } else {
           // Assume it's a direct video file
-          openVideoFile(videoUrl);
+          openVideoFile(videoUrl, sectionModal);
         }
       });
     });
@@ -51,7 +84,7 @@ function initGalerieRessources() {
   /**
    * Open YouTube video in modal
    */
-  function openYouTubeVideo(url) {
+  function openYouTubeVideo(url, modal) {
     // Extract YouTube ID
     let videoId = '';
     
@@ -73,13 +106,13 @@ function initGalerieRessources() {
     iframe.classList.add('galerie-ressources__modal-video');
     
     // Open in modal
-    openModal(iframe);
+    openModal(iframe, modal);
   }
 
   /**
    * Open Vimeo video in modal
    */
-  function openVimeoVideo(url) {
+  function openVimeoVideo(url, modal) {
     // Extract Vimeo ID
     const vimeoId = url.split('vimeo.com/')[1].split('?')[0];
     
@@ -95,13 +128,13 @@ function initGalerieRessources() {
     iframe.classList.add('galerie-ressources__modal-video');
     
     // Open in modal
-    openModal(iframe);
+    openModal(iframe, modal);
   }
 
   /**
    * Open video file in modal
    */
-  function openVideoFile(url) {
+  function openVideoFile(url, modal) {
     // Create video element
     const video = document.createElement('video');
     video.src = url;
@@ -110,54 +143,46 @@ function initGalerieRessources() {
     video.classList.add('galerie-ressources__modal-video');
     
     // Open in modal
-    openModal(video);
+    openModal(video, modal);
   }
 
   /**
-   * Initialize modal functionality
+   * Create a modal for this section
    */
-  function initModal() {
-    // Create modal if it doesn't exist
-    if (!document.querySelector('.galerie-ressources__modal')) {
-      const modal = document.createElement('div');
-      modal.className = 'galerie-ressources__modal';
-      
-      const modalContent = document.createElement('div');
-      modalContent.className = 'galerie-ressources__modal-content';
-      
-      const closeButton = document.createElement('button');
-      closeButton.className = 'galerie-ressources__modal-close';
-      closeButton.innerHTML = '&times;';
-      closeButton.setAttribute('aria-label', 'Fermer');
-      
-      modalContent.appendChild(closeButton);
-      modal.appendChild(modalContent);
-      document.body.appendChild(modal);
-      
-      // Close modal on button click
-      closeButton.addEventListener('click', closeModal);
-      
-      // Close modal on background click
-      modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-          closeModal();
-        }
-      });
-      
-      // Close modal on escape key
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      });
-    }
+  function createModal(section) {
+    // Create a unique modal for this section
+    const modal = document.createElement('div');
+    modal.className = 'galerie-ressources__modal';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'galerie-ressources__modal-content';
+    
+    const closeButton = document.createElement('button');
+    closeButton.className = 'galerie-ressources__modal-close';
+    closeButton.innerHTML = '&times;';
+    closeButton.setAttribute('aria-label', 'Fermer');
+    
+    modalContent.appendChild(closeButton);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Close modal on button click
+    closeButton.addEventListener('click', () => closeModal(modal));
+    
+    // Close modal on background click
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        closeModal(modal);
+      }
+    });
+    
+    return modal;
   }
 
   /**
    * Open modal with content
    */
-  function openModal(content) {
-    const modal = document.querySelector('.galerie-ressources__modal');
+  function openModal(content, modal) {
     const modalContent = modal.querySelector('.galerie-ressources__modal-content');
     
     // Clear previous content (except close button)
@@ -175,26 +200,7 @@ function initGalerieRessources() {
     document.body.style.overflow = 'hidden';
   }
 
-  /**
-   * Close modal
-   */
-  function closeModal() {
-    const modal = document.querySelector('.galerie-ressources__modal');
-    
-    // Hide modal
-    modal.classList.remove('active');
-    
-    // Allow body scrolling
-    document.body.style.overflow = '';
-    
-    // Clear content after animation
-    setTimeout(() => {
-      const modalContent = modal.querySelector('.galerie-ressources__modal-content');
-      const closeButton = modalContent.querySelector('.galerie-ressources__modal-close');
-      modalContent.innerHTML = '';
-      modalContent.appendChild(closeButton);
-    }, 300);
-  }
+  // Use the global closeModal function
   
   /**
    * Initialize category filters
@@ -251,7 +257,7 @@ function initGalerieRessources() {
   /**
    * Initialize view buttons for images and videos
    */
-  function initViewButtons() {
+  function initViewButtons(sectionModal) {
     // Handle image view buttons
     viewImageButtons.forEach(button => {
       button.addEventListener('click', function() {
@@ -265,7 +271,7 @@ function initGalerieRessources() {
         img.alt = this.closest('.galerie-ressources__item').querySelector('.galerie-ressources__item-title')?.textContent || 'Image';
         
         // Open in modal
-        openModal(img);
+        openModal(img, sectionModal);
       });
     });
     
@@ -277,12 +283,12 @@ function initGalerieRessources() {
         
         // Check if it's YouTube or Vimeo
         if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-          openYouTubeVideo(videoUrl);
+          openYouTubeVideo(videoUrl, sectionModal);
         } else if (videoUrl.includes('vimeo.com')) {
-          openVimeoVideo(videoUrl);
+          openVimeoVideo(videoUrl, sectionModal);
         } else {
           // Assume it's a direct video file
-          openVideoFile(videoUrl);
+          openVideoFile(videoUrl, sectionModal);
         }
       });
     });

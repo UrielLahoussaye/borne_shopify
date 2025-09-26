@@ -31,7 +31,7 @@
     </div>
 
     <!-- Filtres par catégorie -->
-    {% if unique_categories.size > 0 %}
+    {% if unique_categories.size > 0 and section.settings.show_filters %}
       <div class="galerie-ressources__filters">
         <button class="galerie-ressources__filter-btn active" data-filter="all">Tous</button>
         {% for category in unique_categories %}
@@ -220,13 +220,6 @@
       "default": "<p>Téléchargez nos ressources graphiques et vidéos pour promouvoir notre marque.</p>"
     },
     {
-      "type": "richtext",
-      "id": "enigme_hint",
-      "label": "Indice pour l'énigme",
-      "default": "<p>Voici un indice pour résoudre l'énigme. <a href=\"#\">Cliquez ici</a> pour plus d'informations.</p>",
-      "info": "Ce champ accepte du texte enrichi avec des liens"
-    },
-    {
       "type": "select",
       "id": "heading_size",
       "label": "Taille du titre",
@@ -245,6 +238,13 @@
         }
       ],
       "default": "h2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Afficher les filtres par catégorie",
+      "default": true,
+      "info": "Activer pour afficher les boutons de filtrage par catégorie en haut de la galerie"
     },
     {
       "type": "header",
