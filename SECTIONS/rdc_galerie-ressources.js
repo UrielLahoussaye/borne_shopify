@@ -8,12 +8,8 @@ function initGalerieRessources() {
   const galerieSection = document.querySelector('[data-galerie-ressources]');
   if (!galerieSection) return;
 
-  const filterButtons = galerieSection.querySelectorAll('.galerie-ressources__filter-btn');
   const items = galerieSection.querySelectorAll('.galerie-ressources__item');
   const videoWrappers = galerieSection.querySelectorAll('.galerie-ressources__video-wrapper');
-
-  // Initialize filtering
-  initFilters();
   
   // Initialize video previews
   initVideoPreviews();
@@ -21,45 +17,7 @@ function initGalerieRessources() {
   // Initialize modal viewing
   initModal();
 
-  /**
-   * Initialize filtering functionality
-   */
-  function initFilters() {
-    filterButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        // Remove active class from all buttons
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        
-        // Add active class to clicked button
-        this.classList.add('active');
-        
-        // Get filter value
-        const filter = this.getAttribute('data-filter');
-        
-        // Filter items
-        filterItems(filter);
-      });
-    });
-  }
-
-  /**
-   * Filter items based on type
-   */
-  function filterItems(filter) {
-    items.forEach(item => {
-      const itemType = item.getAttribute('data-type');
-      
-      if (filter === 'all' || filter === itemType) {
-        item.classList.remove('hidden');
-        // Add animation
-        item.style.animation = 'none';
-        item.offsetHeight; // Trigger reflow
-        item.style.animation = 'fadeIn 0.6s ease forwards';
-      } else {
-        item.classList.add('hidden');
-      }
-    });
-  }
+  // Filtrage retiré
 
   /**
    * Initialize video preview functionality
