@@ -5,6 +5,18 @@
   assign section_width = section.settings.section_width
   assign heading = section.settings.heading
   assign subheading = section.settings.subheading
+  
+  # Collecter toutes les catégories uniques
+  assign all_categories = ''
+  for block in section.blocks
+    if block.settings.category != blank
+      assign all_categories = all_categories | append: block.settings.category | append: ','
+    endif
+  endfor
+  
+  # Convertir en tableau et trier
+  assign categories_array = all_categories | split: ','
+  assign unique_categories = categories_array | uniq | sort
 -%}
 
 <div class="section-galerie-ressources section-padding section-bg isolate" {% render 'section-properties' %} data-galerie-ressources>
@@ -18,14 +30,61 @@
       {% endif %}
     </div>
 
-    <!-- Filtres retirés -->
+    <!-- Filtres par catégorie -->
+    {% if unique_categories.size > 0 %}
+      <div class="galerie-ressources__filters">
+        <button class="galerie-ressources__filter-btn active" data-filter="all">Tous</button>
+        {% for category in unique_categories %}
+          {% if category != blank %}
+            <button class="galerie-ressources__filter-btn" data-filter="{{ category | handle }}">{{ category }}</button>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <div class="galerie-ressources__grid">
       {% for block in section.blocks %}
         {% case block.type %}
-          {% when 'image' %}
-            <div class="galerie-ressources__item galerie-ressources__item--image" data-type="image" {{ block.shopify_attributes }}>
+          {% when 'text' %}
+            <div class="galerie-ressources__item galerie-ressources__item--text" data-type="text" data-category="{{ block.settings.category | handle }}" {{ block.shopify_attributes }}>
               <div class="galerie-ressources__item-inner">
+                {% if block.settings.category != blank %}
+                  <div class="galerie-ressources__category-tag category-{{ block.settings.category | handle }}">{{ block.settings.category }}</div>
+                {% endif %}
+                <div class="galerie-ressources__text-container">
+                  {% if block.settings.icon != blank %}
+                    <div class="galerie-ressources__text-icon">
+                      {{ block.settings.icon | image_url: width: 60 | image_tag: 
+                        loading: 'lazy',
+                        class: 'galerie-ressources__icon-image',
+                        alt: block.settings.title
+                      }}
+                    </div>
+                  {% endif %}
+                  {% if block.settings.main_image != blank %}
+                    <div class="galerie-ressources__text-main-image">
+                      {{ block.settings.main_image | image_url: width: 600 | image_tag: 
+                        loading: 'lazy',
+                        class: 'galerie-ressources__main-image',
+                        alt: block.settings.title
+                      }}
+                    </div>
+                  {% endif %}
+                  {% if block.settings.title != blank %}
+                    <h3 class="galerie-ressources__item-title">{{ block.settings.title }}</h3>
+                  {% endif %}
+                  {% if block.settings.content != blank %}
+                    <div class="galerie-ressources__item-content">{{ block.settings.content }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% when 'image' %}
+            <div class="galerie-ressources__item galerie-ressources__item--image" data-type="image" data-category="{{ block.settings.category | handle }}" {{ block.shopify_attributes }}>
+              <div class="galerie-ressources__item-inner">
+                {% if block.settings.category != blank %}
+                  <div class="galerie-ressources__category-tag category-{{ block.settings.category | handle }}">{{ block.settings.category }}</div>
+                {% endif %}
                 <div class="galerie-ressources__image-container">
                   {% if block.settings.image != blank %}
                     {{ block.settings.image | image_url: width: 800 | image_tag: 
@@ -58,8 +117,11 @@
               </div>
             </div>
           {% when 'video' %}
-            <div class="galerie-ressources__item galerie-ressources__item--video" data-type="video" {{ block.shopify_attributes }}>
+            <div class="galerie-ressources__item galerie-ressources__item--video" data-type="video" data-category="{{ block.settings.category | handle }}" {{ block.shopify_attributes }}>
               <div class="galerie-ressources__item-inner">
+                {% if block.settings.category != blank %}
+                  <div class="galerie-ressources__category-tag category-{{ block.settings.category | handle }}">{{ block.settings.category }}</div>
+                {% endif %}
                 <div class="galerie-ressources__video-container">
                   {% if block.settings.video_url != blank %}
                     <div class="galerie-ressources__video-wrapper" data-video-url="{{ block.settings.video_url }}">
@@ -225,6 +287,75 @@
   ],
   "blocks": [
     {
+      "type": "text",
+      "name": "Texte",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Astuce ou idée"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icône (optionnelle)"
+        },
+        {
+          "type": "image_picker",
+          "id": "main_image",
+          "label": "Image principale",
+          "info": "Affichée au-dessus du titre"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenu",
+          "default": "<p>Ajoutez ici votre texte, astuce, conseil ou idée. Ce bloc est idéal pour partager des informations textuelles avec vos utilisateurs.</p>"
+        },
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Catégorie",
+          "options": [
+            {
+              "value": "",
+              "label": "Aucune"
+            },
+            {
+              "value": "Logos",
+              "label": "Logos"
+            },
+            {
+              "value": "Réseaux sociaux",
+              "label": "Réseaux sociaux"
+            },
+            {
+              "value": "Prospectus",
+              "label": "Prospectus"
+            },
+            {
+              "value": "Stickers",
+              "label": "Stickers"
+            },
+            {
+              "value": "Divers",
+              "label": "Divers"
+            },
+            {
+              "value": "Astuces",
+              "label": "Astuces"
+            },
+            {
+              "value": "Idées",
+              "label": "Idées"
+            }
+          ],
+          "default": "Astuces"
+        }
+      ]
+    },
+    {
       "type": "image",
       "name": "Image",
       "settings": [
@@ -232,6 +363,38 @@
           "type": "image_picker",
           "id": "image",
           "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Catégorie",
+          "options": [
+            {
+              "value": "",
+              "label": "Aucune"
+            },
+            {
+              "value": "Logos",
+              "label": "Logos"
+            },
+            {
+              "value": "Réseaux sociaux",
+              "label": "Réseaux sociaux"
+            },
+            {
+              "value": "Prospectus",
+              "label": "Prospectus"
+            },
+            {
+              "value": "Stickers",
+              "label": "Stickers"
+            },
+            {
+              "value": "Divers",
+              "label": "Divers"
+            }
+          ],
+          "default": ""
         },
         {
           "type": "text",
@@ -258,6 +421,38 @@
           "info": "Lien YouTube, Vimeo ou fichier MP4"
         },
         {
+          "type": "select",
+          "id": "category",
+          "label": "Catégorie",
+          "options": [
+            {
+              "value": "",
+              "label": "Aucune"
+            },
+            {
+              "value": "Logos",
+              "label": "Logos"
+            },
+            {
+              "value": "Réseaux sociaux",
+              "label": "Réseaux sociaux"
+            },
+            {
+              "value": "Prospectus",
+              "label": "Prospectus"
+            },
+            {
+              "value": "Stickers",
+              "label": "Stickers"
+            },
+            {
+              "value": "Divers",
+              "label": "Divers"
+            }
+          ],
+          "default": ""
+        },
+        {
           "type": "image_picker",
           "id": "video_thumbnail",
           "label": "Miniature de la vidéo"
@@ -281,6 +476,9 @@
     {
       "name": "RDC Galerie Ressources",
       "blocks": [
+        {
+          "type": "text"
+        },
         {
           "type": "image"
         },

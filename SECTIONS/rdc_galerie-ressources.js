@@ -22,7 +22,8 @@ function initGalerieRessources() {
   // Initialize view buttons
   initViewButtons();
 
-  // Filtrage retiré
+  // Initialize category filtering
+  initCategoryFilters();
 
   /**
    * Initialize video preview functionality
@@ -193,6 +194,58 @@ function initGalerieRessources() {
       modalContent.innerHTML = '';
       modalContent.appendChild(closeButton);
     }, 300);
+  }
+  
+  /**
+   * Initialize category filters
+   */
+  function initCategoryFilters() {
+    const filterButtons = galerieSection.querySelectorAll('.galerie-ressources__filter-btn');
+    
+    if (!filterButtons.length) return;
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Get filter value
+        const filterValue = this.getAttribute('data-filter');
+        
+        // Filter items
+        filterItems(filterValue);
+      });
+    });
+  }
+  
+  /**
+   * Filter items by category
+   */
+  function filterItems(category) {
+    items.forEach(item => {
+      if (category === 'all') {
+        item.classList.remove('hidden');
+        // Add animation
+        item.style.animation = 'none';
+        item.offsetHeight; // Trigger reflow
+        item.style.animation = 'fadeIn 0.6s ease forwards';
+      } else {
+        const itemCategory = item.getAttribute('data-category');
+        
+        if (itemCategory === category) {
+          item.classList.remove('hidden');
+          // Add animation
+          item.style.animation = 'none';
+          item.offsetHeight; // Trigger reflow
+          item.style.animation = 'fadeIn 0.6s ease forwards';
+        } else {
+          item.classList.add('hidden');
+        }
+      }
+    });
   }
   
   /**
