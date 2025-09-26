@@ -38,10 +38,10 @@
                   {% endif %}
                   <div class="galerie-ressources__overlay">
                     <div class="galerie-ressources__actions">
-                      <a href="{{ block.settings.image | image_url }}" class="galerie-ressources__action-btn galerie-ressources__action-view" target="_blank" download>
+                      <button class="galerie-ressources__action-btn galerie-ressources__action-view" data-view-image="{{ block.settings.image | image_url }}">
                         <span class="visually-hidden">Voir</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                      </a>
+                      </button>
                       <a href="{{ block.settings.image | image_url }}" class="galerie-ressources__action-btn galerie-ressources__action-download" download>
                         <span class="visually-hidden">Télécharger</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -85,10 +85,10 @@
                   {% endif %}
                   <div class="galerie-ressources__overlay">
                     <div class="galerie-ressources__actions">
-                      <a href="{{ block.settings.video_url }}" class="galerie-ressources__action-btn galerie-ressources__action-view" target="_blank">
+                      <button class="galerie-ressources__action-btn galerie-ressources__action-view" data-view-video="{{ block.settings.video_url }}">
                         <span class="visually-hidden">Voir</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                      </a>
+                      </button>
                       <a href="{{ block.settings.video_url }}" class="galerie-ressources__action-btn galerie-ressources__action-download" download>
                         <span class="visually-hidden">Télécharger</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -156,6 +156,13 @@
       "id": "subheading",
       "label": "Sous-titre",
       "default": "<p>Téléchargez nos ressources graphiques et vidéos pour promouvoir notre marque.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "enigme_hint",
+      "label": "Indice pour l'énigme",
+      "default": "<p>Voici un indice pour résoudre l'énigme. <a href=\"#\">Cliquez ici</a> pour plus d'informations.</p>",
+      "info": "Ce champ accepte du texte enrichi avec des liens"
     },
     {
       "type": "select",

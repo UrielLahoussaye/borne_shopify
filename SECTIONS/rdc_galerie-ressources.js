@@ -10,12 +10,17 @@ function initGalerieRessources() {
 
   const items = galerieSection.querySelectorAll('.galerie-ressources__item');
   const videoWrappers = galerieSection.querySelectorAll('.galerie-ressources__video-wrapper');
+  const viewImageButtons = galerieSection.querySelectorAll('[data-view-image]');
+  const viewVideoButtons = galerieSection.querySelectorAll('[data-view-video]');
   
   // Initialize video previews
   initVideoPreviews();
   
   // Initialize modal viewing
   initModal();
+  
+  // Initialize view buttons
+  initViewButtons();
 
   // Filtrage retiré
 
@@ -188,5 +193,45 @@ function initGalerieRessources() {
       modalContent.innerHTML = '';
       modalContent.appendChild(closeButton);
     }, 300);
+  }
+  
+  /**
+   * Initialize view buttons for images and videos
+   */
+  function initViewButtons() {
+    // Handle image view buttons
+    viewImageButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const imageUrl = this.getAttribute('data-view-image');
+        if (!imageUrl) return;
+        
+        // Create image element
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.classList.add('galerie-ressources__modal-image');
+        img.alt = this.closest('.galerie-ressources__item').querySelector('.galerie-ressources__item-title')?.textContent || 'Image';
+        
+        // Open in modal
+        openModal(img);
+      });
+    });
+    
+    // Handle video view buttons
+    viewVideoButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const videoUrl = this.getAttribute('data-view-video');
+        if (!videoUrl) return;
+        
+        // Check if it's YouTube or Vimeo
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+          openYouTubeVideo(videoUrl);
+        } else if (videoUrl.includes('vimeo.com')) {
+          openVimeoVideo(videoUrl);
+        } else {
+          // Assume it's a direct video file
+          openVideoFile(videoUrl);
+        }
+      });
+    });
   }
 }

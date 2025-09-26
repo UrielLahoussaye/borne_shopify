@@ -20,7 +20,7 @@
       <p class="ressources-hub__riddle-question">{{ riddle_question }}</p>
       {% if riddle_hint != blank %}
         <button class="ressources-hub__hint-button" data-hint-button>Besoin d'un indice ?</button>
-        <p class="ressources-hub__riddle-hint" data-riddle-hint>{{ riddle_hint }}</p>
+        <div class="ressources-hub__riddle-hint" data-riddle-hint>{{ riddle_hint }}</div>
       {% endif %}
     </div>
     
@@ -113,10 +113,11 @@
       "info": "La réponse est sensible à la casse"
     },
     {
-      "type": "text",
+      "type": "richtext",
       "id": "riddle_hint",
       "label": "Indice (optionnel)",
-      "default": "L'un est persistant, l'autre perd ses feuilles en hiver"
+      "default": "<p>L'un est persistant, l'autre perd ses feuilles en hiver. <a href=\"#\">En savoir plus</a></p>",
+      "info": "Ce champ accepte du texte enrichi avec des liens"
     },
     {
       "type": "header",

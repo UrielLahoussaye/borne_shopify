@@ -22,7 +22,9 @@
   width: 100%;
   height: 100vh; /* Utilise la hauteur de la fenêtre visible */
   height: 100dvh; /* Utilise la hauteur dynamique de la fenêtre pour les navigateurs qui le supportent */
-  background-color: rgba(0, 0, 0, 0.9); /* Fond sombre pour masquer le contenu derrière */
+  background-color: rgba(241, 241, 241, 0.85); /* Fond clair pour masquer le contenu derrière */
+  backdrop-filter: blur(8px); /* Ajoute un effet de flou */
+  -webkit-backdrop-filter: blur(8px); /* Pour la compatibilité Safari */
   z-index: 9999; /* Valeur très élevée pour passer au-dessus de tout */
   display: flex;
   align-items: center;
@@ -48,7 +50,7 @@
   padding: 3rem;
   max-width: 550px;
   width: 90%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   text-align: center;
   opacity: 0;
   transform: translateY(30px) scale(0.95);
@@ -62,14 +64,16 @@
 }
 
 .ressources-hub__overlay-title {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   margin-bottom: 0.75rem;
   color: #1a2456;
+  line-height: 1.2;
 }
 
 .ressources-hub__overlay-subtitle {
-  font-size: 1.125rem;
+  font-size: 1.4rem;
   color: #767676;
+  line-height: 1.5;
 }
 
 .ressources-hub__riddle {
@@ -79,7 +83,7 @@
 }
 
 .ressources-hub__riddle-question {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 500;
   margin-bottom: 1.25rem;
   color: #333;
@@ -92,9 +96,10 @@
   color: #1a2456;
   text-decoration: underline;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-bottom: 0.75rem;
   transition: color 0.3s ease;
+  padding: 8px 16px;
 }
 
 .ressources-hub__hint-button:hover {
@@ -102,14 +107,31 @@
 }
 
 .ressources-hub__riddle-hint {
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #767676;
   font-style: italic;
   display: none;
   margin-top: 0.75rem;
-  padding: 0.75rem;
-  background-color: #f5f7fa;
+  padding: 1.25rem;
+  background-color: rgba(255, 243, 224, 0.8);
+  border-left: 4px solid #f0ad4e;
   border-radius: 6px;
+  line-height: 1.5;
+}
+
+.ressources-hub__riddle-hint p {
+  margin: 0;
+}
+
+.ressources-hub__riddle-hint a {
+  color: #1a2456;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.ressources-hub__riddle-hint a:hover {
+  color: #f0ad4e;
 }
 
 .ressources-hub__riddle-hint.visible {
@@ -130,10 +152,10 @@
 
 .ressources-hub__input {
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   border: 2px solid #e5e5e5;
   border-radius: 8px;
-  font-size: 1.125rem;
+  font-size: 1.3rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -152,8 +174,8 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 1rem 2rem;
-  font-size: 1.125rem;
+  padding: 1.25rem 2.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -171,10 +193,11 @@
 
 .ressources-hub__error-message {
   color: #e73c3e;
-  font-size: 1rem;
+  font-size: 1.2rem;
   min-height: 1.5rem;
   margin-top: 0.75rem;
   transition: opacity 0.3s ease;
+  font-weight: 500;
 }
 
 /* Main Content Styles */
@@ -209,11 +232,15 @@
 @keyframes fadeInOverlay {
   0% {
     opacity: 0;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgba(241, 241, 241, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
   }
   100% {
     opacity: 1;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(241, 241, 241, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 }
 
@@ -257,20 +284,37 @@
   }
   
   .ressources-hub__overlay-title {
-    font-size: 1.75rem;
+    font-size: 2rem;
+  }
+  
+  .ressources-hub__overlay-subtitle {
+    font-size: 1.2rem;
   }
   
   .ressources-hub__riddle-question {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
+  }
+  
+  .ressources-hub__hint-button {
+    font-size: 1.1rem;
+  }
+  
+  .ressources-hub__riddle-hint {
+    font-size: 1.1rem;
+    padding: 1rem;
   }
   
   .ressources-hub__input {
-    padding: 0.875rem 1rem;
-    font-size: 1rem;
+    padding: 1rem 1.25rem;
+    font-size: 1.2rem;
   }
   
   .ressources-hub__submit-button {
-    padding: 0.875rem 1.5rem;
-    font-size: 1rem;
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .ressources-hub__error-message {
+    font-size: 1.1rem;
   }
 }
