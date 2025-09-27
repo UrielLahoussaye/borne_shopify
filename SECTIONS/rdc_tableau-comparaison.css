@@ -1,0 +1,230 @@
+/* Tableau Comparaison Section Styles */
+.section-tableau-comparaison {
+  position: relative;
+  padding: var(--section-padding-top, 36px) 0 var(--section-padding-bottom, 36px);
+}
+
+.tableau-comparaison {
+  position: relative;
+}
+
+/* Header Styles */
+.tableau-comparaison__header {
+  text-align: left;
+  margin-bottom: 2.5rem;
+}
+
+.tableau-comparaison__heading {
+  margin-bottom: 2rem;
+  color: var(--text-color, inherit);
+}
+
+.tableau-comparaison__subheading {
+  max-width: 800px;
+  color: var(--text-color-secondary, #767676);
+  font-size: 1.4rem;
+  line-height: 1.6;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+/* Table Container */
+.tableau-comparaison__container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.tableau-comparaison__table-wrapper {
+  min-width: 100%;
+}
+
+/* Table Styles */
+.tableau-comparaison__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background-color: white;
+}
+
+/* Header Cell Styles */
+.tableau-comparaison__header-cell {
+  background-color: #f5f5f5;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+  min-width: 180px;
+}
+
+.tableau-comparaison__header-cell--empty {
+  background-color: #f5f5f5;
+  border-right: 1px solid #e0e0e0;
+  min-width: 200px;
+}
+
+.tableau-comparaison__header-cell--highlight {
+  /* La couleur de fond est maintenant appliquée directement dans le HTML */
+  color: white;
+}
+
+.tableau-comparaison__header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tableau-comparaison__header-image {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tableau-comparaison__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.tableau-comparaison__column-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Row Styles */
+.tableau-comparaison__row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.tableau-comparaison__row:hover {
+  background-color: #f0f0f0;
+}
+
+/* Row Header Styles */
+.tableau-comparaison__row-header {
+  padding: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  text-align: left;
+}
+
+.tableau-comparaison__row-title {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cell Styles */
+.tableau-comparaison__cell {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.3s ease;
+}
+
+/* .tableau-comparaison__cell--highlight - Les styles sont maintenant appliqués directement dans le HTML */
+
+.tableau-comparaison__cell-content {
+  font-size: 1.4rem;
+  line-height: 1.6;
+}
+
+.tableau-comparaison__cell-content p {
+  margin: 0;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 767px) {
+  .tableau-comparaison__container {
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+    padding: 0 20px;
+  }
+  
+  .tableau-comparaison__header-cell {
+    padding: 1.5rem 1rem;
+    min-width: 140px;
+  }
+  
+  .tableau-comparaison__header-cell--empty {
+    min-width: 140px;
+  }
+  
+  .tableau-comparaison__column-title {
+    font-size: 1.6rem;
+  }
+  
+  .tableau-comparaison__row-title {
+    font-size: 1.3rem;
+  }
+  
+  .tableau-comparaison__cell {
+    padding: 1.2rem 1rem;
+  }
+  
+  .tableau-comparaison__cell-content {
+    font-size: 1.3rem;
+  }
+  
+  .tableau-comparaison__header-image {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Special Styling for Yes/No/Check Content */
+.tableau-comparaison__cell-content .icon-check,
+.tableau-comparaison__cell-content .icon-x {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24px;
+  font-weight: bold;
+}
+
+.tableau-comparaison__cell-content .icon-check {
+  background-color: #27ae60;
+  color: white;
+}
+
+.tableau-comparaison__cell-content .icon-x {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Highlight Column Styles */
+.tableau-comparaison__header-cell--highlight .tableau-comparaison__column-title {
+  color: white;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tableau-comparaison__table {
+  animation: fadeIn 0.6s ease forwards;
+}
