@@ -11,7 +11,7 @@
   assign highlight_color_rgb = highlight_color | color_to_rgb | remove: 'rgb(' | remove: ')' 
 -%}
 
-<div class="section-tableau-comparaison section-padding section-bg isolate" {% render 'section-properties' %} data-tableau-comparaison style="--highlight-color: {{ highlight_color }}; --highlight-color-rgb: {{ highlight_color_rgb }}">
+<div class="section-tableau-comparaison section-padding section-bg isolate" {% render 'section-properties' %} data-tableau-comparaison style="--highlight-color: {{ highlight_color }}; --highlight-color-rgb: {{ highlight_color_rgb }}; --overlay-opacity: {{ section.settings.overlay_opacity | default: 85 | divided_by: 100.0 }}; {% if section.settings.bg_color != blank %}background-color: {{ section.settings.bg_color }};{% endif %}">
   <div class="tableau-comparaison {{ section_width }}">
     <div class="tableau-comparaison__header">
       {% if heading != blank %}
@@ -23,7 +23,7 @@
     </div>
 
     <div class="tableau-comparaison__container">
-      <div class="tableau-comparaison__table-wrapper">
+      <div class="tableau-comparaison__table-wrapper" {% if section.settings.background_image != blank %}style="background-image: url({{ section.settings.background_image | image_url: width: 2000 }}); background-position: center {{ section.settings.background_position }};"{% endif %}>
         <table class="tableau-comparaison__table">
           <thead>
             <tr>
@@ -146,12 +146,47 @@
     },
     {
       "type": "header",
-      "content": "Couleurs"
+      "content": "Couleurs et arrière-plan"
     },
     {
       "type": "color",
       "id": "bg_color",
-      "label": "Arrière-plan"
+      "label": "Couleur d'arrière-plan"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Image d'arrière-plan"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité de l'overlay",
+      "default": 85
+    },
+    {
+      "type": "select",
+      "id": "background_position",
+      "label": "Position de l'image",
+      "options": [
+        {
+          "value": "top",
+          "label": "Haut"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "bottom",
+          "label": "Bas"
+        }
+      ],
+      "default": "center"
     },
     {
       "type": "color",
