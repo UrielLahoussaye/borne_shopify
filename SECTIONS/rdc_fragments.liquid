@@ -97,7 +97,8 @@
                data-article-id="{{ article.id }}"
                data-article-url="{{ article.url }}"
                data-tags="{{ article.tags | join: ',' }}"
-               data-published-at="{{ article.published_at | date: '%s' }}">
+               data-published-at="{{ article.published_at | date: '%s' }}"
+               data-excerpt="{{ article.excerpt_or_content | strip_html | truncate: 200 | escape }}">
             
             <div class="fragment-card-inner">
               {%- comment -%} Pastille "Nouveau" pour les articles récents {%- endcomment -%}
@@ -146,6 +147,13 @@
         <polyline points="9 18 15 12 9 6"></polyline>
       </svg>
     </button>
+  </div>
+
+  {%- comment -%} Zone d'extrait fixe {%- endcomment -%}
+  <div class="fragments-excerpt-container">
+    <p class="fragments-excerpt" id="fragments-excerpt-{{ section.id }}">
+      Sélectionnez un fragment pour découvrir son histoire...
+    </p>
   </div>
 
   {%- comment -%} Indicateurs (générés dynamiquement) {%- endcomment -%}

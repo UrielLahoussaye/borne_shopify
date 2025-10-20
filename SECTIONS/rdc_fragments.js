@@ -16,6 +16,7 @@ class FragmentsCarousel {
     this.nextBtn = section.querySelector('.carousel-nav-next');
     this.searchInput = section.querySelector('.fragments-search-input');
     this.filters = Array.from(section.querySelectorAll('.fragments-filter'));
+    this.excerptElement = section.querySelector('.fragments-excerpt');
     
     this.currentIndex = 0;
     this.totalCards = this.cards.length;
@@ -131,6 +132,7 @@ class FragmentsCarousel {
     if (closestCard) {
       this.currentIndex = closestCard.index;
       this.updateIndicators();
+      this.updateExcerpt(closestCard.index);
     }
   }
 
@@ -241,6 +243,31 @@ class FragmentsCarousel {
         indicator.classList.remove('active');
       }
     });
+  }
+
+  /**
+   * Met à jour l'extrait avec un effet de fade
+   */
+  updateExcerpt(cardIndex) {
+    if (!this.excerptElement) return;
+    
+    const card = this.cards[cardIndex];
+    if (!card) return;
+    
+    const newExcerpt = card.dataset.excerpt || 'Sélectionnez un fragment pour découvrir son histoire...';
+    
+    // Si le texte est le même, ne rien faire
+    if (this.excerptElement.textContent === newExcerpt) return;
+    
+    // Fade out
+    this.excerptElement.classList.add('fade-out');
+    
+    // Changer le texte après le fade out
+    setTimeout(() => {
+      this.excerptElement.textContent = newExcerpt;
+      // Fade in
+      this.excerptElement.classList.remove('fade-out');
+    }, 300);
   }
 
   /**

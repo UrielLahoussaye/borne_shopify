@@ -122,7 +122,7 @@
 .fragments-carousel-container {
   position: relative;
   width: 100%;
-  margin: 80px auto 60px;
+  margin: 0 auto 0;
   overflow: hidden;
 }
 
@@ -140,18 +140,16 @@
 
 .fragments-carousel-container::before {
   left: 0;
-  background: linear-gradient(to right, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0) 100%);
 }
 
 .fragments-carousel-container::after {
   right: 0;
-  background: linear-gradient(to left, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0) 100%);
 }
 
 .fragments-carousel {
   display: flex;
   gap: 30px;
-  padding: 40px 20px;
+  padding: 0 20px;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
@@ -300,12 +298,41 @@
   margin: 0;
   transition: all 0.3s ease;
   opacity: 0.6;
+  height: 60px; /* Hauteur fixe pour éviter les sauts */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
 }
 
 /* Titre de la carte centrale */
 .fragment-card.is-center .fragment-card-title {
   opacity: 1;
   font-size: 1.8rem;
+}
+
+/* Zone d'extrait fixe */
+.fragments-excerpt-container {
+  max-width: 700px;
+  padding: 0 20px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fragments-excerpt {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #5D6D7E;
+  text-align: center;
+  margin: 0;
+  transition: opacity 0.3s ease;
+  width: 100%;
+}
+
+.fragments-excerpt.fade-out {
+  opacity: 0;
 }
 
 
@@ -425,6 +452,7 @@
   
   .fragment-card-title {
     font-size: 1.3rem;
+    height: 55px;
   }
   
   .fragment-card.is-center .fragment-card-title {
@@ -452,10 +480,19 @@
   
   .fragment-card-title {
     font-size: 1.2rem;
+    height: 50px;
   }
   
   .fragment-card.is-center .fragment-card-title {
     font-size: 1.4rem;
+  }
+  
+  .fragments-excerpt-container {
+    height: 90px;
+  }
+  
+  .fragments-excerpt {
+    font-size: 0.9rem;
   }
   
   .fragments-carousel {
@@ -509,10 +546,20 @@
   
   .fragment-card-title {
     font-size: 1rem;
+    height: 45px;
   }
   
   .fragment-card.is-center .fragment-card-title {
     font-size: 1.2rem;
+  }
+  
+  .fragments-excerpt-container {
+    height: auto;
+    margin: 0 auto 0;
+  }
+  
+  .fragments-excerpt {
+    font-size: 0.85rem;
   }
   
   .fragments-carousel {
