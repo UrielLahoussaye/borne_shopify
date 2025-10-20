@@ -34,67 +34,86 @@
       >
     </div>
 
-    {%- comment -%} Filtres/Tags {%- endcomment -%}
+    {%- comment -%} Filtres de catégories (générés automatiquement depuis les tags) {%- endcomment -%}
     <div class="fragments-filters">
-      <button class="fragments-filter active" data-filter="all">Tous</button>
-      {% for block in section.blocks %}
-        {% if block.type == 'filter' %}
-          <button class="fragments-filter" data-filter="{{ block.settings.filter_tag }}" {{ block.shopify_attributes }}>
-            {{ block.settings.filter_label }}
+      <button class="fragments-filter active" data-filter="all">
+        Tous les fragments
+      </button>
+      
+      {% if section.settings.blog != blank %}
+        {%- assign blog = blogs[section.settings.blog] -%}
+        {%- assign all_tags = '' -%}
+        {%- assign articles_limit = section.settings.articles_count | default: 12 -%}
+        
+        {%- comment -%} Collecter tous les tags uniques des articles {%- endcomment -%}
+        {% for article in blog.articles limit: articles_limit %}
+          {% for tag in article.tags %}
+            {%- unless all_tags contains tag -%}
+              {%- if all_tags == '' -%}
+                {%- assign all_tags = tag -%}
+              {%- else -%}
+                {%- assign all_tags = all_tags | append: '|' | append: tag -%}
+              {%- endif -%}
+            {%- endunless -%}
+          {% endfor %}
+        {% endfor %}
+        
+        {%- comment -%} Afficher un bouton pour chaque tag unique {%- endcomment -%}
+        {%- assign tags_array = all_tags | split: '|' -%}
+        {% for tag in tags_array %}
+          <button class="fragments-filter" data-filter="{{ tag | handleize }}">
+            {{ tag }}
           </button>
-        {% endif %}
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
 
-  {%- comment -%} Carrousel 3D rotatif {%- endcomment -%}
+  {%- comment -%} Carrousel horizontal scrollable {%- endcomment -%}
   <div class="fragments-carousel-container">
     <div class="fragments-carousel" id="fragments-carousel-{{ section.id }}">
-      {%- comment -%} Phase 1: Cartes de test avec couleurs {%- endcomment -%}
-      <div class="fragment-card" data-index="0" style="--card-color: #5D6D7E;">
-        <div class="fragment-card-inner">
-          <div class="fragment-card-content">
-            <p>Cliquez sur la carte pour découvrir le fragment</p>
-          </div>
-        </div>
-        <h3 class="fragment-card-title">VALKYRIE</h3>
-      </div>
+      {%- comment -%} Phase 2: Cartes dynamiques depuis le blog {%- endcomment -%}
       
-      <div class="fragment-card" data-index="1" style="--card-color: #85929E;">
-        <div class="fragment-card-inner">
-          <div class="fragment-card-content">
-            <p>Cliquez sur la carte pour découvrir le fragment</p>
+      {% if section.settings.blog != blank %}
+        {%- assign blog = blogs[section.settings.blog] -%}
+        {%- assign articles_limit = section.settings.articles_count | default: 12 -%}
+        
+        {% for article in blog.articles limit: articles_limit %}
+          <div class="fragment-card" 
+               data-index="{{ forloop.index0 }}"
+               data-article-id="{{ article.id }}"
+               data-article-url="{{ article.url }}"
+               data-tags="{{ article.tags | join: ',' }}">
+            
+            <div class="fragment-card-inner">
+              {%- comment -%} Image de l'article comme fond {%- endcomment -%}
+              {% if article.image %}
+                <div class="fragment-card-image" style="background-image: url('{{ article.image | image_url: width: 800 }}');"></div>
+              {% else %}
+                <div class="fragment-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+              {% endif %}
+              
+              <div class="fragment-card-content">
+                <p>{{ article.excerpt_or_content | strip_html | truncate: 100 }}</p>
+              </div>
+            </div>
+            
+            <h3 class="fragment-card-title">{{ article.title }}</h3>
           </div>
-        </div>
-        <h3 class="fragment-card-title">ODIN</h3>
-      </div>
-      
-      <div class="fragment-card" data-index="2" style="--card-color: #34495E;">
-        <div class="fragment-card-inner">
-          <div class="fragment-card-content">
-            <p>Cliquez sur la carte pour découvrir le fragment</p>
+        {% endfor %}
+        
+      {% else %}
+        {%- comment -%} Fallback: Cartes de test si aucun blog n'est sélectionné {%- endcomment -%}
+        <div class="fragment-card" data-index="0">
+          <div class="fragment-card-inner">
+            <div class="fragment-card-image" style="background: linear-gradient(135deg, #5D6D7E 0%, #34495E 100%);"></div>
+            <div class="fragment-card-content">
+              <p>Sélectionnez un blog dans les paramètres de la section</p>
+            </div>
           </div>
+          <h3 class="fragment-card-title">Configuration requise</h3>
         </div>
-        <h3 class="fragment-card-title">THOR</h3>
-      </div>
-      
-      <div class="fragment-card" data-index="3" style="--card-color: #566573;">
-        <div class="fragment-card-inner">
-          <div class="fragment-card-content">
-            <p>Cliquez sur la carte pour découvrir le fragment</p>
-          </div>
-        </div>
-        <h3 class="fragment-card-title">FENRIR</h3>
-      </div>
-      
-      <div class="fragment-card" data-index="4" style="--card-color: #717D8A;">
-        <div class="fragment-card-inner">
-          <div class="fragment-card-content">
-            <p>Cliquez sur la carte pour découvrir le fragment</p>
-          </div>
-        </div>
-        <h3 class="fragment-card-title">LOKI</h3>
-      </div>
+      {% endif %}
     </div>
 
     {%- comment -%} Contrôles de navigation {%- endcomment -%}

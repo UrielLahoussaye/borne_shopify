@@ -28,6 +28,9 @@ class FragmentsCarousel {
   init() {
     console.log('🎨 Fragments Carousel initialized with', this.totalCards, 'cards');
     
+    // Mettre à jour le placeholder de recherche avec le nombre de cartes
+    this.updateSearchPlaceholder();
+    
     // Détecter la carte centrale au scroll
     this.setupScrollDetection();
     
@@ -54,6 +57,15 @@ class FragmentsCarousel {
       const middleIndex = Math.floor(this.totalCards / 2);
       this.scrollToCard(middleIndex);
     }, 100);
+  }
+
+  /**
+   * Met à jour le placeholder de recherche avec le nombre de cartes
+   */
+  updateSearchPlaceholder() {
+    if (!this.searchInput) return;
+    
+    this.searchInput.placeholder = `Rechercher parmi les ${this.totalCards} fragments...`;
   }
 
   /**
@@ -250,21 +262,57 @@ class FragmentsCarousel {
   }
 
   /**
-   * Filtrer les cartes (Phase 2)
+   * Filtrer les cartes par tag
    */
   filterCards(filterValue) {
-    // Phase 1: Juste un log
-    console.log('Filtering by:', filterValue);
+    console.log('🏷️ Filtering by:', filterValue);
     
-    // Phase 2: Implémenter le filtrage réel des articles
-    // if (filterValue === 'all') {
-    //   this.cards.forEach(card => card.style.display = 'block');
-    // } else {
-    //   this.cards.forEach(card => {
-    //     const tags = card.dataset.tags || '';
-    //     card.style.display = tags.includes(filterValue) ? 'block' : 'none';
-    //   });
-    // }
+    let visibleCount = 0;
+    
+    if (filterValue === 'all') {
+      // Afficher toutes les cartes
+      this.cards.forEach(card => {
+        card.style.display = 'flex';
+        visibleCount++;
+      });
+    } else {
+      // Filtrer par tag (normaliser les tags pour la comparaison)
+      this.cards.forEach(card => {
+        const tags = card.dataset.tags || '';
+        const tagsArray = tags.split(',').map(tag => this.handleize(tag.trim()));
+        const match = tagsArray.includes(filterValue.toLowerCase());
+        
+        if (match) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    
+    console.log(`✅ ${visibleCount} carte(s) affichée(s)`);
+    
+    // Mettre à jour la carte centrale après le filtrage
+    setTimeout(() => {
+      this.updateCenterCard();
+    }, 100);
+  }
+
+  /**
+   * Normaliser un tag (similaire au filtre handleize de Shopify)
+   */
+  handleize(str) {
+    return str
+      .toLowerCase()
+      .replace(/[àáâãäå]/g, 'a')
+      .replace(/[èéêë]/g, 'e')
+      .replace(/[ìíîï]/g, 'i')
+      .replace(/[òóôõö]/g, 'o')
+      .replace(/[ùúûü]/g, 'u')
+      .replace(/[ç]/g, 'c')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
   /**
@@ -325,9 +373,12 @@ class FragmentsCarousel {
         const isCentered = card.classList.contains('is-center');
         
         if (isCentered) {
-          console.log('✨ Central card clicked - Ready to open article');
-          // TODO Phase 2: Ouvrir l'article
-          // window.location.href = card.dataset.url;
+          // Ouvrir l'article
+          const articleUrl = card.dataset.articleUrl;
+          if (articleUrl) {
+            console.log('✨ Opening article:', articleUrl);
+            window.location.href = articleUrl;
+          }
         } else {
           console.log('➡️ Scrolling to card', index);
           
