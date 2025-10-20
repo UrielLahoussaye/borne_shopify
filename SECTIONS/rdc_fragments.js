@@ -281,32 +281,39 @@ class FragmentsCarousel {
         const query = e.target.value.toLowerCase().trim();
         console.log('🔎 Search query:', query);
         
-        // TODO Phase 2: Rechercher dans les articles
         this.searchCards(query);
       }, 300);
     });
   }
 
   /**
-   * Rechercher dans les cartes (Phase 2)
+   * Rechercher dans les cartes
    */
   searchCards(query) {
-    // Phase 1: Juste un log
-    console.log('Searching for:', query);
+    let visibleCount = 0;
     
-    // Phase 2: Implémenter la recherche réelle
-    // if (!query) {
-    //   this.cards.forEach(card => card.style.display = 'block');
-    //   return;
-    // }
-    // 
-    // this.cards.forEach(card => {
-    //   const title = card.dataset.title || '';
-    //   const content = card.dataset.content || '';
-    //   const match = title.toLowerCase().includes(query) || 
-    //                 content.toLowerCase().includes(query);
-    //   card.style.display = match ? 'block' : 'none';
-    // });
+    this.cards.forEach((card, index) => {
+      // Récupérer le titre de la carte
+      const titleElement = card.querySelector('.fragment-card-title');
+      const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+      
+      // Vérifier si le titre contient le terme de recherche
+      const match = !query || title.includes(query);
+      
+      if (match) {
+        card.style.display = 'flex';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    
+    console.log(`✅ ${visibleCount} carte(s) trouvée(s)`);
+    
+    // Mettre à jour la carte centrale après le filtrage
+    setTimeout(() => {
+      this.updateCenterCard();
+    }, 100);
   }
 
   /**
