@@ -1,11 +1,20 @@
+
+
+
+/* ========================================
+   ANNULATION STYLE - REST 
+   ======================================== */
+footer, .invisible_fragments{
+  display: none;
+}
+
 /* ========================================
    FRAGMENTS D'HISTOIRE - SECTION PRINCIPALE
    ======================================== */
 
 .rdc-fragments-section {
-  padding: 80px 20px 120px;
+  padding: 80px 20px 0;
   background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-  min-height: 100vh;
   overflow: hidden;
 }
 
@@ -374,8 +383,10 @@
   padding: 0 20px;
   margin: auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
 }
 
 .fragments-excerpt {
@@ -390,6 +401,15 @@
 
 .fragments-excerpt.fade-out {
   opacity: 0;
+}
+
+.fragments-cta {
+  font-size: 1.4rem;
+  color: #9CA3AF;
+  text-align: center;
+  margin: 0;
+  font-style: italic;
+  letter-spacing: 0.02em;
 }
 
 
