@@ -181,23 +181,25 @@
 .fragment-card {
   flex-shrink: 0;
   width: 350px;
-  height: 500px;
   scroll-snap-align: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0.4;
   transform: scale(0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .fragment-card-inner {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 500px;
   border-radius: 16px;
   background: var(--card-color, #5D6D7E);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  transform-style: preserve-3d;
   transition: all 0.4s ease;
 }
 
@@ -230,19 +232,29 @@
   padding: 20px;
 }
 
-.fragment-card-content h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.fragment-card-content p {
+  font-size: 0.9rem;
+  opacity: 0.9;
   pointer-events: none;
 }
 
-.fragment-card-content p {
-  font-size: 1rem;
-  opacity: 0.9;
-  pointer-events: none;
+/* Titre sous la carte */
+.fragment-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #2C3E50;
+  text-align: center;
+  margin: 0;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+/* Titre de la carte centrale */
+.fragment-card.is-center .fragment-card-title {
+  opacity: 1;
+  font-size: 1.8rem;
 }
 
 
@@ -354,7 +366,18 @@
   
   .fragment-card {
     width: 300px;
+  }
+  
+  .fragment-card-inner {
     height: 450px;
+  }
+  
+  .fragment-card-title {
+    font-size: 1.3rem;
+  }
+  
+  .fragment-card.is-center .fragment-card-title {
+    font-size: 1.6rem;
   }
 }
 
@@ -370,7 +393,18 @@
   
   .fragment-card {
     width: 250px;
+  }
+  
+  .fragment-card-inner {
     height: 380px;
+  }
+  
+  .fragment-card-title {
+    font-size: 1.2rem;
+  }
+  
+  .fragment-card.is-center .fragment-card-title {
+    font-size: 1.4rem;
   }
   
   .fragments-carousel {
@@ -416,7 +450,18 @@
   
   .fragment-card {
     width: 220px;
+  }
+  
+  .fragment-card-inner {
     height: 340px;
+  }
+  
+  .fragment-card-title {
+    font-size: 1rem;
+  }
+  
+  .fragment-card.is-center .fragment-card-title {
+    font-size: 1.2rem;
   }
   
   .fragments-carousel {

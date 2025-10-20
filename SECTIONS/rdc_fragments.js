@@ -120,10 +120,11 @@ class FragmentsCarousel {
   }
 
   /**
-   * Navigation vers la carte suivante
+   * Navigation vers la carte suivante (avec boucle)
    */
   next() {
-    const nextIndex = Math.min(this.currentIndex + 1, this.totalCards - 1);
+    // Boucler : si on est à la dernière carte, revenir à la première
+    const nextIndex = (this.currentIndex + 1) % this.totalCards;
     
     // Définir la cible et appliquer l'animation immédiatement
     this.targetIndex = nextIndex;
@@ -139,10 +140,11 @@ class FragmentsCarousel {
   }
 
   /**
-   * Navigation vers la carte précédente
+   * Navigation vers la carte précédente (avec boucle)
    */
   prev() {
-    const prevIndex = Math.max(this.currentIndex - 1, 0);
+    // Boucler : si on est à la première carte, aller à la dernière
+    const prevIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
     
     // Définir la cible et appliquer l'animation immédiatement
     this.targetIndex = prevIndex;
