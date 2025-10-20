@@ -95,24 +95,80 @@
 .fragments-filter {
   padding: 10px 24px;
   font-size: 1.3rem;
-  border: 2px solid #E8ECEF;
+  border: 2px solid transparent;
   border-radius: 50px;
-  background: #fff;
-  color: #5D6D7E;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: var(--font-heading-family);
+  font-weight: 600;
+}
+
+/* Couleurs pastel pour chaque filtre */
+.fragments-filter:nth-child(1) {
+  background: #E8F4F8;
+  color: #2C5F7C;
+}
+
+.fragments-filter:nth-child(2) {
+  background: #FFE8E8;
+  color: #8B3A3A;
+}
+
+.fragments-filter:nth-child(3) {
+  background: #FFF4E6;
+  color: #8B6914;
+}
+
+.fragments-filter:nth-child(4) {
+  background: #F0E8FF;
+  color: #5A3A8B;
+}
+
+.fragments-filter:nth-child(5) {
+  background: #E8FFE8;
+  color: #2D6B2D;
+}
+
+.fragments-filter:nth-child(6) {
+  background: #FFE8F5;
+  color: #8B3A6B;
+}
+
+.fragments-filter:nth-child(7) {
+  background: #E8F8FF;
+  color: #2C6B8B;
+}
+
+.fragments-filter:nth-child(8) {
+  background: #FFF0E8;
+  color: #8B5A2D;
+}
+
+.fragments-filter:nth-child(9) {
+  background: #F5E8FF;
+  color: #6B3A8B;
+}
+
+.fragments-filter:nth-child(10) {
+  background: #E8FFF0;
+  color: #2D8B5A;
+}
+
+/* Répéter les couleurs pour les filtres suivants */
+.fragments-filter:nth-child(n+11) {
+  background: #E8F4F8;
+  color: #2C5F7C;
 }
 
 .fragments-filter:hover {
-  border-color: #5D6D7E;
-  background: #F8F9FA;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .fragments-filter.active {
-  background: #5D6D7E;
-  color: #fff;
-  border-color: #5D6D7E;
+  border-color: currentColor;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ========================================
@@ -454,10 +510,6 @@
     font-size: 1.3rem;
     height: 55px;
   }
-  
-  .fragment-card.is-center .fragment-card-title {
-    font-size: 1.6rem;
-  }
 }
 
 @media screen and (max-width: 768px) {
@@ -479,21 +531,14 @@
   }
   
   .fragment-card-title {
-    font-size: 1.2rem;
     height: 50px;
   }
   
-  .fragment-card.is-center .fragment-card-title {
-    font-size: 1.4rem;
-  }
   
   .fragments-excerpt-container {
     height: 90px;
   }
-  
-  .fragments-excerpt {
-    font-size: 0.9rem;
-  }
+
   
   .fragments-carousel {
     gap: 20px;
@@ -545,22 +590,16 @@
     height: 45px;
   }
   
-  .fragment-card.is-center .fragment-card-title {
-    font-size: 1.2rem;
-  }
   
   .fragments-excerpt-container {
     height: auto;
     margin: 0 auto 0;
   }
-  
-  .fragments-excerpt {
-    font-size: 0.85rem;
-  }
+
   
   .fragments-carousel {
     gap: 15px;
-    padding: 30px 10px;
+    padding: 0px 10px;
   }
   
   .fragments-carousel-container::before,
