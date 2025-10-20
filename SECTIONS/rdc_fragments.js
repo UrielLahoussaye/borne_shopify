@@ -249,26 +249,26 @@ class FragmentsCarousel {
   setupFilters() {
     this.filters.forEach(filter => {
       filter.addEventListener('click', (e) => {
-        // Retirer l'état actif de tous les filtres
+        // Retirer la classe active de tous les filtres
         this.filters.forEach(f => f.classList.remove('active'));
         
-        // Activer le filtre cliqué
+        // Ajouter la classe active au filtre cliqué
         e.target.classList.add('active');
         
         const filterValue = e.target.dataset.filter;
-        console.log('🔍 Filter selected:', filterValue);
+        const filterType = e.target.dataset.filterType;
+        console.log('🔍 Filter selected:', filterValue, 'Type:', filterType);
         
-        // TODO Phase 2: Filtrer les articles par tag
-        this.filterCards(filterValue);
+        this.filterCards(filterValue, filterType);
       });
     });
   }
 
   /**
-   * Filtrer les cartes par tag
+   * Filtrer les cartes par tag ou par date
    */
-  filterCards(filterValue) {
-    console.log('🏷️ Filtering by:', filterValue);
+  filterCards(filterValue, filterType) {
+    console.log('🏷️ Filtering by:', filterValue, 'Type:', filterType);
     
     let visibleCount = 0;
     let firstVisibleIndex = -1;
@@ -279,6 +279,23 @@ class FragmentsCarousel {
         card.classList.remove('hidden');
         if (firstVisibleIndex === -1) firstVisibleIndex = index;
         visibleCount++;
+      });
+    } else if (filterType === 'date' && filterValue === 'recent') {
+      // Filtrer par date (articles de moins de 60 jours)
+      const now = Math.floor(Date.now() / 1000); // Timestamp actuel en secondes
+      const sixtyDaysAgo = now - (60 * 24 * 60 * 60); // 60 jours en secondes
+      
+      this.cards.forEach((card, index) => {
+        const publishedAt = parseInt(card.dataset.publishedAt || '0');
+        const isRecent = publishedAt >= sixtyDaysAgo;
+        
+        if (isRecent) {
+          card.classList.remove('hidden');
+          if (firstVisibleIndex === -1) firstVisibleIndex = index;
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
       });
     } else {
       // Filtrer par tag (normaliser les tags pour la comparaison)
