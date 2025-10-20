@@ -96,6 +96,9 @@ class FragmentsCarousel {
     let closestDistance = Infinity;
     
     this.cards.forEach((card, index) => {
+      // Ignorer les cartes cachées
+      if (card.classList.contains('hidden')) return;
+      
       const cardRect = card.getBoundingClientRect();
       const cardCenter = cardRect.left + cardRect.width / 2;
       const distance = Math.abs(carouselCenter - cardCenter);
@@ -272,7 +275,7 @@ class FragmentsCarousel {
     if (filterValue === 'all') {
       // Afficher toutes les cartes
       this.cards.forEach(card => {
-        card.style.display = 'flex';
+        card.classList.remove('hidden');
         visibleCount++;
       });
     } else {
@@ -283,20 +286,20 @@ class FragmentsCarousel {
         const match = tagsArray.includes(filterValue.toLowerCase());
         
         if (match) {
-          card.style.display = 'flex';
+          card.classList.remove('hidden');
           visibleCount++;
         } else {
-          card.style.display = 'none';
+          card.classList.add('hidden');
         }
       });
     }
     
     console.log(`✅ ${visibleCount} carte(s) affichée(s)`);
     
-    // Mettre à jour la carte centrale après le filtrage
+    // Mettre à jour la carte centrale après l'animation
     setTimeout(() => {
       this.updateCenterCard();
-    }, 100);
+    }, 350);
   }
 
   /**
@@ -349,19 +352,19 @@ class FragmentsCarousel {
       const match = !query || title.includes(query);
       
       if (match) {
-        card.style.display = 'flex';
+        card.classList.remove('hidden');
         visibleCount++;
       } else {
-        card.style.display = 'none';
+        card.classList.add('hidden');
       }
     });
     
     console.log(`✅ ${visibleCount} carte(s) trouvée(s)`);
     
-    // Mettre à jour la carte centrale après le filtrage
+    // Mettre à jour la carte centrale après l'animation
     setTimeout(() => {
       this.updateCenterCard();
-    }, 100);
+    }, 350);
   }
 
   /**

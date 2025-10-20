@@ -192,6 +192,13 @@
   gap: 20px;
 }
 
+/* Animation pour les cartes filtrées */
+.fragment-card.hidden {
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+  pointer-events: none;
+}
+
 .fragment-card-inner {
   position: relative;
   width: 100%;
