@@ -271,22 +271,25 @@ class FragmentsCarousel {
     console.log('🏷️ Filtering by:', filterValue);
     
     let visibleCount = 0;
+    let firstVisibleIndex = -1;
     
     if (filterValue === 'all') {
       // Afficher toutes les cartes
-      this.cards.forEach(card => {
+      this.cards.forEach((card, index) => {
         card.classList.remove('hidden');
+        if (firstVisibleIndex === -1) firstVisibleIndex = index;
         visibleCount++;
       });
     } else {
       // Filtrer par tag (normaliser les tags pour la comparaison)
-      this.cards.forEach(card => {
+      this.cards.forEach((card, index) => {
         const tags = card.dataset.tags || '';
         const tagsArray = tags.split(',').map(tag => this.handleize(tag.trim()));
         const match = tagsArray.includes(filterValue.toLowerCase());
         
         if (match) {
           card.classList.remove('hidden');
+          if (firstVisibleIndex === -1) firstVisibleIndex = index;
           visibleCount++;
         } else {
           card.classList.add('hidden');
@@ -296,10 +299,27 @@ class FragmentsCarousel {
     
     console.log(`✅ ${visibleCount} carte(s) affichée(s)`);
     
-    // Mettre à jour la carte centrale après l'animation
-    setTimeout(() => {
-      this.updateCenterCard();
-    }, 350);
+    // Si la carte actuelle est cachée, scroller vers la première carte visible
+    const currentCard = this.cards[this.currentIndex];
+    if (currentCard && currentCard.classList.contains('hidden') && firstVisibleIndex !== -1) {
+      console.log('➡️ Current card hidden, scrolling to first visible card:', firstVisibleIndex);
+      setTimeout(() => {
+        this.targetIndex = firstVisibleIndex;
+        this.cards.forEach((card, index) => {
+          if (index === firstVisibleIndex) {
+            card.classList.add('is-center');
+          } else {
+            card.classList.remove('is-center');
+          }
+        });
+        this.scrollToCard(firstVisibleIndex);
+      }, 350);
+    } else {
+      // Sinon, juste mettre à jour la carte centrale après l'animation
+      setTimeout(() => {
+        this.updateCenterCard();
+      }, 350);
+    }
   }
 
   /**
@@ -342,6 +362,7 @@ class FragmentsCarousel {
    */
   searchCards(query) {
     let visibleCount = 0;
+    let firstVisibleIndex = -1;
     
     this.cards.forEach((card, index) => {
       // Récupérer le titre de la carte
@@ -353,6 +374,7 @@ class FragmentsCarousel {
       
       if (match) {
         card.classList.remove('hidden');
+        if (firstVisibleIndex === -1) firstVisibleIndex = index;
         visibleCount++;
       } else {
         card.classList.add('hidden');
@@ -361,10 +383,27 @@ class FragmentsCarousel {
     
     console.log(`✅ ${visibleCount} carte(s) trouvée(s)`);
     
-    // Mettre à jour la carte centrale après l'animation
-    setTimeout(() => {
-      this.updateCenterCard();
-    }, 350);
+    // Si la carte actuelle est cachée, scroller vers la première carte visible
+    const currentCard = this.cards[this.currentIndex];
+    if (currentCard && currentCard.classList.contains('hidden') && firstVisibleIndex !== -1) {
+      console.log('➡️ Current card hidden, scrolling to first visible card:', firstVisibleIndex);
+      setTimeout(() => {
+        this.targetIndex = firstVisibleIndex;
+        this.cards.forEach((card, index) => {
+          if (index === firstVisibleIndex) {
+            card.classList.add('is-center');
+          } else {
+            card.classList.remove('is-center');
+          }
+        });
+        this.scrollToCard(firstVisibleIndex);
+      }, 350);
+    } else {
+      // Sinon, juste mettre à jour la carte centrale après l'animation
+      setTimeout(() => {
+        this.updateCenterCard();
+      }, 350);
+    }
   }
 
   /**
