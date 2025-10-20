@@ -20,6 +20,7 @@ class FragmentsCarousel {
     this.currentIndex = 0;
     this.totalCards = this.cards.length;
     this.scrollTimeout = null;
+    this.targetIndex = null; // Carte ciblée lors d'un clic
     
     this.init();
   }
@@ -60,11 +61,26 @@ class FragmentsCarousel {
    */
   setupScrollDetection() {
     this.carousel.addEventListener('scroll', () => {
-      clearTimeout(this.scrollTimeout);
-      
-      this.scrollTimeout = setTimeout(() => {
+      // Si on a une carte ciblée, la garder active pendant le scroll
+      if (this.targetIndex !== null) {
+        this.cards.forEach((card, index) => {
+          if (index === this.targetIndex) {
+            card.classList.add('is-center');
+          } else {
+            card.classList.remove('is-center');
+          }
+        });
+      } else {
+        // Sinon, détecter normalement
         this.updateCenterCard();
-      }, 100);
+      }
+      
+      // Après le scroll, réinitialiser et détecter la vraie carte centrale
+      clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = setTimeout(() => {
+        this.targetIndex = null;
+        this.updateCenterCard();
+      }, 50);
     });
   }
 
@@ -270,6 +286,15 @@ class FragmentsCarousel {
           // window.location.href = card.dataset.url;
         } else {
           console.log('➡️ Scrolling to card', index);
+          
+          // Définir cette carte comme cible
+          this.targetIndex = index;
+          
+          // Appliquer immédiatement la classe is-center pour démarrer l'animation
+          this.cards.forEach(c => c.classList.remove('is-center'));
+          card.classList.add('is-center');
+          
+          // Puis scroller vers la carte
           this.scrollToCard(index);
         }
       });
