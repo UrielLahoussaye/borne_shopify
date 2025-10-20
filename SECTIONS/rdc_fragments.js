@@ -106,9 +106,9 @@ class FragmentsCarousel {
       }
     });
     
-    // Si on a une carte ciblée (clic), la garder active
-    if (this.targetIndex !== null && closestCard && closestCard.index === this.targetIndex) {
-      // La carte ciblée est bien celle qui est au centre, tout va bien
+    // Si on a une carte ciblée (clic/navigation), la garder active pendant le scroll
+    if (this.targetIndex !== null) {
+      // Garder la carte ciblée active pendant tout le trajet
       this.cards.forEach((card, index) => {
         if (index === this.targetIndex) {
           card.classList.add('is-center');
