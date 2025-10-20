@@ -1,6 +1,6 @@
 /**
  * RDC FRAGMENTS D'HISTOIRE
- * Carrousel 3D rotatif pour blog
+ * Carrousel horizontal scrollable pour blog
  * Phase 1: Système avec cadres de couleur
  * Phase 2: Connexion aux articles du blog
  */
@@ -19,8 +19,7 @@ class FragmentsCarousel {
     
     this.currentIndex = 0;
     this.totalCards = this.cards.length;
-    this.isAnimating = false;
-    this.autoRotateInterval = null;
+    this.scrollTimeout = null;
     
     this.init();
   }
@@ -28,8 +27,8 @@ class FragmentsCarousel {
   init() {
     console.log('🎨 Fragments Carousel initialized with', this.totalCards, 'cards');
     
-    // Initialiser les positions des cartes
-    this.updateCardPositions();
+    // Détecter la carte centrale au scroll
+    this.setupScrollDetection();
     
     // Événements de navigation
     this.setupNavigation();
@@ -46,94 +45,97 @@ class FragmentsCarousel {
     // Clics sur les cartes
     this.setupCardClicks();
     
-    // Auto-rotation (optionnel)
-    // this.startAutoRotate();
-    
     // Support clavier
     this.setupKeyboardNavigation();
+    
+    // Centrer la carte du milieu au chargement
+    setTimeout(() => {
+      const middleIndex = Math.floor(this.totalCards / 2);
+      this.scrollToCard(middleIndex);
+    }, 100);
   }
 
   /**
-   * Met à jour les positions de toutes les cartes
+   * Détection de la carte centrale au scroll
    */
-  updateCardPositions() {
+  setupScrollDetection() {
+    this.carousel.addEventListener('scroll', () => {
+      clearTimeout(this.scrollTimeout);
+      
+      this.scrollTimeout = setTimeout(() => {
+        this.updateCenterCard();
+      }, 100);
+    });
+  }
+
+  /**
+   * Met à jour quelle carte est au centre
+   */
+  updateCenterCard() {
+    const carouselRect = this.carousel.getBoundingClientRect();
+    const carouselCenter = carouselRect.left + carouselRect.width / 2;
+    
+    let closestCard = null;
+    let closestDistance = Infinity;
+    
     this.cards.forEach((card, index) => {
-      const position = this.getCardPosition(index);
-      card.setAttribute('data-position', position);
-      card.style.zIndex = this.getZIndex(position);
+      const cardRect = card.getBoundingClientRect();
+      const cardCenter = cardRect.left + cardRect.width / 2;
+      const distance = Math.abs(carouselCenter - cardCenter);
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestCard = { card, index };
+      }
+      
+      // Retirer la classe is-center de toutes les cartes
+      card.classList.remove('is-center');
     });
     
-    // Mettre à jour les indicateurs
-    this.updateIndicators();
-  }
-
-  /**
-   * Calcule la position relative d'une carte par rapport à la carte active
-   */
-  getCardPosition(cardIndex) {
-    let position = cardIndex - this.currentIndex;
-    
-    // Gérer le wrap-around (boucle circulaire)
-    if (position > this.totalCards / 2) {
-      position -= this.totalCards;
-    } else if (position < -this.totalCards / 2) {
-      position += this.totalCards;
+    // Ajouter la classe is-center à la carte la plus proche du centre
+    if (closestCard) {
+      closestCard.card.classList.add('is-center');
+      this.currentIndex = closestCard.index;
+      this.updateIndicators();
     }
-    
-    return position;
-  }
-
-  /**
-   * Détermine le z-index basé sur la position
-   */
-  getZIndex(position) {
-    const absPosition = Math.abs(position);
-    return 10 - absPosition;
   }
 
   /**
    * Navigation vers la carte suivante
    */
   next() {
-    if (this.isAnimating) return;
-    
-    this.isAnimating = true;
-    this.currentIndex = (this.currentIndex + 1) % this.totalCards;
-    this.updateCardPositions();
-    
-    setTimeout(() => {
-      this.isAnimating = false;
-    }, 800);
+    const nextIndex = Math.min(this.currentIndex + 1, this.totalCards - 1);
+    this.scrollToCard(nextIndex);
   }
 
   /**
    * Navigation vers la carte précédente
    */
   prev() {
-    if (this.isAnimating) return;
-    
-    this.isAnimating = true;
-    this.currentIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
-    this.updateCardPositions();
-    
-    setTimeout(() => {
-      this.isAnimating = false;
-    }, 800);
+    const prevIndex = Math.max(this.currentIndex - 1, 0);
+    this.scrollToCard(prevIndex);
   }
 
   /**
-   * Navigation vers une carte spécifique
+   * Scroll vers une carte spécifique
    */
-  goToSlide(index) {
-    if (this.isAnimating || index === this.currentIndex) return;
+  scrollToCard(index) {
+    if (index < 0 || index >= this.totalCards) return;
     
-    this.isAnimating = true;
-    this.currentIndex = index;
-    this.updateCardPositions();
+    const card = this.cards[index];
+    if (!card) return;
     
-    setTimeout(() => {
-      this.isAnimating = false;
-    }, 800);
+    // Calculer la position de scroll pour centrer la carte
+    const carouselRect = this.carousel.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const scrollLeft = this.carousel.scrollLeft;
+    
+    const targetScroll = scrollLeft + (cardRect.left - carouselRect.left) - (carouselRect.width / 2) + (cardRect.width / 2);
+    
+    this.carousel.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth'
+    });
   }
 
   /**
@@ -155,7 +157,7 @@ class FragmentsCarousel {
   setupIndicators() {
     this.indicators.forEach((indicator, index) => {
       indicator.addEventListener('click', () => {
-        this.goToSlide(index);
+        this.scrollToCard(index);
       });
     });
   }
@@ -260,16 +262,15 @@ class FragmentsCarousel {
   setupCardClicks() {
     this.cards.forEach((card, index) => {
       card.addEventListener('click', () => {
-        const position = parseInt(card.getAttribute('data-position'));
+        const isCentered = card.classList.contains('is-center');
         
-        // Si c'est la carte centrale, on peut ouvrir l'article
-        if (position === 0) {
-          console.log('✨ Card clicked:', index);
+        if (isCentered) {
+          console.log('✨ Central card clicked - Ready to open article');
           // TODO Phase 2: Ouvrir l'article
           // window.location.href = card.dataset.url;
         } else {
-          // Sinon, naviguer vers cette carte
-          this.goToSlide(index);
+          console.log('➡️ Scrolling to card', index);
+          this.scrollToCard(index);
         }
       });
     });
@@ -294,42 +295,6 @@ class FragmentsCarousel {
         this.next();
       }
     });
-  }
-
-  /**
-   * Auto-rotation (optionnel)
-   */
-  startAutoRotate(interval = 5000) {
-    this.stopAutoRotate();
-    
-    this.autoRotateInterval = setInterval(() => {
-      this.next();
-    }, interval);
-    
-    // Arrêter l'auto-rotation lors d'une interaction
-    ['click', 'touchstart'].forEach(event => {
-      this.section.addEventListener(event, () => {
-        this.stopAutoRotate();
-      }, { once: true });
-    });
-  }
-
-  /**
-   * Arrêter l'auto-rotation
-   */
-  stopAutoRotate() {
-    if (this.autoRotateInterval) {
-      clearInterval(this.autoRotateInterval);
-      this.autoRotateInterval = null;
-    }
-  }
-
-  /**
-   * Détruire l'instance
-   */
-  destroy() {
-    this.stopAutoRotate();
-    // Nettoyer les event listeners si nécessaire
   }
 }
 

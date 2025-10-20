@@ -116,41 +116,77 @@
 }
 
 /* ========================================
-   CARROUSEL 3D - CONTAINER
+   CARROUSEL HORIZONTAL SCROLLABLE
    ======================================== */
 
 .fragments-carousel-container {
   position: relative;
   width: 100%;
-  height: 600px;
   margin: 80px auto 60px;
-  perspective: 2000px;
-  perspective-origin: 50% 50%;
+  overflow: hidden;
+}
+
+/* Masques de fade sur les côtés */
+.fragments-carousel-container::before,
+.fragments-carousel-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fragments-carousel-container::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0) 100%);
+}
+
+.fragments-carousel-container::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0) 100%);
 }
 
 .fragments-carousel {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  gap: 30px;
+  padding: 40px 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Cacher la scrollbar */
+.fragments-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Espaceurs pour centrer la première et dernière carte */
+.fragments-carousel::before,
+.fragments-carousel::after {
+  content: '';
+  flex-shrink: 0;
+  width: calc(50vw - 175px);
 }
 
 /* ========================================
-   CARTES - SYSTÈME 3D ROTATIF
+   CARTES - SYSTÈME HORIZONTAL
    ======================================== */
 
 .fragment-card {
-  position: absolute;
+  flex-shrink: 0;
   width: 350px;
   height: 500px;
-  left: 50%;
-  top: 50%;
-  margin-left: -175px;
-  margin-top: -250px;
-  transform-style: preserve-3d;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  scroll-snap-align: center;
   cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.4;
+  transform: scale(0.9);
 }
 
 .fragment-card-inner {
@@ -165,8 +201,20 @@
   transition: all 0.4s ease;
 }
 
+/* Carte centrale (active) */
+.fragment-card.is-center {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .fragment-card:hover .fragment-card-inner {
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  transform: translateY(-5px);
+}
+
+/* Effet hover */
+.fragment-card:hover {
+  opacity: 0.8;
 }
 
 .fragment-card-content {
@@ -177,6 +225,9 @@
   text-align: center;
   color: #fff;
   z-index: 2;
+  pointer-events: none;
+  width: 100%;
+  padding: 20px;
 }
 
 .fragment-card-content h3 {
@@ -185,62 +236,15 @@
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  pointer-events: none;
 }
 
 .fragment-card-content p {
   font-size: 1rem;
   opacity: 0.9;
-}
-
-/* ========================================
-   POSITIONS DES CARTES (5 cartes)
-   ======================================== */
-
-/* Carte centrale (active) */
-.fragment-card[data-position="0"] {
-  transform: translateX(0) translateZ(0) rotateY(0deg) scale(1);
-  z-index: 5;
-  opacity: 1;
-}
-
-/* Carte à droite (suivante) */
-.fragment-card[data-position="1"] {
-  transform: translateX(380px) translateZ(-200px) rotateY(-25deg) scale(0.85);
-  z-index: 4;
-  opacity: 0.7;
-}
-
-/* Carte à gauche (précédente) */
-.fragment-card[data-position="-1"] {
-  transform: translateX(-380px) translateZ(-200px) rotateY(25deg) scale(0.85);
-  z-index: 4;
-  opacity: 0.7;
-}
-
-/* Carte loin à droite */
-.fragment-card[data-position="2"] {
-  transform: translateX(650px) translateZ(-400px) rotateY(-35deg) scale(0.6);
-  z-index: 3;
-  opacity: 0.4;
-}
-
-/* Carte loin à gauche */
-.fragment-card[data-position="-2"] {
-  transform: translateX(-650px) translateZ(-400px) rotateY(35deg) scale(0.6);
-  z-index: 3;
-  opacity: 0.4;
-}
-
-/* Cartes hors vue */
-.fragment-card[data-position="3"],
-.fragment-card[data-position="-3"],
-.fragment-card[data-position="4"],
-.fragment-card[data-position="-4"] {
-  transform: translateX(0) translateZ(-800px) scale(0.3);
-  z-index: 1;
-  opacity: 0;
   pointer-events: none;
 }
+
 
 /* ========================================
    CONTRÔLES DE NAVIGATION
@@ -252,7 +256,7 @@
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border: 2px solid #E8ECEF;
   border-radius: 50%;
   display: flex;
@@ -272,11 +276,11 @@
 }
 
 .carousel-nav-prev {
-  left: 10%;
+  left: 20px;
 }
 
 .carousel-nav-next {
-  right: 10%;
+  right: 20px;
 }
 
 /* ========================================
@@ -343,20 +347,14 @@
    ======================================== */
 
 @media screen and (max-width: 1200px) {
-  .carousel-nav-prev {
-    left: 5%;
+  .fragments-carousel::before,
+  .fragments-carousel::after {
+    width: calc(50vw - 150px);
   }
   
-  .carousel-nav-next {
-    right: 5%;
-  }
-  
-  .fragment-card[data-position="1"] {
-    transform: translateX(320px) translateZ(-200px) rotateY(-25deg) scale(0.8);
-  }
-  
-  .fragment-card[data-position="-1"] {
-    transform: translateX(-320px) translateZ(-200px) rotateY(25deg) scale(0.8);
+  .fragment-card {
+    width: 300px;
+    height: 450px;
   }
 }
 
@@ -365,30 +363,18 @@
     font-size: 2.5rem;
   }
   
-  .fragments-carousel-container {
-    height: 500px;
-    perspective: 1500px;
+  .fragments-carousel::before,
+  .fragments-carousel::after {
+    width: calc(50vw - 125px);
   }
   
   .fragment-card {
-    width: 280px;
-    height: 400px;
-    margin-left: -140px;
-    margin-top: -200px;
+    width: 250px;
+    height: 380px;
   }
   
-  .fragment-card[data-position="1"] {
-    transform: translateX(200px) translateZ(-150px) rotateY(-20deg) scale(0.7);
-  }
-  
-  .fragment-card[data-position="-1"] {
-    transform: translateX(-200px) translateZ(-150px) rotateY(20deg) scale(0.7);
-  }
-  
-  .fragment-card[data-position="2"],
-  .fragment-card[data-position="-2"] {
-    opacity: 0;
-    pointer-events: none;
+  .fragments-carousel {
+    gap: 20px;
   }
   
   .carousel-nav {
@@ -397,11 +383,16 @@
   }
   
   .carousel-nav-prev {
-    left: 20px;
+    left: 10px;
   }
   
   .carousel-nav-next {
-    right: 20px;
+    right: 10px;
+  }
+  
+  .fragments-carousel-container::before,
+  .fragments-carousel-container::after {
+    width: 100px;
   }
 }
 
@@ -418,22 +409,23 @@
     font-size: 0.9rem;
   }
   
-  .fragments-carousel-container {
-    height: 450px;
+  .fragments-carousel::before,
+  .fragments-carousel::after {
+    width: calc(50vw - 110px);
   }
   
   .fragment-card {
-    width: 250px;
-    height: 360px;
-    margin-left: -125px;
-    margin-top: -180px;
+    width: 220px;
+    height: 340px;
   }
   
-  .fragment-card[data-position="1"] {
-    transform: translateX(150px) translateZ(-120px) rotateY(-15deg) scale(0.65);
+  .fragments-carousel {
+    gap: 15px;
+    padding: 30px 10px;
   }
   
-  .fragment-card[data-position="-1"] {
-    transform: translateX(-150px) translateZ(-120px) rotateY(15deg) scale(0.65);
+  .fragments-carousel-container::before,
+  .fragments-carousel-container::after {
+    width: 60px;
   }
 }
