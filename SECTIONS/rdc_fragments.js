@@ -61,21 +61,10 @@ class FragmentsCarousel {
    */
   setupScrollDetection() {
     this.carousel.addEventListener('scroll', () => {
-      // Si on a une carte ciblée, la garder active pendant le scroll
-      if (this.targetIndex !== null) {
-        this.cards.forEach((card, index) => {
-          if (index === this.targetIndex) {
-            card.classList.add('is-center');
-          } else {
-            card.classList.remove('is-center');
-          }
-        });
-      } else {
-        // Sinon, détecter normalement
-        this.updateCenterCard();
-      }
+      // Toujours détecter en temps réel quelle carte est au centre
+      this.updateCenterCard();
       
-      // Après le scroll, réinitialiser et détecter la vraie carte centrale
+      // Après le scroll, réinitialiser la cible
       clearTimeout(this.scrollTimeout);
       this.scrollTimeout = setTimeout(() => {
         this.targetIndex = null;
@@ -103,14 +92,28 @@ class FragmentsCarousel {
         closestDistance = distance;
         closestCard = { card, index };
       }
-      
-      // Retirer la classe is-center de toutes les cartes
-      card.classList.remove('is-center');
     });
     
-    // Ajouter la classe is-center à la carte la plus proche du centre
+    // Si on a une carte ciblée (clic), la garder active
+    if (this.targetIndex !== null && closestCard && closestCard.index === this.targetIndex) {
+      // La carte ciblée est bien celle qui est au centre, tout va bien
+      this.cards.forEach((card, index) => {
+        if (index === this.targetIndex) {
+          card.classList.add('is-center');
+        } else {
+          card.classList.remove('is-center');
+        }
+      });
+    } else {
+      // Sinon, mettre à jour normalement selon la carte la plus proche
+      this.cards.forEach(card => card.classList.remove('is-center'));
+      if (closestCard) {
+        closestCard.card.classList.add('is-center');
+      }
+    }
+    
+    // Mettre à jour l'index courant
     if (closestCard) {
-      closestCard.card.classList.add('is-center');
       this.currentIndex = closestCard.index;
       this.updateIndicators();
     }
@@ -121,6 +124,17 @@ class FragmentsCarousel {
    */
   next() {
     const nextIndex = Math.min(this.currentIndex + 1, this.totalCards - 1);
+    
+    // Définir la cible et appliquer l'animation immédiatement
+    this.targetIndex = nextIndex;
+    this.cards.forEach((card, index) => {
+      if (index === nextIndex) {
+        card.classList.add('is-center');
+      } else {
+        card.classList.remove('is-center');
+      }
+    });
+    
     this.scrollToCard(nextIndex);
   }
 
@@ -129,6 +143,17 @@ class FragmentsCarousel {
    */
   prev() {
     const prevIndex = Math.max(this.currentIndex - 1, 0);
+    
+    // Définir la cible et appliquer l'animation immédiatement
+    this.targetIndex = prevIndex;
+    this.cards.forEach((card, index) => {
+      if (index === prevIndex) {
+        card.classList.add('is-center');
+      } else {
+        card.classList.remove('is-center');
+      }
+    });
+    
     this.scrollToCard(prevIndex);
   }
 
@@ -173,6 +198,16 @@ class FragmentsCarousel {
   setupIndicators() {
     this.indicators.forEach((indicator, index) => {
       indicator.addEventListener('click', () => {
+        // Définir la cible et appliquer l'animation immédiatement
+        this.targetIndex = index;
+        this.cards.forEach((card, cardIndex) => {
+          if (cardIndex === index) {
+            card.classList.add('is-center');
+          } else {
+            card.classList.remove('is-center');
+          }
+        });
+        
         this.scrollToCard(index);
       });
     });
