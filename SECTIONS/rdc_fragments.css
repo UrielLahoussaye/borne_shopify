@@ -4,7 +4,7 @@
 /* ========================================
    ANNULATION STYLE - REST 
    ======================================== */
-footer, .invisible_fragments{
+.invisible_fragments{
   display: none;
 }
 
