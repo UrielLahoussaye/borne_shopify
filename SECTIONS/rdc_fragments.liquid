@@ -37,11 +37,11 @@
     {%- comment -%} Filtres de catégories (générés automatiquement depuis les tags) {%- endcomment -%}
     <div class="fragments-filters">
       <button class="fragments-filter active" data-filter="all">
-        Tous les fragments
+        ✨ Tous les fragments
       </button>
       
       <button class="fragments-filter" data-filter="recent" data-filter-type="date">
-        Récents
+        🔥 Récents
       </button>
       
       {% if section.settings.blog != blank %}
@@ -103,7 +103,7 @@
             <div class="fragment-card-inner">
               {%- comment -%} Pastille "Nouveau" pour les articles récents {%- endcomment -%}
               {% if is_recent %}
-                <span class="fragment-card-badge">NOUVEAU</span>
+                <span class="fragment-card-badge">🔥 NOUVEAU</span>
               {% endif %}
               
               {%- comment -%} Image de l'article comme fond {%- endcomment -%}

@@ -93,82 +93,82 @@
 }
 
 .fragments-filter {
-  padding: 10px 24px;
-  font-size: 1.3rem;
-  border: 2px solid transparent;
-  border-radius: 50px;
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: var(--font-heading-family);
-  font-weight: 600;
+  font-weight: 400;
 }
 
-/* Couleurs pastel pour chaque filtre */
+/* Couleurs pastel équilibrées pour chaque filtre */
 .fragments-filter:nth-child(1) {
-  background: #E8F4F8;
-  color: #2C5F7C;
+  background: #edf4f8;
+  color: #3A5366;
 }
 
 .fragments-filter:nth-child(2) {
-  background: #FFE8E8;
-  color: #8B3A3A;
+  background: #edf4f8;
+  color: #3f4346;
 }
 
 .fragments-filter:nth-child(3) {
-  background: #FFF4E6;
-  color: #8B6914;
+  background: #FDF5E8;
+  color: #7A6338;
 }
 
 .fragments-filter:nth-child(4) {
-  background: #F0E8FF;
-  color: #5A3A8B;
+  background: #F0E8F7;
+  color: #5A4577;
 }
 
 .fragments-filter:nth-child(5) {
-  background: #E8FFE8;
-  color: #2D6B2D;
+  background: #E8F5E8;
+  color: #3A6B3A;
 }
 
 .fragments-filter:nth-child(6) {
-  background: #FFE8F5;
-  color: #8B3A6B;
+  background: #FCE8F0;
+  color: #7A4560;
 }
 
 .fragments-filter:nth-child(7) {
-  background: #E8F8FF;
-  color: #2C6B8B;
+  background: #E8F5FC;
+  color: #3A5F77;
 }
 
 .fragments-filter:nth-child(8) {
-  background: #FFF0E8;
-  color: #8B5A2D;
+  background: #FDF0E8;
+  color: #7A5738;
 }
 
 .fragments-filter:nth-child(9) {
-  background: #F5E8FF;
-  color: #6B3A8B;
+  background: #F3E8F7;
+  color: #604577;
 }
 
 .fragments-filter:nth-child(10) {
-  background: #E8FFF0;
-  color: #2D8B5A;
+  background: #E8F7F0;
+  color: #3A7760;
 }
 
 /* Répéter les couleurs pour les filtres suivants */
 .fragments-filter:nth-child(n+11) {
-  background: #E8F4F8;
-  color: #2C5F7C;
+  background: #E8F0F5;
+  color: #3A5366;
 }
 
 .fragments-filter:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .fragments-filter.active {
   border-color: currentColor;
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
 }
 
 /* ========================================
@@ -284,18 +284,19 @@
   position: absolute;
   top: 15px;
   left: 15px;
-  background: #E74C3C;
-  color: #fff;
-  font-size: 0.75rem;
+  background: #1a1a1a;
+  color: #fff0f0;
+  font-size: 1rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 6px 12px;
   border-radius: 4px;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0, 0.3);
   animation: badgePulse 2s ease-in-out infinite;
   pointer-events: none;
+  font-family: var(--font-heading-family);
 }
 
 @keyframes badgePulse {
@@ -303,7 +304,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.15);
   }
 }
 
