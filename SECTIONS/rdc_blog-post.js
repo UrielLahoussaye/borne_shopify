@@ -9,6 +9,7 @@
   function init() {
     initShareButton();
     initProductsCarousel();
+    initZoomModal();
   }
 
   function initShareButton() {
@@ -63,6 +64,51 @@
         }
       }
     });
+  }
+
+  // ============================================
+  // ZOOM MODAL
+  // ============================================
+
+  function initZoomModal() {
+    const zoomButton = document.querySelector('.zoom-button');
+    const zoomModal = document.getElementById('zoom-modal');
+    const zoomModalClose = document.querySelector('.zoom-modal-close');
+    const zoomModalImage = document.getElementById('zoom-modal-image');
+    
+    if (!zoomButton || !zoomModal) return;
+    
+    // Ouvrir la modal
+    zoomButton.addEventListener('click', () => {
+      const imageUrl = zoomButton.dataset.imageUrl;
+      zoomModalImage.src = imageUrl;
+      zoomModal.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Bloquer le scroll
+    });
+    
+    // Fermer la modal avec le bouton
+    zoomModalClose.addEventListener('click', () => {
+      zoomModal.classList.remove('active');
+      document.body.style.overflow = ''; // Réactiver le scroll
+    });
+    
+    // Fermer la modal en cliquant sur le fond
+    zoomModal.addEventListener('click', (e) => {
+      if (e.target === zoomModal) {
+        zoomModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Fermer la modal avec la touche Échap
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && zoomModal.classList.contains('active')) {
+        zoomModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    console.log('✅ Zoom modal initialized');
   }
 
   // ============================================
