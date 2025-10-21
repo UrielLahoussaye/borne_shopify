@@ -75,7 +75,7 @@ footer::-webkit-scrollbar,
   min-height: 100vh;
   height: auto;
   position: relative;
-  overflow-x: hidden; /* Empêcher le débordement horizontal */
+  overflow-x: hidden;
   /* Permettre le défilement vertical */
 }
 
@@ -152,23 +152,112 @@ footer::-webkit-scrollbar,
 }
 
 /* Écran 1: Catégories */
+/* Conteneur principal avec boutons */
+.rdc-borne__categories-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Wrapper qui clippe à 3 catégories */
+.rdc-borne__categories-wrapper {
+  width: calc(300px * 3 + 4rem * 2 - 7px); /* Exactement 3 catégories = 964px */
+  overflow: hidden; /* Clipper pour ne montrer que 3 catégories */
+  position: relative;
+  padding: 15px;
+}
+
 .rdc-borne__categories {
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  padding: 2rem;
-  -webkit-overflow-scrolling: touch;
+  padding: 0;
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
-  margin-bottom: 2rem;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  transition: transform 0.4s ease;
+  will-change: transform;
+  position: relative;
+  /* PAS de width fixe - le conteneur s'adapte au nombre de catégories */
 }
 
+/* Boutons de navigation du carousel */
+.rdc-borne__carousel-button {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgb(248, 247, 246);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.rdc-borne__carousel-button:hover {
+  background: rgb(224, 215, 208);
+  transform: scale(1.1);
+}
+
+.rdc-borne__carousel-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.rdc-borne__carousel-button svg {
+  color: rgb(75, 61, 61);
+}
+
+
 @media screen and (max-width: 767px) {
+  .rdc-borne__categories-wrapper {
+    padding: 2rem 0;
+    max-width: 100%;
+  }
+  
+  .rdc-borne__carousel-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+  
+  .rdc-borne__carousel-button--prev {
+    left: 5px;
+    margin-right: 5px;
+  }
+  
+  .rdc-borne__carousel-button--next {
+    right: 5px;
+    margin-left: 5px;
+  }
+  
+  .rdc-borne__carousel-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  
   .rdc-borne__categories {
+    width: calc(100% - 100px);
     justify-content: flex-start;
     padding-left: 0;
+    padding-right: 0;
+    gap: 1rem;
+  }
+  
+  .rdc-borne__category {
+    width: 250px;
   }
 }
 
@@ -1142,14 +1231,19 @@ display: flex;
 /* SPECIAL MOBILE PADDING */
 
 .rdc-borne__title,
-.special_title, .rdc-borne__selected-category, .rdc-borne__collection-title, .rdc-borne__category, .rdc-borne__collection, .rdc-borne__product {
+.special_title, .rdc-borne__selected-category, .rdc-borne__collection-title, .rdc-borne__collection, .rdc-borne__product {
   margin-left: 10px;
   margin-right: 10px;
 }
 
+.rdc-borne__category {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 @media screen and (max-width: 767px) {
 .rdc-borne__title,
-.special_title, .rdc-borne__selected-category, .rdc-borne__collection-title, .rdc-borne__category, .rdc-borne__collection, .rdc-borne__product {
+.special_title, .rdc-borne__selected-category, .rdc-borne__collection-title, .rdc-borne__collection, .rdc-borne__product {
   margin-left: 20px;
   margin-right: 0;
 }

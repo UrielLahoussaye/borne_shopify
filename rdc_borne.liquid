@@ -121,17 +121,31 @@
     <div class="rdc-borne__content">
       <p class="special_title">BORNE A LA DEMANDE</p>
       <h1 class="rdc-borne__title">Choisissez votre catégorie</h1>
-      <div class="rdc-borne__categories">
-        {% assign categories = section.settings.categories | split: ',' %}
-        {% for category in categories %}
-          {% assign category_clean = category | strip %}
-          <div class="rdc-borne__category" data-category="{{ category_clean }}">
-            <div class="rdc-borne__category-inner">
-              <img src="{{ category_clean | handleize | append: '.webp' | file_url }}" alt="{{ category_clean }}" class="rdc-borne__category-image">
-              <h2 class="rdc-borne__category-title">{{ category_clean }}</h2>
-            </div>
+      <div class="rdc-borne__categories-container">
+        <button class="rdc-borne__carousel-button rdc-borne__carousel-button--prev" data-carousel="categories" data-direction="prev" aria-label="Catégorie précédente">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="rdc-borne__categories-wrapper">
+          <div class="rdc-borne__categories">
+            {% assign categories = section.settings.categories | split: ',' %}
+            {% for category in categories %}
+              {% assign category_clean = category | strip %}
+              <div class="rdc-borne__category" data-category="{{ category_clean }}">
+                <div class="rdc-borne__category-inner">
+                  <img src="{{ category_clean | handleize | append: '.webp' | file_url }}" alt="{{ category_clean }}" class="rdc-borne__category-image">
+                  <h2 class="rdc-borne__category-title">{{ category_clean }}</h2>
+                </div>
+              </div>
+            {% endfor %}
           </div>
-        {% endfor %}
+        </div>
+        <button class="rdc-borne__carousel-button rdc-borne__carousel-button--next" data-carousel="categories" data-direction="next" aria-label="Catégorie suivante">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
       </div>
     </div> 
   </div>

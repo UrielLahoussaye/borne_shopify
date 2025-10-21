@@ -967,4 +967,99 @@ document.addEventListener("DOMContentLoaded", function () {
   clearCartButton.addEventListener("click", function () {
     clearCart();
   });
+
+  /**
+   * Gestion du carousel de catégories
+   * Permet de naviguer entre les catégories avec les boutons prev/next
+   */
+  const categoriesContainerWrapper = document.querySelector('.rdc-borne__categories-container');
+  if (categoriesContainerWrapper) {
+    const categoriesContainer = categoriesContainerWrapper.querySelector('.rdc-borne__categories');
+    const prevButton = categoriesContainerWrapper.querySelector('.rdc-borne__carousel-button--prev');
+    const nextButton = categoriesContainerWrapper.querySelector('.rdc-borne__carousel-button--next');
+    const categories = categoriesContainer.querySelectorAll('.rdc-borne__category');
+    
+    let currentIndex = 0;
+    const visibleItems = 3; // Nombre de catégories visibles à la fois
+    const totalItems = categories.length;
+    const maxIndex = Math.max(0, totalItems - visibleItems);
+
+    // Calculer la largeur d'une catégorie + gap
+    function getItemWidth() {
+      if (categories.length > 0) {
+        const categoryWidth = categories[0].offsetWidth;
+        // Récupérer le gap depuis le style calculé
+        const containerStyle = window.getComputedStyle(categoriesContainer);
+        const gap = parseFloat(containerStyle.gap) || 32; // 2rem = 32px par défaut
+        return categoryWidth + gap;
+      }
+      return 332; // Fallback: 300px + 32px gap
+    }
+
+    // Mettre à jour l'état des boutons
+    function updateButtons() {
+      if (prevButton && nextButton) {
+        prevButton.disabled = currentIndex === 0;
+        nextButton.disabled = currentIndex >= maxIndex;
+      }
+    }
+
+    // Déplacer le carousel
+    function moveCarousel() {
+      const itemWidth = getItemWidth();
+      const translateX = -(currentIndex * itemWidth);
+      categoriesContainer.style.transform = `translateX(${translateX}px)`;
+      updateButtons();
+    }
+
+    // Gestionnaire pour le bouton précédent
+    if (prevButton) {
+      prevButton.addEventListener('click', function() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          moveCarousel();
+        }
+      });
+    }
+
+    // Gestionnaire pour le bouton suivant
+    if (nextButton) {
+      nextButton.addEventListener('click', function() {
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+          moveCarousel();
+        }
+      });
+    }
+
+    // Initialiser l'état des boutons
+    updateButtons();
+
+    // Réinitialiser le carousel quand on revient à l'écran 1
+    const screen1 = document.querySelector('.rdc-borne__screen[data-screen="1"]');
+    if (screen1) {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'data-active') {
+            const isActive = screen1.getAttribute('data-active') === 'true';
+            if (isActive) {
+              currentIndex = 0;
+              moveCarousel();
+            }
+          }
+        });
+      });
+      
+      observer.observe(screen1, { attributes: true });
+    }
+
+    // Gérer le redimensionnement de la fenêtre
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function() {
+        moveCarousel();
+      }, 250);
+    });
+  }
 });
