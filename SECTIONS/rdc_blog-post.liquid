@@ -1,0 +1,178 @@
+{{ 'rdc_blog-post.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%} Récupération des métaobjects {%- endcomment -%}
+{%- assign fragment_illustration = article.metafields.custom.fragment_illustration -%}
+{%- assign anecdote = article.metafields.custom.anecdote.value -%}
+{%- assign sources = article.metafields.custom.sources.value -%}
+{%- assign artiste = article.metafields.custom.artiste.value -%}
+{%- assign type_de_fragments = article.metafields.custom.type_fragment.value -%}
+
+<article class="rdc-blog-post" data-section-id="{{ section.id }}">
+  <div class="blog-post-container">
+    
+    {%- comment -%} Illustration du fragment (centrée) {%- endcomment -%}
+    {% if fragment_illustration %}
+      <div class="fragment-illustration">
+        <img src="{{ fragment_illustration | image_url: width: 600 }}" alt="{{ article.title }}" loading="eager">
+      </div>
+    {% endif %}
+
+    {%- comment -%} Titre du fragment (centré) {%- endcomment -%}
+    <h1 class="fragment-title">{{ article.title }}</h1>
+
+    {%- comment -%} Type de fragments {%- endcomment -%}
+      <p class="fragment-number">Fragment d'Histoire {% if type_de_fragments %}<b>{{ type_de_fragments }}    {% endif %}</b></p>
+
+    {%- comment -%} Artiste (centré) {%- endcomment -%}
+    {% if artiste %}
+      <p class="fragment-artist">Artiste : {{ artiste }}</p>
+    {% endif %}
+
+    {%- comment -%} Contenu principal de l'article {%- endcomment -%}
+    <div class="fragment-content">
+      {{ article.content }}
+    </div>
+
+    {%- comment -%} Conteneur pour Anecdote et Bibliographie côte à côte {%- endcomment -%}
+    <div class="fragment-info-container">
+      
+      {%- comment -%} Anecdote de l'artiste (gauche, fond gris) {%- endcomment -%}
+      {% if anecdote %}
+        <div class="fragment-anecdote">
+          <h3 class="anecdote-title">Anecdote de l'Artiste</h3>
+          <div class="anecdote-author">{{ artiste | upcase }}</div>
+          <div class="anecdote-content">{{ anecdote | newline_to_br }}</div>
+        </div>
+      {% endif %}
+
+      {%- comment -%} Bibliographie & Sources (droite, bordure) {%- endcomment -%}
+      {% if sources %}
+        <div class="fragment-sources">
+          <h3 class="sources-title">Bibliographie & Sources</h3>
+          <div class="sources-content">{{ sources | newline_to_br }}</div>
+        </div>
+      {% endif %}
+
+    </div>
+
+    {%- comment -%} Bouton de partage (centré, violet clair) {%- endcomment -%}
+    <div class="fragment-share">
+      <button class="share-button" data-url="{{ shop.url }}{{ article.url }}">
+        Partager ce fragment
+      </button>
+    </div>
+
+    {%- comment -%} Section "Ce fragment vous a plu ?" {%- endcomment -%}
+    <div class="fragment-cta">
+      <h2 class="cta-title">Ce fragment vous a plu ?</h2>
+      <p class="cta-description">
+        Pourquoi ne pas le porter, pour vous aider à diffuser son histoire ?<br>
+        <strong>{{ article.title }}</strong> est disponible en...
+      </p>
+
+      {%- comment -%} Produits liés {%- endcomment -%}
+      <div class="fragment-products-container">
+        <button class="products-nav products-nav-prev" aria-label="Précédent">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        
+        <div class="fragment-products">
+        {% assign products_found = 0 %}
+        {% assign article_title_lower = article.title | downcase %}
+        
+        {% comment %} Chercher dans toutes les collections {% endcomment %}
+        {% for collection in collections %}
+          {% for product in collection.products %}
+            {% if products_found < 4 %}
+              {% assign product_title_lower = product.title | downcase %}
+              {% if product_title_lower contains article_title_lower %}
+                <a href="{{ product.url }}" class="product-card">
+                <div class="product-card-inner">
+                  {%- comment -%} Badge N° des ventes {%- endcomment -%}
+                  {% if product.metafields.custom.badge_ventes %}
+                    <span class="product-badge">{{ product.metafields.custom.badge_ventes }}</span>
+                  {% endif %}
+                  
+                  {% if product.featured_image %}
+                    <div class="product-image">
+                      <img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                </div>
+                
+                <div class="product-info">
+                  <p class="product-name">{{ product.title }}</p>
+                  <p class="product-price">{{ product.price | money }}</p>
+                  
+                  {%- comment -%} Variantes de couleurs {%- endcomment -%}
+                  {% for option in product.options_with_values %}
+                    {% if option.name == "Couleur" or option.name == "Color" %}
+                      <div class="product-colors">
+                        {% for value in option.values limit: 5 %}
+                          {% liquid
+                            assign swatch_value = null
+                            if value.swatch.image
+                              assign image_url = value.swatch.image | image_url: width: 50
+                              assign swatch_value = 'url(' | append: image_url | append: ')'
+                            elsif value.swatch.color
+                              assign swatch_value = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                            endif
+                          %}
+                          {% if swatch_value %}
+                            <span class="color-swatch" style="background: {{ swatch_value }}; background-size: cover; background-position: center;" title="{{ value }}"></span>
+                          {% else %}
+                            <span class="color-swatch" data-color="{{ value | handleize }}" title="{{ value }}"></span>
+                          {% endif %}
+                        {% endfor %}
+                        {% if option.values.size > 5 %}
+                          <span class="color-more">+{{ option.values.size | minus: 5 }}</span>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </a>
+              {% assign products_found = products_found | plus: 1 %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        </div>
+        
+        <button class="products-nav products-nav-next" aria-label="Suivant">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<script src="{{ 'rdc_blog-post.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "RDC Blog Post",
+  "tag": "section",
+  "class": "section-rdc-blog-post",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Configuration"
+    },
+    {
+      "type": "paragraph",
+      "content": "Cette section utilise les métaobjects suivants : fragment-illustration, anecdote, sources, artiste"
+    }
+  ],
+  "presets": [
+    {
+      "name": "RDC Blog Post"
+    }
+  ]
+}
+{% endschema %}
