@@ -11,7 +11,7 @@ class FragmentsCarousel {
     this.sectionId = section.dataset.sectionId;
     this.carousel = section.querySelector('.fragments-carousel');
     this.cards = Array.from(section.querySelectorAll('.fragment-card'));
-    this.indicators = Array.from(section.querySelectorAll('.indicator'));
+    this.indicatorsContainer = section.querySelector('.fragments-indicators');
     this.prevBtn = section.querySelector('.carousel-nav-prev');
     this.nextBtn = section.querySelector('.carousel-nav-next');
     this.searchInput = section.querySelector('.fragments-search-input');
@@ -23,7 +23,27 @@ class FragmentsCarousel {
     this.scrollTimeout = null;
     this.targetIndex = null; // Carte ciblée lors d'un clic
     
+    // Générer les indicateurs dynamiquement
+    this.generateIndicators();
+    this.indicators = Array.from(section.querySelectorAll('.indicator'));
+    
     this.init();
+  }
+
+  /**
+   * Génère les indicateurs dynamiquement en fonction du nombre de cartes
+   */
+  generateIndicators() {
+    if (!this.indicatorsContainer) return;
+    
+    this.indicatorsContainer.innerHTML = '';
+    
+    this.cards.forEach((card, index) => {
+      const indicator = document.createElement('button');
+      indicator.className = index === 0 ? 'indicator active' : 'indicator';
+      indicator.dataset.slide = index;
+      this.indicatorsContainer.appendChild(indicator);
+    });
   }
 
   init() {

@@ -12,7 +12,7 @@
 }
 
 /* ============================================
-   BASE
+   SECTION BLOG POST
    ============================================ */
 
 .rdc-blog-post {
@@ -29,6 +29,36 @@
 .blog-post-container {
   max-width: 620px;
   margin: 0 auto;
+}
+
+/* ============================================
+   BOUTON RETOUR
+   ============================================ */
+
+.back-to-fragments {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 2rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #4b4c4e;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.back-to-fragments:hover {
+  background: #f7f7f4;
+  border-color: #4b4c4e;
+  transform: translateX(-3px);
+}
+
+.back-to-fragments svg {
+  flex-shrink: 0;
 }
 
 /* ============================================
@@ -51,10 +81,10 @@
    ============================================ */
 
 .fragment-title {
-  font-size: 2.8rem;
+  font-size: 3rem;
   font-weight: 700;
   text-align: center;
-  margin: 0 0 0.6rem 0;
+  margin: 4rem 0 0.6rem 0;
   color: #2C2C2C;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -79,8 +109,8 @@
 
 .fragment-number {
   text-align: center;
-  font-size: 1.4rem;
-  color: #6B7FD7;
+  font-size: 1.8rem;
+  color: #626064;
   margin: 0 0 1rem 0;
   font-weight: 400;
 }
@@ -114,7 +144,7 @@
 }
 
 .fragment-content p {
-  margin-bottom: 1.7rem;
+  margin-bottom: 1.8rem;
   color: #5a5b63;
   text-align: justify;
 }
@@ -143,7 +173,7 @@
    ANECDOTE DE L'ARTISTE (gauche, fond gris)
    ============================================ */
 
-.fragment-anecdote, .fragment-sources {
+.fragment-anecdote {
   padding: 2rem 3rem;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(133, 127, 127, 0.3);
@@ -182,8 +212,26 @@
 
 /* ============================================
    BIBLIOGRAPHIE & SOURCES (droite, bordure)
+
    ============================================ */
- /* Same as Author */
+.fragment-sources 
+{
+    padding: 0;
+    background: transparent;
+    padding-bottom: 20px;
+}
+
+.sources-title {
+  font-size: 1rem;
+    font-style: italic;
+
+}
+
+.sources-content {
+  font-size: 1.2rem;
+    color: #8a8b91;
+}
+
 
 /* ============================================
    BOUTON DE PARTAGE (centré, violet clair)
@@ -323,6 +371,7 @@ hr {
   scroll-snap-stop: always;
      background: #f1efea;
      padding-bottom: 20px;
+     border-radius: 10px;
 }
 
 .product-card:hover {
@@ -456,35 +505,82 @@ hr {
   font-weight: 500;
 }
 
-.color-swatch[data-color*="noir"],
-.color-swatch[data-color*="black"] {
-  background: #000000;
-}
-
-.color-swatch[data-color*="blanc"], .color-swatch[data-color*="white"] {
-  background: #FFFFFF;
-}
-
-.color-swatch[data-color*="gris"], .color-swatch[data-color*="gray"], .color-swatch[data-color*="grey"] {
-  background: #808080;
-}
-
-.color-swatch[data-color*="beige"], .color-swatch[data-color*="tan"] {
-  background: #D4B896;
-}
-
-.color-swatch[data-color*="bleu"], .color-swatch[data-color*="blue"] {
-  background: #1E3A5F;
-}
-
-.color-swatch[data-color*="vert"], .color-swatch[data-color*="green"] {
-  background: #2D5016;
-}
-
 .color-more {
   font-size: 1.1rem;
   color: var(--blog-gray);
   font-weight: 500;
+}
+
+/* ============================================
+   SECTION CONTINUER DE LIRE
+   ============================================ */
+
+.continue-reading {
+  margin-top: 5rem;
+  padding-top: 3rem;
+}
+
+.continue-reading-title {
+  font-size: 2rem;
+  text-align: left;
+  margin: 0 0 0.5rem 0;
+  color: #4b4c4e;
+}
+
+.continue-reading-subtitle {
+  font-size: 1.6rem;
+  color: #666666;
+  margin: 0 0 3rem 0;
+  text-align: left;
+}
+
+.related-articles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+.article-card {
+  text-decoration: none;
+  color: var(--blog-text);
+  display: block;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.article-card:hover {
+  opacity: 0.9;
+}
+
+.article-card-image {
+  width: 100%;
+  overflow: hidden;
+  background: #9CA3AF;
+}
+
+.article-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.article-card:hover .article-card-image img {
+  transform: scale(1.05);
+}
+
+.article-card-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-content {
+  font-size: 6rem;
+  font-weight: 700;
+  color: white;
+  opacity: 0.5;
 }
 
 /* ============================================
@@ -498,6 +594,11 @@ hr {
 
   .blog-post-container {
     max-width: 100%;
+  }
+  
+  .related-articles {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .fragment-title {
@@ -514,9 +615,6 @@ hr {
     gap: 1.5rem;
   }
 
-  .cta-title {
-    font-size: 1.15rem;
-  }
 }
 
 /* ============================================

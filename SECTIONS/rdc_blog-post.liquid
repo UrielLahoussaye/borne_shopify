@@ -10,6 +10,14 @@
 <article class="rdc-blog-post" data-section-id="{{ section.id }}">
   <div class="blog-post-container">
     
+    {%- comment -%} Bouton retour {%- endcomment -%}
+    <a href="{{ blog.url }}" class="back-to-fragments">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Retour aux fragments
+    </a>
+    
     {%- comment -%} Illustration du fragment (centrée) {%- endcomment -%}
     {% if fragment_illustration %}
       <div class="fragment-illustration">
@@ -36,20 +44,20 @@
     {%- comment -%} Conteneur pour Anecdote et Bibliographie côte à côte {%- endcomment -%}
     <div class="fragment-info-container">
       
+      {%- comment -%} Bibliographie & Sources (droite, bordure) {%- endcomment -%}
+      {% if sources %}
+        <div class="fragment-sources">
+          <h3 class="sources-title">Bibliographie & Sources</h3>
+          <div class="sources-content">{{ sources | newline_to_br }}</div>
+        </div>
+      {% endif %}
+
       {%- comment -%} Anecdote de l'artiste (gauche, fond gris) {%- endcomment -%}
       {% if anecdote %}
         <div class="fragment-anecdote">
           <h3 class="anecdote-title">Anecdote de l'Artiste</h3>
           <div class="anecdote-author">par {{ artiste | upcase }}</div>
           <div class="anecdote-content">« {{ anecdote | newline_to_br }} »</div>
-        </div>
-      {% endif %}
-
-      {%- comment -%} Bibliographie & Sources (droite, bordure) {%- endcomment -%}
-      {% if sources %}
-        <div class="fragment-sources">
-          <h3 class="sources-title">Bibliographie & Sources</h3>
-          <div class="sources-content">{{ sources | newline_to_br }}</div>
         </div>
       {% endif %}
 
@@ -147,6 +155,34 @@
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </button>
+      </div>
+    </div>
+
+    {%- comment -%} Section "Continuer de lire" {%- endcomment -%}
+    <div class="continue-reading">
+      <h2 class="continue-reading-title">Continuer de lire</h2>
+      <p class="continue-reading-subtitle">Découvrez d'autres Fragments d'Histoire</p>
+      
+      <div class="related-articles">
+        {% assign current_article_id = article.id %}
+        {% assign articles_count = 0 %}
+        
+        {% for blog_article in blog.articles %}
+          {% if blog_article.id != current_article_id and articles_count < 2 %}
+            <a href="{{ blog_article.url }}" class="article-card">
+              {% if blog_article.image %}
+                <div class="article-card-image">
+                  <img src="{{ blog_article.image | image_url: width: 400 }}" alt="{{ blog_article.title }}" loading="lazy">
+                </div>
+              {% else %}
+                <div class="article-card-image article-card-placeholder">
+                  <div class="placeholder-content">{{ blog_article.title | slice: 0, 1 }}</div>
+                </div>
+              {% endif %}
+            </a>
+            {% assign articles_count = articles_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
       </div>
     </div>
 

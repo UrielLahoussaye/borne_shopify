@@ -47,10 +47,10 @@
       {% if section.settings.blog != blank %}
         {%- assign blog = blogs[section.settings.blog] -%}
         {%- assign all_tags = '' -%}
-        {%- assign articles_limit = section.settings.articles_count | default: 12 -%}
+        {%- assign articles_limit = section.settings.articles_count | default: 0 -%}
         
         {%- comment -%} Collecter tous les tags uniques des articles {%- endcomment -%}
-        {% for article in blog.articles limit: articles_limit %}
+        {% for article in blog.articles %}
           {% for tag in article.tags %}
             {%- unless all_tags contains tag -%}
               {%- if all_tags == '' -%}
@@ -80,9 +80,16 @@
       
       {% if section.settings.blog != blank %}
         {%- assign blog = blogs[section.settings.blog] -%}
-        {%- assign articles_limit = section.settings.articles_count | default: 12 -%}
+        {%- assign articles_limit = section.settings.articles_count | default: 0 -%}
         
-        {% for article in blog.articles limit: articles_limit %}
+        {%- comment -%} Déterminer la limite d'articles (max 50) {%- endcomment -%}
+        {% if articles_limit > 0 and articles_limit <= 50 %}
+          {%- assign final_limit = articles_limit -%}
+        {% else %}
+          {%- assign final_limit = 50 -%}
+        {% endif %}
+        
+        {% for article in blog.articles limit: final_limit %}
           {%- assign now_timestamp = 'now' | date: '%s' | plus: 0 -%}
           {%- assign article_timestamp = article.published_at | date: '%s' | plus: 0 -%}
           {%- assign article_age_seconds = now_timestamp | minus: article_timestamp -%}
@@ -157,18 +164,9 @@
     <p class="fragments-cta">Cliquez sur la carte pour lire</p>
   </div>
 
-  {%- comment -%} Indicateurs (générés dynamiquement) {%- endcomment -%}
+  {%- comment -%} Indicateurs générés dynamiquement par JavaScript {%- endcomment -%}
   <div class="fragments-indicators" id="fragments-indicators-{{ section.id }}">
-    {% if section.settings.blog != blank %}
-      {%- assign blog = blogs[section.settings.blog] -%}
-      {%- assign articles_limit = section.settings.articles_count | default: 12 -%}
-      
-      {% for article in blog.articles limit: articles_limit %}
-        <button class="indicator{% if forloop.first %} active{% endif %}" data-slide="{{ forloop.index0 }}"></button>
-      {% endfor %}
-    {% else %}
-      <button class="indicator active" data-slide="0"></button>
-    {% endif %}
+    {%- comment -%} Les indicateurs seront générés par le JS en fonction du nombre de cartes affichées {%- endcomment -%}
   </div>
 </div>
 
@@ -209,13 +207,11 @@
       "label": "Blog source (Phase 2)"
     },
     {
-      "type": "range",
+      "type": "number",
       "id": "articles_count",
-      "label": "Nombre d'articles à afficher",
-      "min": 3,
-      "max": 12,
-      "step": 1,
-      "default": 5
+      "label": "Nombre d'articles à afficher (0 = tous)",
+      "default": 0,
+      "info": "Laissez à 0 pour afficher tous les articles du blog"
     }
   ],
   "blocks": [
