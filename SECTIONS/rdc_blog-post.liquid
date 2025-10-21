@@ -40,8 +40,8 @@
       {% if anecdote %}
         <div class="fragment-anecdote">
           <h3 class="anecdote-title">Anecdote de l'Artiste</h3>
-          <div class="anecdote-author">{{ artiste | upcase }}</div>
-          <div class="anecdote-content">{{ anecdote | newline_to_br }}</div>
+          <div class="anecdote-author">par {{ artiste | upcase }}</div>
+          <div class="anecdote-content">« {{ anecdote | newline_to_br }} »</div>
         </div>
       {% endif %}
 
@@ -63,6 +63,7 @@
     </div>
 
     {%- comment -%} Section "Ce fragment vous a plu ?" {%- endcomment -%}
+    <hr />
     <div class="fragment-cta">
       <h2 class="cta-title">Ce fragment vous a plu ?</h2>
       <p class="cta-description">
