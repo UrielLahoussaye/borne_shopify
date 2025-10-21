@@ -348,7 +348,12 @@
                   {% endfor %}
                 {% endif %}
                 
-                <p class="rdc-borne__product-price">{{ product.price | money }}</p>
+                <div class="rdc-borne__product-price">
+                  {% if product.compare_at_price > product.price %}
+                    <span class="rdc-borne__product-price--compare">{{ product.compare_at_price | money }}</span>
+                  {% endif %}
+                  <span class="rdc-borne__product-price--current{% if product.compare_at_price > product.price %} rdc-borne__product-price--sale{% endif %}">{{ product.price | money }}</span>
+                </div>
               </div>
             {% endfor %}
           {% endpaginate %}
@@ -368,7 +373,12 @@
             </div>
             <div class="rdc-borne__product-info">
               <h1 class="rdc-borne__product-title">{{ product.title }}</h1>
-              <div class="rdc-borne__product-price">{{ product.price | money }}</div>
+              <div class="rdc-borne__product-price">
+                {% if product.compare_at_price > product.price %}
+                  <span class="rdc-borne__product-price--compare">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+                <span class="rdc-borne__product-price--current{% if product.compare_at_price > product.price %} rdc-borne__product-price--sale{% endif %}">{{ product.price | money }}</span>
+              </div>
               <div class="rdc-borne__selected-options">
                 <div class="rdc-borne__selected-color"><span class="rdc-borne__color-name">{{ product.variants.first.options[0] }}</span></div>
                 <div class="rdc-borne__selected-size"><span class="rdc-borne__size-name"></span></div>

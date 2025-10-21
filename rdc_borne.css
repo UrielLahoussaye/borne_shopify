@@ -530,6 +530,30 @@ footer::-webkit-scrollbar,
   color:rgb(109, 95, 95);
   font-family: var(--font-heading-family);
   margin-block: 10px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Prix barré (prix avant promo) */
+.rdc-borne__product-price--compare {
+  font-size: 1.4rem;
+  color: rgb(150, 140, 140);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+/* Prix actuel */
+.rdc-borne__product-price--current {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+/* Prix en promo (rouge) */
+.rdc-borne__product-price--sale {
+  color: #d32f2f;
+  font-weight: 700;
 }
 
 /* Swatches pour la slide 3 */
