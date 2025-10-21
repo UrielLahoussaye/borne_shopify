@@ -373,16 +373,17 @@ class FragmentsCarousel {
     let firstVisibleIndex = -1;
     
     if (filterValue === 'all') {
-      // Afficher toutes les cartes
+      // Réafficher toutes les cartes
       this.cards.forEach((card, index) => {
         card.classList.remove('hidden');
+        card.style.display = '';
         if (firstVisibleIndex === -1) firstVisibleIndex = index;
         visibleCount++;
       });
     } else if (filterType === 'date' && filterValue === 'recent') {
       // Filtrer par date (articles de moins de 60 jours)
-      const now = Math.floor(Date.now() / 1000); // Timestamp actuel en secondes
-      const sixtyDaysAgo = now - (60 * 24 * 60 * 60); // 60 jours en secondes
+      const now = Math.floor(Date.now() / 1000);
+      const sixtyDaysAgo = now - (60 * 24 * 60 * 60);
       
       this.cards.forEach((card, index) => {
         const publishedAt = parseInt(card.dataset.publishedAt || '0');
@@ -390,14 +391,21 @@ class FragmentsCarousel {
         
         if (isRecent) {
           card.classList.remove('hidden');
+          card.style.display = '';
           if (firstVisibleIndex === -1) firstVisibleIndex = index;
           visibleCount++;
         } else {
           card.classList.add('hidden');
+          // Retirer du DOM après l'animation complète (opacity + width)
+          setTimeout(() => {
+            if (card.classList.contains('hidden')) {
+              card.style.display = 'none';
+            }
+          }, 500);
         }
       });
     } else {
-      // Filtrer par tag (normaliser les tags pour la comparaison)
+      // Filtrer par tag
       this.cards.forEach((card, index) => {
         const tags = card.dataset.tags || '';
         const tagsArray = tags.split(',').map(tag => this.handleize(tag.trim()));
@@ -405,10 +413,17 @@ class FragmentsCarousel {
         
         if (match) {
           card.classList.remove('hidden');
+          card.style.display = '';
           if (firstVisibleIndex === -1) firstVisibleIndex = index;
           visibleCount++;
         } else {
           card.classList.add('hidden');
+          // Retirer du DOM après l'animation complète (opacity + width)
+          setTimeout(() => {
+            if (card.classList.contains('hidden')) {
+              card.style.display = 'none';
+            }
+          }, 500);
         }
       });
     }
@@ -495,10 +510,17 @@ class FragmentsCarousel {
       
       if (match) {
         card.classList.remove('hidden');
+        card.style.display = '';
         if (firstVisibleIndex === -1) firstVisibleIndex = index;
         visibleCount++;
       } else {
         card.classList.add('hidden');
+        // Retirer du DOM après l'animation complète (opacity + width)
+        setTimeout(() => {
+          if (card.classList.contains('hidden')) {
+            card.style.display = 'none';
+          }
+        }, 500);
       }
     });
     

@@ -257,13 +257,14 @@
 
 /* Animation pour les cartes filtrées */
 .fragment-card.hidden {
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, width 0.3s ease 0.2s, min-width 0.3s ease 0.2s, margin 0.3s ease 0.2s, padding 0.3s ease 0.2s;
   width: 0 !important;
   min-width: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
-  opacity: 0 !important;
-  transform: scale(0.5) !important;
-  pointer-events: none;
   overflow: hidden;
 }
 
