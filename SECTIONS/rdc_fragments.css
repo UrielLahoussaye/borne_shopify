@@ -52,7 +52,7 @@
 
 .fragments-description {
   font-size: 1.8rem;
-  color: rgb(75, 66, 65)5);
+  color: rgb(75, 66, 65);
   line-height: 1.6;
   max-width: 700px;
   margin: 0 auto 40px;
@@ -257,9 +257,14 @@
 
 /* Animation pour les cartes filtrées */
 .fragment-card.hidden {
+  width: 0 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   opacity: 0 !important;
   transform: scale(0.5) !important;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .fragment-card-inner {

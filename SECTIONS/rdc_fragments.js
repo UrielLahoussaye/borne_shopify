@@ -31,17 +31,27 @@ class FragmentsCarousel {
   }
 
   /**
-   * Génère les indicateurs dynamiquement en fonction du nombre de cartes
+   * Obtenir les cartes visibles (non cachées)
+   */
+  getVisibleCards() {
+    return this.cards.filter(card => !card.classList.contains('hidden'));
+  }
+
+  /**
+   * Génère les indicateurs dynamiquement en fonction du nombre de cartes visibles
    */
   generateIndicators() {
     if (!this.indicatorsContainer) return;
     
     this.indicatorsContainer.innerHTML = '';
     
-    this.cards.forEach((card, index) => {
+    const visibleCards = this.getVisibleCards();
+    
+    visibleCards.forEach((card, visibleIndex) => {
+      const actualIndex = this.cards.indexOf(card);
       const indicator = document.createElement('button');
-      indicator.className = index === 0 ? 'indicator active' : 'indicator';
-      indicator.dataset.slide = index;
+      indicator.className = visibleIndex === 0 ? 'indicator active' : 'indicator';
+      indicator.dataset.slide = actualIndex;
       this.indicatorsContainer.appendChild(indicator);
     });
   }
@@ -107,6 +117,48 @@ class FragmentsCarousel {
   }
 
   /**
+   * Obtenir l'index de la prochaine carte visible
+   */
+  getNextVisibleIndex(currentIndex) {
+    const visibleCards = this.getVisibleCards();
+    if (visibleCards.length === 0) return currentIndex;
+    
+    // Trouver la position actuelle dans les cartes visibles
+    let currentVisibleIndex = -1;
+    for (let i = 0; i < visibleCards.length; i++) {
+      if (this.cards.indexOf(visibleCards[i]) === currentIndex) {
+        currentVisibleIndex = i;
+        break;
+      }
+    }
+    
+    // Prochaine carte visible (avec boucle)
+    const nextVisibleIndex = (currentVisibleIndex + 1) % visibleCards.length;
+    return this.cards.indexOf(visibleCards[nextVisibleIndex]);
+  }
+
+  /**
+   * Obtenir l'index de la carte visible précédente
+   */
+  getPrevVisibleIndex(currentIndex) {
+    const visibleCards = this.getVisibleCards();
+    if (visibleCards.length === 0) return currentIndex;
+    
+    // Trouver la position actuelle dans les cartes visibles
+    let currentVisibleIndex = -1;
+    for (let i = 0; i < visibleCards.length; i++) {
+      if (this.cards.indexOf(visibleCards[i]) === currentIndex) {
+        currentVisibleIndex = i;
+        break;
+      }
+    }
+    
+    // Carte visible précédente (avec boucle)
+    const prevVisibleIndex = (currentVisibleIndex - 1 + visibleCards.length) % visibleCards.length;
+    return this.cards.indexOf(visibleCards[prevVisibleIndex]);
+  }
+
+  /**
    * Met à jour quelle carte est au centre
    */
   updateCenterCard() {
@@ -160,8 +212,8 @@ class FragmentsCarousel {
    * Navigation vers la carte suivante (avec boucle)
    */
   next() {
-    // Boucler : si on est à la dernière carte, revenir à la première
-    const nextIndex = (this.currentIndex + 1) % this.totalCards;
+    // Obtenir la prochaine carte visible
+    const nextIndex = this.getNextVisibleIndex(this.currentIndex);
     
     // Définir la cible et appliquer l'animation immédiatement
     this.targetIndex = nextIndex;
@@ -180,8 +232,8 @@ class FragmentsCarousel {
    * Navigation vers la carte précédente (avec boucle)
    */
   prev() {
-    // Boucler : si on est à la première carte, aller à la dernière
-    const prevIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
+    // Obtenir la carte visible précédente
+    const prevIndex = this.getPrevVisibleIndex(this.currentIndex);
     
     // Définir la cible et appliquer l'animation immédiatement
     this.targetIndex = prevIndex;
@@ -363,6 +415,11 @@ class FragmentsCarousel {
     
     console.log(`✅ ${visibleCount} carte(s) affichée(s)`);
     
+    // Régénérer les indicateurs pour ne montrer que les cartes visibles
+    this.generateIndicators();
+    this.indicators = Array.from(this.section.querySelectorAll('.indicator'));
+    this.setupIndicators();
+    
     // Si la carte actuelle est cachée, scroller vers la première carte visible
     const currentCard = this.cards[this.currentIndex];
     if (currentCard && currentCard.classList.contains('hidden') && firstVisibleIndex !== -1) {
@@ -446,6 +503,11 @@ class FragmentsCarousel {
     });
     
     console.log(`✅ ${visibleCount} carte(s) trouvée(s)`);
+    
+    // Régénérer les indicateurs pour ne montrer que les cartes visibles
+    this.generateIndicators();
+    this.indicators = Array.from(this.section.querySelectorAll('.indicator'));
+    this.setupIndicators();
     
     // Si la carte actuelle est cachée, scroller vers la première carte visible
     const currentCard = this.cards[this.currentIndex];
