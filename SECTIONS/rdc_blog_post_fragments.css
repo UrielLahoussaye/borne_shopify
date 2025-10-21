@@ -11,6 +11,11 @@
   --blog-border: #E0E0E0;
 }
 
+.invisible_fragments
+{
+  display: none;
+}
+
 /* ============================================
    SECTION BLOG POST
    ============================================ */

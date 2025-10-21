@@ -56,8 +56,35 @@ class FragmentsCarousel {
     });
   }
 
+  /**
+   * Mélanger les cartes de manière aléatoire
+   */
+  shuffleCards() {
+    // Créer un tableau avec les cartes et leurs index
+    const cardsArray = Array.from(this.cards);
+    
+    // Algorithme de Fisher-Yates pour mélanger
+    for (let i = cardsArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cardsArray[i], cardsArray[j]] = [cardsArray[j], cardsArray[i]];
+    }
+    
+    // Réorganiser les cartes dans le DOM
+    cardsArray.forEach(card => {
+      this.carousel.appendChild(card);
+    });
+    
+    // Mettre à jour la référence des cartes
+    this.cards = Array.from(this.carousel.querySelectorAll('.fragment-card'));
+    
+    console.log('🔀 Cartes mélangées aléatoirement');
+  }
+
   init() {
     console.log('🎨 Fragments Carousel initialized with', this.totalCards, 'cards');
+    
+    // Mélanger les cartes au chargement
+    this.shuffleCards();
     
     // Mettre à jour le placeholder de recherche avec le nombre de cartes
     this.updateSearchPlaceholder();
@@ -287,19 +314,27 @@ class FragmentsCarousel {
    * Configuration des indicateurs
    */
   setupIndicators() {
-    this.indicators.forEach((indicator, index) => {
+    this.indicators.forEach((indicator, visibleIndex) => {
       indicator.addEventListener('click', () => {
+        const visibleCards = this.getVisibleCards();
+        
+        // Convertir l'index visible en index global
+        const targetCard = visibleCards[visibleIndex];
+        const globalIndex = this.cards.indexOf(targetCard);
+        
+        if (globalIndex === -1) return;
+        
         // Définir la cible et appliquer l'animation immédiatement
-        this.targetIndex = index;
+        this.targetIndex = globalIndex;
         this.cards.forEach((card, cardIndex) => {
-          if (cardIndex === index) {
+          if (cardIndex === globalIndex) {
             card.classList.add('is-center');
           } else {
             card.classList.remove('is-center');
           }
         });
         
-        this.scrollToCard(index);
+        this.scrollToCard(globalIndex);
       });
     });
   }
@@ -308,8 +343,14 @@ class FragmentsCarousel {
    * Met à jour l'état actif des indicateurs
    */
   updateIndicators() {
+    const visibleCards = this.getVisibleCards();
+    const currentCard = this.cards[this.currentIndex];
+    
+    // Trouver l'index de la carte actuelle parmi les cartes visibles
+    const visibleIndex = visibleCards.indexOf(currentCard);
+    
     this.indicators.forEach((indicator, index) => {
-      if (index === this.currentIndex) {
+      if (index === visibleIndex) {
         indicator.classList.add('active');
       } else {
         indicator.classList.remove('active');
