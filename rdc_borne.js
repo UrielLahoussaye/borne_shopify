@@ -4,6 +4,23 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Parser la configuration des collections protégées depuis le schema
+  const protectedCollectionsConfig = window.RDC_PROTECTED_COLLECTIONS || "";
+  const protectedCollectionsMap = new Map();
+  
+  // Format : "Collection1:password1 | Collection2:password2"
+  if (protectedCollectionsConfig) {
+    protectedCollectionsConfig.split('|').forEach(entry => {
+      const trimmedEntry = entry.trim();
+      if (trimmedEntry) {
+        const [collectionName, password] = trimmedEntry.split(':').map(s => s.trim());
+        if (collectionName && password) {
+          protectedCollectionsMap.set(collectionName, password);
+        }
+      }
+    });
+  }
+
   // Gestion de l'overlay de chargement
   const loadingOverlay = document.getElementById("rdc-loading-overlay");
 
@@ -80,12 +97,16 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {string} screenNumber - Numéro de l'écran de destination
    */
   function navigateToScreen(screenNumber) {
+    console.log('navigateToScreen appelée avec:', screenNumber);
     const currentScreen = borne.querySelector(
       '.rdc-borne__screen[data-active="true"]'
     );
     const nextScreen = borne.querySelector(
       `.rdc-borne__screen[data-screen="${screenNumber}"]`
     );
+
+    console.log('currentScreen:', currentScreen?.dataset.screen);
+    console.log('nextScreen:', nextScreen?.dataset.screen);
 
     if (currentScreen && nextScreen) {
       history.push(currentScreen.dataset.screen);
@@ -144,6 +165,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (collection) {
       const collectionHandle = collection.dataset.handle;
       const collectionTitle = collection.querySelector("h3").textContent;
+      
+      // Vérifier si la collection est protégée par mot de passe
+      if (protectedCollectionsMap.has(collectionTitle)) {
+        const expectedPassword = protectedCollectionsMap.get(collectionTitle);
+        showPasswordModal({ collectionHandle, collectionTitle }, expectedPassword);
+        return;
+      }
+      
       document.querySelector(".rdc-borne__collection-title").textContent =
         collectionTitle;
 
@@ -1060,6 +1089,119 @@ document.addEventListener("DOMContentLoaded", function () {
       resizeTimeout = setTimeout(function() {
         moveCarousel();
       }, 250);
+    });
+  }
+
+  /**
+   * Gestion de la modal de mot de passe pour collection protégée
+   */
+  const passwordModal = document.getElementById('password-modal');
+  const passwordInput = document.getElementById('password-input');
+  const passwordError = document.getElementById('password-error');
+  const passwordSubmit = document.getElementById('password-submit');
+  const passwordCancel = document.getElementById('password-cancel');
+  
+  let pendingCollectionData = null;
+  let currentCollectionPassword = null;
+
+  // Fonction pour afficher la modal
+  function showPasswordModal(collectionData, expectedPassword) {
+    console.log('showPasswordModal appelée', collectionData, expectedPassword);
+    if (!passwordModal) {
+      console.error('passwordModal non trouvé dans le DOM');
+      return;
+    }
+    pendingCollectionData = collectionData;
+    currentCollectionPassword = expectedPassword;
+    passwordModal.setAttribute('data-visible', 'true');
+    passwordInput.value = '';
+    passwordError.style.display = 'none';
+    passwordInput.focus();
+  }
+
+  // Fonction pour masquer la modal
+  function hidePasswordModal() {
+    passwordModal.setAttribute('data-visible', 'false');
+    pendingCollectionData = null;
+    currentCollectionPassword = null;
+  }
+
+  // Fonction pour procéder à la navigation vers la collection
+  function proceedToCollection(collectionData) {
+    console.log('proceedToCollection appelée avec:', collectionData);
+    const { collectionHandle, collectionTitle } = collectionData;
+    
+    document.querySelector(".rdc-borne__collection-title").textContent = collectionTitle;
+
+    // Afficher uniquement les produits de la collection sélectionnée
+    const productGrids = document.querySelectorAll(".rdc-borne__products");
+    productGrids.forEach((grid) => {
+      if (grid.dataset.collection === collectionHandle) {
+        grid.classList.add("active");
+        grid.classList.remove("inactive");
+      } else {
+        grid.classList.add("inactive");
+        grid.classList.remove("active");
+      }
+    });
+
+    console.log('Appel de navigateToScreen(3)');
+    navigateToScreen("3");
+  }
+
+  // Vérifier que tous les éléments existent avant d'ajouter les listeners
+  if (passwordModal && passwordSubmit && passwordCancel && passwordInput) {
+    // Valider le mot de passe
+    passwordSubmit.addEventListener('click', function() {
+      console.log('Bouton valider cliqué');
+      const enteredPassword = passwordInput.value;
+      console.log('Mot de passe saisi:', enteredPassword);
+      console.log('Mot de passe attendu:', currentCollectionPassword);
+      
+      if (enteredPassword === currentCollectionPassword) {
+        console.log('Mot de passe correct !');
+        // Sauvegarder les données avant de fermer la modal (qui les efface)
+        const collectionData = pendingCollectionData;
+        hidePasswordModal();
+        if (collectionData) {
+          console.log('Navigation vers collection:', collectionData);
+          proceedToCollection(collectionData);
+        } else {
+          console.error('collectionData est null ou undefined !');
+        }
+      } else {
+        console.log('Mot de passe incorrect');
+        passwordError.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    });
+
+    // Annuler
+    passwordCancel.addEventListener('click', function() {
+      console.log('Annulation');
+      hidePasswordModal();
+    });
+
+    // Permettre la validation avec la touche Entrée
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        passwordSubmit.click();
+      }
+    });
+
+    // Fermer la modal en cliquant sur le fond
+    passwordModal.addEventListener('click', function(e) {
+      if (e.target === passwordModal) {
+        hidePasswordModal();
+      }
+    });
+  } else {
+    console.error('Éléments de la modal de mot de passe non trouvés:', {
+      passwordModal,
+      passwordSubmit,
+      passwordCancel,
+      passwordInput
     });
   }
 });
