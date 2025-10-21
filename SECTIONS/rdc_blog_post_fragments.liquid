@@ -1,4 +1,4 @@
-{{ 'rdc_blog-post.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_blog_post_fragments.css' | asset_url | stylesheet_tag }}
 
 {%- comment -%} Récupération des métaobjects {%- endcomment -%}
 {%- assign fragment_illustration = article.metafields.custom.fragment_illustration -%}
@@ -212,7 +212,7 @@
   </div>
 </article>
 
-<script src="{{ 'rdc_blog-post.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'rdc_blog_post_fragments.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
