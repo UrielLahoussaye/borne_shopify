@@ -7,15 +7,37 @@ document.addEventListener("DOMContentLoaded", function () {
   // Parser la configuration des collections protégées depuis le schema
   const protectedCollectionsConfig = window.RDC_PROTECTED_COLLECTIONS || "";
   const protectedCollectionsMap = new Map();
-  
+
   // Format : "Collection1:password1 | Collection2:password2"
   if (protectedCollectionsConfig) {
-    protectedCollectionsConfig.split('|').forEach(entry => {
+    protectedCollectionsConfig.split("|").forEach((entry) => {
       const trimmedEntry = entry.trim();
       if (trimmedEntry) {
-        const [collectionName, password] = trimmedEntry.split(':').map(s => s.trim());
+        const [collectionName, password] = trimmedEntry
+          .split(":")
+          .map((s) => s.trim());
         if (collectionName && password) {
           protectedCollectionsMap.set(collectionName, password);
+        }
+      }
+    });
+  }
+
+  // Parser la configuration des noms d'affichage des collections
+  const collectionDisplayNamesConfig =
+    window.RDC_COLLECTION_DISPLAY_NAMES || "";
+  const collectionDisplayNamesMap = new Map();
+
+  // Format : "Nom interne:Nom affiché | Autre nom:Autre affichage"
+  if (collectionDisplayNamesConfig) {
+    collectionDisplayNamesConfig.split("|").forEach((entry) => {
+      const trimmedEntry = entry.trim();
+      if (trimmedEntry) {
+        const [internalName, displayName] = trimmedEntry
+          .split(":")
+          .map((s) => s.trim());
+        if (internalName && displayName) {
+          collectionDisplayNamesMap.set(internalName, displayName);
         }
       }
     });
@@ -53,6 +75,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Exécuter la fonction au chargement
   applySwatchUrls();
+
+  // Appliquer les noms d'affichage personnalisés aux collections
+  function applyCollectionDisplayNames() {
+    // Sélectionner tous les titres de collections (h3 dans les collections)
+    const collectionTitles = document.querySelectorAll(
+      ".rdc-borne__collection h3"
+    );
+
+    collectionTitles.forEach((title) => {
+      const internalName = title.textContent.trim();
+
+      // Vérifier si un nom d'affichage est configuré pour cette collection
+      if (collectionDisplayNamesMap.has(internalName)) {
+        const displayName = collectionDisplayNamesMap.get(internalName);
+        title.textContent = displayName;
+        console.log(
+          `Collection renommée: "${internalName}" -> "${displayName}"`
+        );
+      }
+    });
+  }
+
+  // Exécuter le renommage au chargement
+  applyCollectionDisplayNames();
 
   // Éléments principaux
   const borne = document.querySelector(".rdc-borne");
@@ -97,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {string} screenNumber - Numéro de l'écran de destination
    */
   function navigateToScreen(screenNumber) {
-    console.log('navigateToScreen appelée avec:', screenNumber);
+    console.log("navigateToScreen appelée avec:", screenNumber);
     const currentScreen = borne.querySelector(
       '.rdc-borne__screen[data-active="true"]'
     );
@@ -105,8 +151,8 @@ document.addEventListener("DOMContentLoaded", function () {
       `.rdc-borne__screen[data-screen="${screenNumber}"]`
     );
 
-    console.log('currentScreen:', currentScreen?.dataset.screen);
-    console.log('nextScreen:', nextScreen?.dataset.screen);
+    console.log("currentScreen:", currentScreen?.dataset.screen);
+    console.log("nextScreen:", nextScreen?.dataset.screen);
 
     if (currentScreen && nextScreen) {
       history.push(currentScreen.dataset.screen);
@@ -165,14 +211,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (collection) {
       const collectionHandle = collection.dataset.handle;
       const collectionTitle = collection.querySelector("h3").textContent;
-      
+
       // Vérifier si la collection est protégée par mot de passe
       if (protectedCollectionsMap.has(collectionTitle)) {
         const expectedPassword = protectedCollectionsMap.get(collectionTitle);
-        showPasswordModal({ collectionHandle, collectionTitle }, expectedPassword);
+        showPasswordModal(
+          { collectionHandle, collectionTitle },
+          expectedPassword
+        );
         return;
       }
-      
+
       document.querySelector(".rdc-borne__collection-title").textContent =
         collectionTitle;
 
@@ -685,12 +734,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (cart.items.length === 0) {
       // Afficher un message si le panier est vide
       cartItemsContainer.innerHTML = `
-        <div class="rdc-borne__cart-empty">
-          <div class="rdc-borne__cart-empty-icon">🛒</div>
-          <p class="rdc-borne__cart-empty-message">Votre panier est vide</p>
-          <button class="rdc-borne__cart-continue-shopping" data-action="toggle-cart">Continuer vos achats</button>
-        </div>
-      `;
+          <div class="rdc-borne__cart-empty">
+            <div class="rdc-borne__cart-empty-icon">🛒</div>
+            <p class="rdc-borne__cart-empty-message">Votre panier est vide</p>
+            <button class="rdc-borne__cart-continue-shopping" data-action="toggle-cart">Continuer vos achats</button>
+          </div>
+        `;
       return;
     }
 
@@ -701,31 +750,31 @@ document.addEventListener("DOMContentLoaded", function () {
       cartItemElement.dataset.variantId = item.id;
 
       cartItemElement.innerHTML = `
-        <img src="${item.image}" alt="${
+          <img src="${item.image}" alt="${
         item.title
       }" class="rdc-borne__cart-item-image">
-        <div class="rdc-borne__cart-item-details">
-          <button class="rdc-borne__cart-item-remove" data-action="remove-item" data-variant-id="${
-            item.id
-          }"><img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/TRASH.webp?v=1756905699" /></button>
-          <h3 class="rdc-borne__cart-item-title">${item.title}</h3>
-          <p class="rdc-borne__cart-item-variant">${item.color} / ${
+          <div class="rdc-borne__cart-item-details">
+            <button class="rdc-borne__cart-item-remove" data-action="remove-item" data-variant-id="${
+              item.id
+            }"><img src="https://cdn.shopify.com/s/files/1/0728/9690/5483/files/TRASH.webp?v=1756905699" /></button>
+            <h3 class="rdc-borne__cart-item-title">${item.title}</h3>
+            <p class="rdc-borne__cart-item-variant">${item.color} / ${
         item.size
       }</p>
-          <p class="rdc-borne__cart-item-price">${formatPrice(item.price)}</p>
-          <div class="rdc-borne__cart-item-quantity">
-            <button class="rdc-borne__cart-item-quantity-button" data-action="decrease-quantity" data-variant-id="${
-              item.id
-            }">-</button>
-            <span class="rdc-borne__cart-item-quantity-value">${
-              item.quantity
-            }</span>
-            <button class="rdc-borne__cart-item-quantity-button" data-action="increase-quantity" data-variant-id="${
-              item.id
-            }">+</button>
+            <p class="rdc-borne__cart-item-price">${formatPrice(item.price)}</p>
+            <div class="rdc-borne__cart-item-quantity">
+              <button class="rdc-borne__cart-item-quantity-button" data-action="decrease-quantity" data-variant-id="${
+                item.id
+              }">-</button>
+              <span class="rdc-borne__cart-item-quantity-value">${
+                item.quantity
+              }</span>
+              <button class="rdc-borne__cart-item-quantity-button" data-action="increase-quantity" data-variant-id="${
+                item.id
+              }">+</button>
+            </div>
           </div>
-        </div>
-      `;
+        `;
 
       cartItemsContainer.appendChild(cartItemElement);
     });
@@ -1001,17 +1050,38 @@ document.addEventListener("DOMContentLoaded", function () {
    * Gestion du carousel de catégories
    * Permet de naviguer entre les catégories avec les boutons prev/next
    */
-  const categoriesContainerWrapper = document.querySelector('.rdc-borne__categories-container');
+  const categoriesContainerWrapper = document.querySelector(
+    ".rdc-borne__categories-container"
+  );
   if (categoriesContainerWrapper) {
-    const categoriesContainer = categoriesContainerWrapper.querySelector('.rdc-borne__categories');
-    const prevButton = categoriesContainerWrapper.querySelector('.rdc-borne__carousel-button--prev');
-    const nextButton = categoriesContainerWrapper.querySelector('.rdc-borne__carousel-button--next');
-    const categories = categoriesContainer.querySelectorAll('.rdc-borne__category');
-    
+    const categoriesContainer = categoriesContainerWrapper.querySelector(
+      ".rdc-borne__categories"
+    );
+    const prevButton = categoriesContainerWrapper.querySelector(
+      ".rdc-borne__carousel-button--prev"
+    );
+    const nextButton = categoriesContainerWrapper.querySelector(
+      ".rdc-borne__carousel-button--next"
+    );
+    const categories = categoriesContainer.querySelectorAll(
+      ".rdc-borne__category"
+    );
+
     let currentIndex = 0;
-    const visibleItems = 3; // Nombre de catégories visibles à la fois
+
+    // Fonction pour obtenir le nombre de catégories visibles selon la taille d'écran
+    function getVisibleItems() {
+      const isMobile = window.innerWidth <= 767;
+      return isMobile ? 1 : 3; // 1 catégorie sur mobile, 3 sur desktop
+    }
+
     const totalItems = categories.length;
-    const maxIndex = Math.max(0, totalItems - visibleItems);
+
+    // Fonction pour calculer le maxIndex dynamiquement
+    function getMaxIndex() {
+      const visibleItems = getVisibleItems();
+      return Math.max(0, totalItems - visibleItems);
+    }
 
     // Calculer la largeur d'une catégorie + gap
     function getItemWidth() {
@@ -1020,16 +1090,42 @@ document.addEventListener("DOMContentLoaded", function () {
         // Récupérer le gap depuis le style calculé
         const containerStyle = window.getComputedStyle(categoriesContainer);
         const gap = parseFloat(containerStyle.gap) || 32; // 2rem = 32px par défaut
+        console.log(
+          "getItemWidth - categoryWidth:",
+          categoryWidth,
+          "gap:",
+          gap,
+          "total:",
+          categoryWidth + gap
+        );
         return categoryWidth + gap;
       }
-      return 332; // Fallback: 300px + 32px gap
+      // Fallback adaptatif selon la taille de l'écran
+      const isMobile = window.innerWidth <= 767;
+      const fallbackWidth = isMobile ? 296 : 332; // Mobile: 280px + 16px gap, Desktop: 300px + 32px gap
+      console.log(
+        "getItemWidth - fallback:",
+        fallbackWidth,
+        "isMobile:",
+        isMobile
+      );
+      return fallbackWidth;
     }
 
     // Mettre à jour l'état des boutons
     function updateButtons() {
       if (prevButton && nextButton) {
+        const maxIndex = getMaxIndex();
         prevButton.disabled = currentIndex === 0;
         nextButton.disabled = currentIndex >= maxIndex;
+        console.log(
+          "updateButtons - currentIndex:",
+          currentIndex,
+          "maxIndex:",
+          maxIndex,
+          "totalItems:",
+          totalItems
+        );
       }
     }
 
@@ -1043,7 +1139,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Gestionnaire pour le bouton précédent
     if (prevButton) {
-      prevButton.addEventListener('click', function() {
+      prevButton.addEventListener("click", function () {
         if (currentIndex > 0) {
           currentIndex--;
           moveCarousel();
@@ -1053,9 +1149,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Gestionnaire pour le bouton suivant
     if (nextButton) {
-      nextButton.addEventListener('click', function() {
+      nextButton.addEventListener("click", function () {
+        const maxIndex = getMaxIndex();
+        console.log(
+          "Click next - currentIndex avant:",
+          currentIndex,
+          "maxIndex:",
+          maxIndex
+        );
         if (currentIndex < maxIndex) {
           currentIndex++;
+          console.log("Click next - currentIndex après:", currentIndex);
           moveCarousel();
         }
       });
@@ -1065,12 +1169,14 @@ document.addEventListener("DOMContentLoaded", function () {
     updateButtons();
 
     // Réinitialiser le carousel quand on revient à l'écran 1
-    const screen1 = document.querySelector('.rdc-borne__screen[data-screen="1"]');
+    const screen1 = document.querySelector(
+      '.rdc-borne__screen[data-screen="1"]'
+    );
     if (screen1) {
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.attributeName === 'data-active') {
-            const isActive = screen1.getAttribute('data-active') === 'true';
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.attributeName === "data-active") {
+            const isActive = screen1.getAttribute("data-active") === "true";
             if (isActive) {
               currentIndex = 0;
               moveCarousel();
@@ -1078,60 +1184,119 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
       });
-      
+
       observer.observe(screen1, { attributes: true });
     }
 
     // Gérer le redimensionnement de la fenêtre
     let resizeTimeout;
-    window.addEventListener('resize', function() {
+    window.addEventListener("resize", function () {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(function() {
+      resizeTimeout = setTimeout(function () {
+        // Recalculer et repositionner le carousel
+        const maxIndex = getMaxIndex();
+        // S'assurer que currentIndex ne dépasse pas le nouveau maxIndex
+        if (currentIndex > maxIndex) {
+          currentIndex = maxIndex;
+        }
         moveCarousel();
       }, 250);
     });
+
+    // Gestion du swipe tactile sur mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    const minSwipeDistance = 50; // Distance minimale pour considérer un swipe
+
+    categoriesContainer.addEventListener(
+      "touchstart",
+      function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      },
+      { passive: true }
+    );
+
+    categoriesContainer.addEventListener(
+      "touchend",
+      function (e) {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+      },
+      { passive: true }
+    );
+
+    function handleSwipe() {
+      const swipeDistanceX = touchEndX - touchStartX;
+      const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+
+      // Vérifier que c'est un swipe horizontal (et non vertical)
+      if (swipeDistanceY < 50 && Math.abs(swipeDistanceX) > minSwipeDistance) {
+        const maxIndex = getMaxIndex();
+
+        if (swipeDistanceX < 0) {
+          // Swipe vers la gauche - aller à la catégorie suivante
+          if (currentIndex < maxIndex) {
+            currentIndex++;
+            moveCarousel();
+            console.log("Swipe left - next category");
+          }
+        } else {
+          // Swipe vers la droite - aller à la catégorie précédente
+          if (currentIndex > 0) {
+            currentIndex--;
+            moveCarousel();
+            console.log("Swipe right - previous category");
+          }
+        }
+      }
+    }
   }
 
   /**
    * Gestion de la modal de mot de passe pour collection protégée
    */
-  const passwordModal = document.getElementById('password-modal');
-  const passwordInput = document.getElementById('password-input');
-  const passwordError = document.getElementById('password-error');
-  const passwordSubmit = document.getElementById('password-submit');
-  const passwordCancel = document.getElementById('password-cancel');
-  
+  const passwordModal = document.getElementById("password-modal");
+  const passwordInput = document.getElementById("password-input");
+  const passwordError = document.getElementById("password-error");
+  const passwordSubmit = document.getElementById("password-submit");
+  const passwordCancel = document.getElementById("password-cancel");
+
   let pendingCollectionData = null;
   let currentCollectionPassword = null;
 
   // Fonction pour afficher la modal
   function showPasswordModal(collectionData, expectedPassword) {
-    console.log('showPasswordModal appelée', collectionData, expectedPassword);
+    console.log("showPasswordModal appelée", collectionData, expectedPassword);
     if (!passwordModal) {
-      console.error('passwordModal non trouvé dans le DOM');
+      console.error("passwordModal non trouvé dans le DOM");
       return;
     }
     pendingCollectionData = collectionData;
     currentCollectionPassword = expectedPassword;
-    passwordModal.setAttribute('data-visible', 'true');
-    passwordInput.value = '';
-    passwordError.style.display = 'none';
+    passwordModal.setAttribute("data-visible", "true");
+    passwordInput.value = "";
+    passwordError.style.display = "none";
     passwordInput.focus();
   }
 
   // Fonction pour masquer la modal
   function hidePasswordModal() {
-    passwordModal.setAttribute('data-visible', 'false');
+    passwordModal.setAttribute("data-visible", "false");
     pendingCollectionData = null;
     currentCollectionPassword = null;
   }
 
   // Fonction pour procéder à la navigation vers la collection
   function proceedToCollection(collectionData) {
-    console.log('proceedToCollection appelée avec:', collectionData);
+    console.log("proceedToCollection appelée avec:", collectionData);
     const { collectionHandle, collectionTitle } = collectionData;
-    
-    document.querySelector(".rdc-borne__collection-title").textContent = collectionTitle;
+
+    document.querySelector(".rdc-borne__collection-title").textContent =
+      collectionTitle;
 
     // Afficher uniquement les produits de la collection sélectionnée
     const productGrids = document.querySelectorAll(".rdc-borne__products");
@@ -1145,63 +1310,63 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    console.log('Appel de navigateToScreen(3)');
+    console.log("Appel de navigateToScreen(3)");
     navigateToScreen("3");
   }
 
   // Vérifier que tous les éléments existent avant d'ajouter les listeners
   if (passwordModal && passwordSubmit && passwordCancel && passwordInput) {
     // Valider le mot de passe
-    passwordSubmit.addEventListener('click', function() {
-      console.log('Bouton valider cliqué');
+    passwordSubmit.addEventListener("click", function () {
+      console.log("Bouton valider cliqué");
       const enteredPassword = passwordInput.value;
-      console.log('Mot de passe saisi:', enteredPassword);
-      console.log('Mot de passe attendu:', currentCollectionPassword);
-      
+      console.log("Mot de passe saisi:", enteredPassword);
+      console.log("Mot de passe attendu:", currentCollectionPassword);
+
       if (enteredPassword === currentCollectionPassword) {
-        console.log('Mot de passe correct !');
+        console.log("Mot de passe correct !");
         // Sauvegarder les données avant de fermer la modal (qui les efface)
         const collectionData = pendingCollectionData;
         hidePasswordModal();
         if (collectionData) {
-          console.log('Navigation vers collection:', collectionData);
+          console.log("Navigation vers collection:", collectionData);
           proceedToCollection(collectionData);
         } else {
-          console.error('collectionData est null ou undefined !');
+          console.error("collectionData est null ou undefined !");
         }
       } else {
-        console.log('Mot de passe incorrect');
-        passwordError.style.display = 'block';
-        passwordInput.value = '';
+        console.log("Mot de passe incorrect");
+        passwordError.style.display = "block";
+        passwordInput.value = "";
         passwordInput.focus();
       }
     });
 
     // Annuler
-    passwordCancel.addEventListener('click', function() {
-      console.log('Annulation');
+    passwordCancel.addEventListener("click", function () {
+      console.log("Annulation");
       hidePasswordModal();
     });
 
     // Permettre la validation avec la touche Entrée
-    passwordInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
+    passwordInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
         passwordSubmit.click();
       }
     });
 
     // Fermer la modal en cliquant sur le fond
-    passwordModal.addEventListener('click', function(e) {
+    passwordModal.addEventListener("click", function (e) {
       if (e.target === passwordModal) {
         hidePasswordModal();
       }
     });
   } else {
-    console.error('Éléments de la modal de mot de passe non trouvés:', {
+    console.error("Éléments de la modal de mot de passe non trouvés:", {
       passwordModal,
       passwordSubmit,
       passwordCancel,
-      passwordInput
+      passwordInput,
     });
   }
 });

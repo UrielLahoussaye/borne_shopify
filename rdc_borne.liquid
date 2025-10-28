@@ -45,6 +45,13 @@
       "label": "Collections protégées par mot de passe",
       "info": "Format : Nom de la collection:mot_de_passe | Autre collection:autre_mot_de_passe",
       "placeholder": "Bénévoles (Yggdrasil):yggdrasil2024 | Collection VIP:vip123"
+    },
+    {
+      "type": "textarea",
+      "id": "collection_display_names",
+      "label": "Renommage des collections pour l'affichage",
+      "info": "Format : Nom interne:Nom affiché | Autre nom:Autre affichage",
+      "placeholder": "T-shirts Homme:T-shirts | Collection Staff:Équipe"
     }
   ],
   "presets": [
@@ -68,6 +75,8 @@
 <script>
   // Configuration des collections protégées depuis le schema
   window.RDC_PROTECTED_COLLECTIONS = {{ section.settings.protected_collections | json }};
+  // Configuration des noms d'affichage des collections
+  window.RDC_COLLECTION_DISPLAY_NAMES = {{ section.settings.collection_display_names | json }};
 </script>
 
 <div id="rdc-loading-overlay" class="rdc-loading-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 9999;"></div>
@@ -552,7 +561,7 @@ Données JSON pour le JavaScript
 {% endcomment %}
 <script type="application/json" id="rdc-borne-data">
   {{ section.settings.collection_links }}
-</script>
+</script> 
 
 {% comment %}
 Chargement des ressources CSS et JS
