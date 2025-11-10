@@ -374,9 +374,15 @@
   <!-- Écran 4: Détail du produit et sélection de variantes -->
   <div class="rdc-borne__screen" data-screen="4" data-active="false">
     <div class="rdc-borne__content">
+      {% assign rendered_products = "" %}
       {% for collection in section.settings.collections %}
         {% for product in collection.products %}
+          {% unless rendered_products contains product.handle %}
+            {% assign rendered_products = rendered_products | append: product.handle | append: "," %}
           <div class="rdc-borne__product-detail" data-product-handle="{{ product.handle }}" style="display: none;">
+          {% else %}
+            {% continue %}
+          {% endunless %}
             <div class="rdc-borne__product-images">
               <img class="rdc-borne__product-main-image" src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title }}">
             </div>

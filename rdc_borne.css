@@ -1141,10 +1141,15 @@
   }
 
   .rdc-borne__cart-item-price--sale {
-    color: #c62828; /* rouge */
+    color: rgb(97, 86, 86); /* couleur normale par défaut */
     font-weight: 700;
     font-size: 1.6rem;
     font-family: var(--font-heading-family);
+  }
+
+  /* Rouge uniquement si le prix original est présent (promotion active) */
+  .rdc-borne__cart-item-price--original ~ .rdc-borne__cart-item-price--sale {
+    color: #c62828; /* rouge pour promo */
   }
   
   .rdc-borne__cart-item-quantity {
