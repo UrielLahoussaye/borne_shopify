@@ -150,6 +150,13 @@
     background-color:rgb(219, 216, 204);
     color:rgb(116, 108, 86);
   }
+
+  .rdc-borne__collection-title {
+    margin-top: 3rem;
+    font-size: 2.5rem;
+    font-family: var(--font-heading-family);
+    text-transform: uppercase;
+  }
   
   /* Écran 1: Catégories */
   /* Conteneur principal avec boutons */
@@ -1119,8 +1126,24 @@
     font-family: var(--font-body-family);
   }
   
-  .rdc-borne__cart-item-price {
-    color:rgb(97, 86, 86);
+  .rdc-borne__cart-item-prices {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    justify-content: flex-start;
+    margin-top: 6px;
+  }
+
+  .rdc-borne__cart-item-price--original {
+    color: #8d8d8d;
+    text-decoration: line-through;
+    font-size: 1.4rem;
+  }
+
+  .rdc-borne__cart-item-price--sale {
+    color: #c62828; /* rouge */
+    font-weight: 700;
+    font-size: 1.6rem;
     font-family: var(--font-heading-family);
   }
   

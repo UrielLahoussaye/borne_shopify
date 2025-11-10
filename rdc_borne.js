@@ -551,12 +551,14 @@ document.addEventListener("DOMContentLoaded", function () {
             addToCartButton.classList.add("added");
 
             // Ajouter le produit à notre état local du panier
+            const parsedPrice = parseFloat(
+              productPrice.replace(/[^0-9.,]/g, "").replace(",", ".")
+            );
             const item = {
               id: variantId,
               title: productTitle,
-              price: parseFloat(
-                productPrice.replace(/[^0-9.,]/g, "").replace(",", ".")
-              ),
+              price: parsedPrice,
+              originalPrice: parsedPrice, // fallback; sera remplacé par initCart si Shopify fournit compare/original
               image: productImage,
               color: colorName,
               size: sizeName,
@@ -576,8 +578,9 @@ document.addEventListener("DOMContentLoaded", function () {
               cart.items.push(item);
             }
 
-            // Mettre à jour le total et l'affichage du panier
+            // Mettre à jour le total et l'affichage du panier (local), puis rafraîchir depuis Shopify pour récupérer les champs compare/original
             updateCart();
+            initCart();
 
             // Afficher le popup de confirmation
             showConfirmationPopup(productTitle);
@@ -683,19 +686,59 @@ document.addEventListener("DOMContentLoaded", function () {
           const color = variantTitle[0] || "";
           const size = variantTitle[1] || "";
 
+          // Déterminer les prix (défensif selon les champs disponibles)
+          // Shopify fournit souvent: price, final_price, original_price (en centimes)
+          const priceCents =
+            (typeof item.final_price === "number" && item.final_price) ||
+            (typeof item.discounted_price === "number" && item.discounted_price) ||
+            item.price;
+          const originalPriceCents =
+            (typeof item.original_price === "number" && item.original_price) ||
+            (typeof item.compare_at_price === "number" && item.compare_at_price) ||
+            (typeof item.variant_compare_at_price === "number" && item.variant_compare_at_price) ||
+            item.price;
+
           return {
             id: item.variant_id,
             title: item.product_title,
-            price: item.price / 100, // Shopify stocke les prix en centimes
+            price: priceCents / 100, // prix actuel (après remise éventuelle)
+            originalPrice: originalPriceCents / 100, // prix d'origine pour affichage barré
             image: item.image,
             color: color,
             size: size,
             quantity: item.quantity,
+            handle: item.handle || item.product_handle || null,
           };
         });
 
-        // Mettre à jour l'affichage du panier
-        updateCart();
+        // Tenter d'enrichir les prix originaux via le produit si non fournis
+        const enrichPromises = cart.items.map((ci) => {
+          if (
+            (typeof ci.originalPrice !== "number" || ci.originalPrice <= ci.price) &&
+            ci.handle && typeof ci.id !== "undefined"
+          ) {
+            return fetch(`/products/${ci.handle}.js`)
+              .then((r) => r.json())
+              .then((p) => {
+                if (p && Array.isArray(p.variants)) {
+                  const v = p.variants.find((vv) => String(vv.id) === String(ci.id));
+                  if (v && typeof v.compare_at_price === "number" && v.compare_at_price > 0) {
+                    const cap = v.compare_at_price / 100;
+                    if (cap > ci.price) {
+                      ci.originalPrice = cap;
+                    }
+                  }
+                }
+              })
+              .catch(() => {});
+          }
+          return Promise.resolve();
+        });
+
+        Promise.all(enrichPromises).finally(() => {
+          // Mettre à jour l'affichage du panier après enrichissement
+          updateCart();
+        });
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération du panier:", error);
@@ -749,6 +792,23 @@ document.addEventListener("DOMContentLoaded", function () {
       cartItemElement.className = "rdc-borne__cart-item";
       cartItemElement.dataset.variantId = item.id;
 
+      const hasDiscount =
+        typeof item.originalPrice === "number" && item.originalPrice > item.price;
+      const priceHtml = hasDiscount
+        ? `<div class="rdc-borne__cart-item-prices">
+             <span class="rdc-borne__cart-item-price--original">${formatPrice(
+               item.originalPrice
+             )}</span>
+             <span class="rdc-borne__cart-item-price--sale">${formatPrice(
+               item.price
+             )}</span>
+           </div>`
+        : `<div class="rdc-borne__cart-item-prices">
+             <span class="rdc-borne__cart-item-price--sale">${formatPrice(
+               item.price
+             )}</span>
+           </div>`;
+
       cartItemElement.innerHTML = `
           <img src="${item.image}" alt="${
         item.title
@@ -761,7 +821,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <p class="rdc-borne__cart-item-variant">${item.color} / ${
         item.size
       }</p>
-            <p class="rdc-borne__cart-item-price">${formatPrice(item.price)}</p>
+            ${priceHtml}
             <div class="rdc-borne__cart-item-quantity">
               <button class="rdc-borne__cart-item-quantity-button" data-action="decrease-quantity" data-variant-id="${
                 item.id
@@ -814,7 +874,7 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {number} change - Changement de quantité (+1 ou -1)
    */
   function updateItemQuantity(variantId, change) {
-    const itemIndex = cart.items.findIndex((item) => item.id === variantId);
+    const itemIndex = cart.items.findIndex((item) => String(item.id) === String(variantId));
 
     if (itemIndex === -1) return;
 
@@ -857,7 +917,7 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function removeItemFromCart(variantId) {
     // Supprimer l'article de notre état local
-    cart.items = cart.items.filter((item) => item.id !== variantId);
+    cart.items = cart.items.filter((item) => String(item.id) !== String(variantId));
 
     // Supprimer l'article du panier Shopify
     fetch("/cart/change.js", {
