@@ -372,7 +372,15 @@ class FragmentsCarousel {
       ? window.innerWidth * 0.7 // 70vw sur mobile
       : window.innerWidth * 0.2; // 20vw sur desktop
 
-    const targetScroll = index * cardWidth;
+    // Compter uniquement les cartes visibles avant l'index cible
+    let visibleCardsBeforeTarget = 0;
+    for (let i = 0; i < index; i++) {
+      if (!this.cards[i].classList.contains("hidden")) {
+        visibleCardsBeforeTarget++;
+      }
+    }
+
+    const targetScroll = visibleCardsBeforeTarget * cardWidth;
 
     this.carousel.scrollTo({
       left: targetScroll,
