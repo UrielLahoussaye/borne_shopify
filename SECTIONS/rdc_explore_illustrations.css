@@ -197,34 +197,15 @@
 .fragments-carousel-container {
   position: relative;
   width: 100%;
-  margin: 0 auto 0;
-  overflow: visible;
-}
-
-/* Masques de fade sur les côtés */
-.fragments-carousel-container::before,
-.fragments-carousel-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 200px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.fragments-carousel-container::before {
-  left: 0;
-}
-
-.fragments-carousel-container::after {
-  right: 0;
+  max-width: 100vw;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .fragments-carousel {
   display: flex;
-  gap: 30px;
-  padding: 30px 20px 0 20px;
+  gap: 0;
+  padding: 0;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
@@ -239,33 +220,36 @@
   display: none;
 }
 
-/* Espaceurs pour centrer la première et dernière carte */
-.fragments-carousel::before,
-.fragments-carousel::after {
-  content: '';
-  flex-shrink: 0;
-  width: calc(50vw - 400px);
-}
-
 /* ========================================
    CARTES - SYSTÈME HORIZONTAL
    ======================================== */
 
 .fragment-card {
   flex-shrink: 0;
-  width: 800px;
-  scroll-snap-align: center;
+  width: 100vw;
+  min-height: 60vh;
+  scroll-snap-align: start;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0.6;
-  transform: scale(0.95);
+  opacity: 1;
+  transform: scale(1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+  box-sizing: border-box;
+  border: 3px solid red;
+}
+
+.fragment-card-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 60px;
+  align-items: center;
+  max-width: 1400px;
+  width: 100%;
+  padding: 0 80px;
+  box-sizing: border-box;
 }
 
 /* Animation pour les cartes filtrées */
@@ -334,13 +318,6 @@
   50% {
     transform: scale(1.15);
   }
-}
-
-/* Carte centrale (active) */
-.fragment-card.is-center {
-  opacity: 1;
-  transform: scale(1);
-  border-color: rgba(212, 175, 55, 0.3);
 }
 
 /* Colonne image */

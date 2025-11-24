@@ -1,4 +1,4 @@
-{{ 'rdc_fragments.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_explore_illustrations.css' | asset_url | stylesheet_tag }}
 
 <div class="rdc-fragments-section" data-section-id="{{ section.id }}">
   <div class="fragments-hero">
@@ -74,27 +74,29 @@
                data-block-id="{{ block.id }}"
                data-excerpt="{{ block.settings.description | strip_html | truncate: 200 | escape }}">
             
-            {%- comment -%} Colonne gauche : Image {%- endcomment -%}
-            <div class="fragment-card-image-col">
-              {% if block.settings.image_dark != blank %}
-                <img src="{{ block.settings.image_dark | image_url: width: 600 }}" alt="{{ block.settings.title }}" class="fragment-image">
-              {% elsif block.settings.image_light != blank %}
-                <img src="{{ block.settings.image_light | image_url: width: 600 }}" alt="{{ block.settings.title }}" class="fragment-image">
-              {% else %}
-                <div class="fragment-image-placeholder"></div>
-              {% endif %}
-            </div>
-            
-            {%- comment -%} Colonne droite : Contenu {%- endcomment -%}
-            <div class="fragment-card-content-col">
-              <h3 class="fragment-card-title">{{ block.settings.title | default: "Titre de l'illustration" }}</h3>
+            <div class="fragment-card-wrapper">
+              {%- comment -%} Colonne gauche : Image {%- endcomment -%}
+              <div class="fragment-card-image-col">
+                {% if block.settings.image_dark != blank %}
+                  <img src="{{ block.settings.image_dark | image_url: width: 600 }}" alt="{{ block.settings.title }}" class="fragment-image">
+                {% elsif block.settings.image_light != blank %}
+                  <img src="{{ block.settings.image_light | image_url: width: 600 }}" alt="{{ block.settings.title }}" class="fragment-image">
+                {% else %}
+                  <div class="fragment-image-placeholder"></div>
+                {% endif %}
+              </div>
               
-              {% if block.settings.artist != blank %}
-                <p class="fragment-card-artist">Artiste : {{ block.settings.artist }}</p>
-              {% endif %}
-              
-              <div class="fragment-card-description">
-                {{ block.settings.description }}
+              {%- comment -%} Colonne droite : Contenu {%- endcomment -%}
+              <div class="fragment-card-content-col">
+                <h3 class="fragment-card-title">{{ block.settings.title | default: "Titre de l'illustration" }}</h3>
+                
+                {% if block.settings.artist != blank %}
+                  <p class="fragment-card-artist">Artiste : {{ block.settings.artist }}</p>
+                {% endif %}
+                
+                <div class="fragment-card-description">
+                  {{ block.settings.description }}
+                </div>
               </div>
             </div>
           </div>
@@ -141,7 +143,7 @@
   </div>
 </div>
 
-<script src="{{ 'rdc_fragments.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'rdc_explore_illustrations.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {

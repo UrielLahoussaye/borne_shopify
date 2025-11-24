@@ -82,11 +82,14 @@ class FragmentsCarousel {
   }
 
   init() {
+    console.log("🚀 INIT CALLED - Starting initialization");
     console.log(
       "🎨 Fragments Carousel initialized with",
       this.totalCards,
       "cards"
     );
+    console.log("📦 Carousel element:", this.carousel);
+    console.log("🎯 Section:", this.section);
 
     // Mélanger les cartes au chargement
     this.shuffleCards();
@@ -195,49 +198,34 @@ class FragmentsCarousel {
    * Met à jour quelle carte est au centre
    */
   updateCenterCard() {
-    const carouselRect = this.carousel.getBoundingClientRect();
-    const carouselCenter = carouselRect.left + carouselRect.width / 2;
+    // Avec les cartes en 100vw, on calcule l'index basé sur la position de scroll
+    const scrollLeft = this.carousel.scrollLeft;
+    const viewportWidth = window.innerWidth;
+    const calculatedIndex = Math.round(scrollLeft / viewportWidth);
+    
+    // S'assurer que l'index est dans les limites
+    const newIndex = Math.max(0, Math.min(calculatedIndex, this.totalCards - 1));
 
-    let closestCard = null;
-    let closestDistance = Infinity;
+    // Si on a une carte ciblée (clic/navigation), utiliser celle-ci
+    if (this.targetIndex !== null) {
+      this.currentIndex = this.targetIndex;
+    } else {
+      this.currentIndex = newIndex;
+    }
 
+    // Mettre à jour les classes is-center
     this.cards.forEach((card, index) => {
-      // Ignorer les cartes cachées
-      if (card.classList.contains("hidden")) return;
-
-      const cardRect = card.getBoundingClientRect();
-      const cardCenter = cardRect.left + cardRect.width / 2;
-      const distance = Math.abs(carouselCenter - cardCenter);
-
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestCard = { card, index };
+      if (index === this.currentIndex) {
+        card.classList.add("is-center");
+      } else {
+        card.classList.remove("is-center");
       }
     });
 
-    // Si on a une carte ciblée (clic/navigation), la garder active pendant le scroll
-    if (this.targetIndex !== null) {
-      // Garder la carte ciblée active pendant tout le trajet
-      this.cards.forEach((card, index) => {
-        if (index === this.targetIndex) {
-          card.classList.add("is-center");
-        } else {
-          card.classList.remove("is-center");
-        }
-      });
-    } else {
-      // Sinon, mettre à jour normalement selon la carte la plus proche
-      this.cards.forEach((card) => card.classList.remove("is-center"));
-      if (closestCard) {
-        closestCard.card.classList.add("is-center");
-      }
-    }
-
-    // Mettre à jour l'index courant
-    if (closestCard) {
-      this.currentIndex = closestCard.index;
-      this.updateIndicators();
-      this.updateExcerpt(closestCard.index);
+    // Mettre à jour les indicateurs et l'extrait
+    this.updateIndicators();
+    if (this.excerptElement) {
+      this.updateExcerpt(this.currentIndex);
     }
   }
 
@@ -290,16 +278,8 @@ class FragmentsCarousel {
     const card = this.cards[index];
     if (!card) return;
 
-    // Calculer la position de scroll pour centrer la carte
-    const carouselRect = this.carousel.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
-    const scrollLeft = this.carousel.scrollLeft;
-
-    const targetScroll =
-      scrollLeft +
-      (cardRect.left - carouselRect.left) -
-      carouselRect.width / 2 +
-      cardRect.width / 2;
+    // Avec les cartes en 100vw, on scroll simplement de index * largeur de viewport
+    const targetScroll = index * window.innerWidth;
 
     this.carousel.scrollTo({
       left: targetScroll,
@@ -311,12 +291,24 @@ class FragmentsCarousel {
    * Configuration de la navigation
    */
   setupNavigation() {
+    console.log("🔍 Setup navigation - prevBtn:", this.prevBtn, "nextBtn:", this.nextBtn);
+    
     if (this.prevBtn) {
-      this.prevBtn.addEventListener("click", () => this.prev());
+      this.prevBtn.addEventListener("click", () => {
+        console.log("⬅️ Prev button clicked, current index:", this.currentIndex);
+        this.prev();
+      });
+    } else {
+      console.warn("⚠️ Prev button not found");
     }
 
     if (this.nextBtn) {
-      this.nextBtn.addEventListener("click", () => this.next());
+      this.nextBtn.addEventListener("click", () => {
+        console.log("➡️ Next button clicked, current index:", this.currentIndex);
+        this.next();
+      });
+    } else {
+      console.warn("⚠️ Next button not found");
     }
   }
 
