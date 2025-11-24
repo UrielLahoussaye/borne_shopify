@@ -45,6 +45,32 @@ class FragmentsCarousel {
   }
 
   /**
+   * Configurer le bouton ACHETER
+   */
+  setupShopButton() {
+    console.log("🔧 setupShopButton appelé");
+    console.log("🔍 fixedBtnShop:", this.fixedBtnShop);
+
+    if (!this.fixedBtnShop) {
+      console.error("❌ Bouton ACHETER non trouvé !");
+      console.log(
+        "🔍 Recherche manuelle:",
+        this.section.querySelector(".fragment-btn-shop")
+      );
+      return;
+    }
+
+    this.fixedBtnShop.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("🛍️ Clic sur ACHETER détecté");
+      this.redirectToCollectionWithFilter();
+    });
+
+    console.log("✅ Listener ACHETER configuré sur:", this.fixedBtnShop);
+  }
+
+  /**
    * Obtenir les cartes visibles (non cachées)
    */
   getVisibleCards() {
@@ -152,6 +178,9 @@ class FragmentsCarousel {
 
     // Toggle thème sombre
     this.setupThemeToggle();
+
+    // Configurer le bouton ACHETER
+    this.setupShopButton();
 
     // Centrer la carte du milieu au chargement
     setTimeout(() => {
@@ -778,6 +807,47 @@ class FragmentsCarousel {
         e.stopPropagation();
       });
     });
+  }
+
+  /**
+   * Rediriger vers la collection avec le filtre de la relique activé
+   */
+  redirectToCollectionWithFilter() {
+    console.log("🔍 Début de redirectToCollectionWithFilter");
+    console.log("📊 currentIndex:", this.currentIndex);
+    console.log("📦 Total cards:", this.cards.length);
+
+    const currentCard = this.cards[this.currentIndex];
+
+    if (!currentCard) {
+      console.error("❌ Pas de carte courante trouvée");
+      return;
+    }
+
+    console.log("✅ Carte courante trouvée:", currentCard);
+    console.log("📋 Datasets de la carte:", currentCard.dataset);
+
+    // Récupérer le GID de filtre depuis le métaobjet
+    const filterGid = currentCard.dataset.filterGid;
+
+    if (!filterGid) {
+      console.error("⚠️ Pas de filter GID trouvé pour cette relique");
+      console.log(
+        "💡 Astuce: Ajoute le GID de filtre dans le métaobjet Reliques"
+      );
+      return;
+    }
+
+    console.log("🛍️ Redirection vers collection avec filtre GID:", filterGid);
+
+    // Le GID est déjà encodé depuis l'URL de la collection, ne pas le ré-encoder
+    // Construire l'URL avec le GID de filtre
+    const collectionUrl = `/collections/tous-les-produits?filter.p.m.custom.illustration=${filterGid}`;
+
+    console.log("🔗 URL construite:", collectionUrl);
+
+    // Rediriger
+    window.location.href = collectionUrl;
   }
 
   /**

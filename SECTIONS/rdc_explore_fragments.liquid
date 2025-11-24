@@ -145,6 +145,8 @@
           <div class="fragment-card" 
                data-index="{{ forloop.index0 }}"
                data-block-id="{{ relique.id }}"
+               data-card-title="{{ relique.nom }}"
+               data-filter-gid="{{ relique.filter_gid }}"
                data-excerpt="{{ relique.description | metafield_text | strip_html | truncate: 200 | escape }}"
                data-tags="{{ tags_string }}"
                data-article-url="{{ article_url }}"
@@ -231,9 +233,9 @@
   {%- comment -%} Bouton d'action double fixe {%- endcomment -%}
   <div class="fragments-fixed-actions" id="fragments-fixed-actions-{{ section.id }}">
     <div class="fragment-dual-btn">
-      <a href="#" class="fragment-btn fragment-btn-shop" data-action="shop">
+      <button type="button" class="fragment-btn fragment-btn-shop" data-action="shop">
        💖 ACHETER
-      </a>
+      </button>
       <a href="#" class="fragment-btn fragment-btn-article" data-action="article">
         📜 LIRE LE RÉCIT
       </a>
@@ -255,6 +257,7 @@
       <img src="{{ section.settings.bottom_image_right | image_url: width: 400 }}" alt="Décoration droite" class="bottom-image bottom-image-right">
     {% endif %}
   </div>
+
 </div>
 
 <script src="{{ 'rdc_explore_fragments.js' | asset_url }}" defer="defer"></script>
