@@ -1,5 +1,5 @@
-{{ 'rdc_explore_illustrations.css' | asset_url | stylesheet_tag }}
-{{ 'rdc_explore_illustrations_dark.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_explore_fragments.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_explore_fragments_dark.css' | asset_url | stylesheet_tag }}
 
 <div class="rdc-fragments-section" data-section-id="{{ section.id }}">
   <div class="fragments-hero">
@@ -125,7 +125,7 @@
                data-tags="{{ tags_string }}">
             
             <div class="fragment-card-wrapper">
-              {%- comment -%} Colonne gauche : Image {%- endcomment -%}
+              {%- comment -%} Image en haut {%- endcomment -%}
               <div class="fragment-card-image-col">
                 {% if relique.image_pour_fond_clair != blank or relique.image_pour_fond_sombre != blank %}
                   <img 
@@ -139,8 +139,10 @@
                 {% endif %}
               </div>
               
-              {%- comment -%} Colonne droite : Titre, Artiste et Description {%- endcomment -%}
+              {%- comment -%} Infos sous l'image : Titre, Artiste, Résumé {%- endcomment -%}
               <div class="fragment-card-content-col">
+                <h2 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h2>
+                
                 {% if relique.artiste != blank %}
                   <p class="fragment-card-artist">
                     Artiste : {{ relique.artiste }}
@@ -149,21 +151,11 @@
                     {% endif %}
                   </p>
                 {% endif %}
-                <h2 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h2>
                 
-                <div class="fragment-card-section">
-                  <div class="fragment-card-description">
-                    {{ relique.description | metafield_tag }}
-                  </div>
-                </div>
-
-                {% if relique.mot_de_l_artiste != blank %}
-                  <div class="fragment-card-section">
-                    <div class="fragment-card-artist-word">
-                                        <h3 class="fragment-card-section-title">Le mot de l'artiste</h3>
-                      {{ relique.mot_de_l_artiste | metafield_tag }}
-                    </div>
-                  </div>
+                {% if relique.resume != blank %}
+                  <p class="fragment-card-summary">
+                    {{ relique.resume }}
+                  </p>
                 {% endif %}
               </div>
             </div>
@@ -221,7 +213,7 @@
   </div>
 </div>
 
-<script src="{{ 'rdc_explore_illustrations.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'rdc_explore_fragments.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
@@ -240,12 +232,6 @@
       "id": "subtitle",
       "label": "Sous-titre",
       "default": "NOS CRÉATIONS"
-    },
-    {
-      "type": "text",
-      "id": "search_placeholder",
-      "label": "Placeholder de recherche (masquée dans le code)",
-      "default": "Rechercher un fragment..."
     },
     {
       "type": "image_picker",
@@ -275,7 +261,7 @@
   ],
   "presets": [
     {
-      "name": "RDC Explorer Illustrations"
+      "name": "RDC Explorer Fragments"
     }
   ]
 }
