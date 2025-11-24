@@ -28,10 +28,43 @@
 .fragments-hero {
   margin: 0 auto;
   padding: 40px 40px 20px 40px;
+  position: relative;
+}
+
+.fragments-back-btn {
+  position: absolute;
+  top: 42px;
+  left: 40px;
+  width: 50px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(221, 220, 219, 0.9);
+  border-radius: 12px;
+  color: #5D6D7E;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.fragments-back-btn:hover {
+  background: #5D6D7E;
+  color: #FFFFFF;
+  transform: translateX(-3px);
+  box-shadow: 0 4px 12px rgba(93, 109, 126, 0.3);
+}
+
+.fragments-back-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .fragments-header-title {
   text-align: left;
+  margin-left: 70px;
 }
 
 .fragments-title {
@@ -454,7 +487,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #2C3E50;
+  color: #49424d;
   margin: 0;
   line-height: 1.1;
   font-family: var(--font-heading-family);
@@ -702,6 +735,44 @@ position: fixed;
 .counter-total {
   color: #6e7279;
       font-family: var(--font-heading-family);
+}
+
+/* ========================================
+   BOUTONS D'ACTION FIXES
+   ======================================== */
+
+.fragments-fixed-actions {
+  position: fixed;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 100;
+}
+
+.fragment-fixed-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  font-size: 3.5rem;
+  font-weight: 500;
+  font-family: var(--font-heading-family);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.fragment-fixed-btn-article {
+  color: #697579;
+}
+
+.fragment-fixed-btn-article:hover {
+  transform: translateY(-2px);
 }
 
 /* ========================================

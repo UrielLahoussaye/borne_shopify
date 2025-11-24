@@ -3,6 +3,13 @@
 
 <div class="rdc-fragments-section" data-section-id="{{ section.id }}">
   <div class="fragments-hero">
+    {%- comment -%} Bouton de retour {%- endcomment -%}
+    <a href="{{ section.settings.back_url | default: '/' }}" class="fragments-back-btn" aria-label="Retour">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    
     {%- comment -%} Titre et sous-titre alignés à gauche {%- endcomment -%}
     <div class="fragments-header-title">
       <h1 class="fragments-title">
@@ -118,11 +125,25 @@
             {% endfor %}
           {% endif %}
           
+          {%- comment -%} Debug : afficher la valeur de recit {%- endcomment -%}
+          {%- assign article_url = "" -%}
+          {%- if relique.recit != blank -%}
+            {%- if relique.recit.url -%}
+              {%- assign article_url = relique.recit.url -%}
+            {%- elsif relique.recit.value.url -%}
+              {%- assign article_url = relique.recit.value.url -%}
+            {%- elsif relique.recit -%}
+              {%- assign article_url = relique.recit -%}
+            {%- endif -%}
+          {%- endif -%}
+          
           <div class="fragment-card" 
                data-index="{{ forloop.index0 }}"
                data-block-id="{{ relique.id }}"
                data-excerpt="{{ relique.description | metafield_text | strip_html | truncate: 200 | escape }}"
-               data-tags="{{ tags_string }}">
+               data-tags="{{ tags_string }}"
+               data-article-url="{{ article_url }}"
+               data-debug-recit="{{ relique.recit }}">
             
             <div class="fragment-card-wrapper">
               {%- comment -%} Image en haut {%- endcomment -%}
@@ -196,6 +217,13 @@
     <span class="counter-current">1</span> / <span class="counter-total">{{ reliques.size }}</span>
   </div>
 
+  {%- comment -%} Bouton d'action fixe {%- endcomment -%}
+  <div class="fragments-fixed-actions" id="fragments-fixed-actions-{{ section.id }}">
+    <a href="#" class="fragment-fixed-btn fragment-fixed-btn-article" data-action="article">
+      Touchez pour lire le récit
+    </a>
+  </div>
+
   {%- comment -%} Images de décoration en bas {%- endcomment -%}
   {%- assign opacity_value = section.settings.bottom_images_opacity | default: 100 | divided_by: 100.0 -%}
   <div class="bottom-decoration-images" style="opacity: {{ opacity_value }};">
@@ -232,6 +260,12 @@
       "id": "subtitle",
       "label": "Sous-titre",
       "default": "NOS CRÉATIONS"
+    },
+    {
+      "type": "url",
+      "id": "back_url",
+      "label": "URL du bouton retour",
+      "default": "/"
     },
     {
       "type": "image_picker",

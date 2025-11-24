@@ -22,6 +22,10 @@ class FragmentsCarousel {
     this.searchInput = section.querySelector(".fragments-search-input");
     this.filters = Array.from(section.querySelectorAll(".fragments-filter"));
     this.excerptElement = section.querySelector(".fragments-excerpt");
+    this.fixedActionsContainer = section.querySelector(
+      ".fragments-fixed-actions"
+    );
+    this.fixedBtnArticle = section.querySelector(".fragment-fixed-btn-article");
 
     this.currentIndex = 0;
     this.totalCards = this.cards.length;
@@ -269,6 +273,7 @@ class FragmentsCarousel {
     if (this.excerptElement) {
       this.updateExcerpt(this.currentIndex);
     }
+    this.updateFixedButtons();
   }
 
   /**
@@ -547,10 +552,7 @@ class FragmentsCarousel {
 
     // Toujours scroller vers la première carte visible après un filtrage
     if (firstVisibleIndex !== -1) {
-      console.log(
-        "➡️ Scrolling to first visible card:",
-        firstVisibleIndex
-      );
+      console.log("➡️ Scrolling to first visible card:", firstVisibleIndex);
       setTimeout(() => {
         this.targetIndex = firstVisibleIndex;
         this.currentIndex = firstVisibleIndex;
@@ -563,7 +565,7 @@ class FragmentsCarousel {
         });
         this.scrollToCard(firstVisibleIndex);
         this.updateIndicators();
-        
+
         // Désactiver le flag après le scroll
         setTimeout(() => {
           this.isFiltering = false;
@@ -616,7 +618,7 @@ class FragmentsCarousel {
   searchCards(query) {
     // Activer le flag pour empêcher updateCenterCard de s'exécuter
     this.isFiltering = true;
-    
+
     let visibleCount = 0;
     let firstVisibleIndex = -1;
 
@@ -653,10 +655,7 @@ class FragmentsCarousel {
 
     // Toujours scroller vers la première carte visible après une recherche
     if (firstVisibleIndex !== -1) {
-      console.log(
-        "➡️ Scrolling to first visible card:",
-        firstVisibleIndex
-      );
+      console.log("➡️ Scrolling to first visible card:", firstVisibleIndex);
       setTimeout(() => {
         this.targetIndex = firstVisibleIndex;
         this.currentIndex = firstVisibleIndex;
@@ -669,7 +668,7 @@ class FragmentsCarousel {
         });
         this.scrollToCard(firstVisibleIndex);
         this.updateIndicators();
-        
+
         // Désactiver le flag après le scroll
         setTimeout(() => {
           this.isFiltering = false;
@@ -826,6 +825,43 @@ class FragmentsCarousel {
         img.src = isDark ? darkImageUrl : lightImageUrl;
       }
     });
+  }
+
+  /**
+   * Mettre à jour le bouton fixe en fonction de la carte active
+   */
+  updateFixedButtons() {
+    if (!this.fixedBtnArticle) return;
+
+    const currentCard = this.cards[this.currentIndex];
+    if (!currentCard) return;
+
+    // Récupérer l'URL de l'article
+    const articleUrl = currentCard.dataset.articleUrl || "";
+    const debugRecit = currentCard.dataset.debugRecit || "";
+
+    console.log("🔍 Debug Récit:", {
+      articleUrl,
+      debugRecit,
+      cardTitle: currentCard.querySelector(".fragment-card-title")?.textContent,
+    });
+
+    // Mettre à jour le lien et l'état du bouton
+    if (articleUrl && articleUrl !== "#" && articleUrl !== "") {
+      // Article disponible
+      this.fixedBtnArticle.href = articleUrl;
+      this.fixedBtnArticle.textContent = "Cliquez pour lire son récit";
+      this.fixedBtnArticle.style.opacity = "1";
+      this.fixedBtnArticle.style.pointerEvents = "auto";
+      this.fixedBtnArticle.style.cursor = "pointer";
+    } else {
+      // Pas d'article
+      this.fixedBtnArticle.href = "#";
+      this.fixedBtnArticle.textContent = "Récit en cours d'écriture";
+      this.fixedBtnArticle.style.opacity = "0.5";
+      this.fixedBtnArticle.style.pointerEvents = "none";
+      this.fixedBtnArticle.style.cursor = "not-allowed";
+    }
   }
 }
 
