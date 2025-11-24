@@ -9,11 +9,14 @@
         <span class="fragments-subtitle">{{ section.settings.subtitle | default: "NOS CRÉATIONS" }}</span>
       </h1>
       
+      {%- comment -%} Récupérer les metaobjects Reliques {%- endcomment -%}
+      {%- assign reliques = shop.metaobjects.reliques.values -%}
+      
       {%- comment -%} Compter les artistes uniques {%- endcomment -%}
       {%- assign all_artists = '' -%}
-      {% for block in section.blocks %}
-        {% if block.settings.artist != blank %}
-          {%- assign clean_artist = block.settings.artist | strip -%}
+      {% for relique in reliques %}
+        {% if relique.artiste != blank %}
+          {%- assign clean_artist = relique.artiste | strip -%}
           {%- unless all_artists contains clean_artist -%}
             {%- if all_artists == '' -%}
               {%- assign all_artists = clean_artist -%}
@@ -27,18 +30,8 @@
       {%- assign artists_count = artists_array.size -%}
       
       <p class="fragments-meta">
-        {{ section.blocks.size }} illustrations disponibles, {{ artists_count }} artiste{% if artists_count > 1 %}s{% endif %}
+        {{ reliques.size }} illustrations disponibles, {{ artists_count }} artiste{% if artists_count > 1 %}s{% endif %}
       </p>
-    </div>
-
-    {%- comment -%} Barre de recherche {%- endcomment -%}
-    <div class="fragments-search">
-      <input 
-        type="text" 
-        class="fragments-search-input" 
-        placeholder="{{ section.settings.search_placeholder | default: 'Rechercher un fragment...' }}"
-        id="fragments-search-{{ section.id }}"
-      >
     </div>
 
     {%- comment -%} Filtres de catégories personnalisés {%- endcomment -%}
@@ -47,12 +40,11 @@
         ✨ Tous les fragments
       </button>
       
-      {%- comment -%} Collecter tous les tags uniques depuis les blocs {%- endcomment -%}
+      {%- comment -%} Collecter tous les tags uniques depuis les metaobjects {%- endcomment -%}
       {%- assign all_tags = '' -%}
-      {% for block in section.blocks %}
-        {% if block.settings.tags != blank %}
-          {%- assign block_tags = block.settings.tags | split: ',' -%}
-          {% for tag in block_tags %}
+      {% for relique in reliques %}
+        {% if relique.tags != blank %}
+          {% for tag in relique.tags.value %}
             {%- assign clean_tag = tag | strip -%}
             {%- unless all_tags contains clean_tag -%}
               {%- if all_tags == '' -%}
@@ -73,28 +65,50 @@
         </button>
       {% endfor %}
     </div>
+
+    {%- comment -%} Barre de recherche {%- endcomment -%}
+    <div class="fragments-search">
+      <input 
+        type="text" 
+        class="fragments-search-input" 
+        placeholder="{{ section.settings.search_placeholder | default: 'Rechercher un fragment...' }}"
+        id="fragments-search-{{ section.id }}"
+      >
+    </div>
   </div>
 
   {%- comment -%} Carrousel horizontal scrollable {%- endcomment -%}
   <div class="fragments-carousel-container">
     <div class="fragments-carousel" id="fragments-carousel-{{ section.id }}">
-      {%- comment -%} Cartes depuis les blocs personnalisés {%- endcomment -%}
+      {%- comment -%} Cartes depuis les metaobjects Reliques {%- endcomment -%}
       
-      {% if section.blocks.size > 0 %}
-        {% for block in section.blocks %}
+      {% if reliques.size > 0 %}
+        {% for relique in reliques %}
+          {%- comment -%} Convertir la liste de tags en chaîne {%- endcomment -%}
+          {%- assign tags_string = '' -%}
+          {% if relique.tags != blank %}
+            {% for tag in relique.tags.value %}
+              {%- if forloop.first -%}
+                {%- assign tags_string = tag -%}
+              {%- else -%}
+                {%- assign tags_string = tags_string | append: ', ' | append: tag -%}
+              {%- endif -%}
+            {% endfor %}
+          {% endif %}
+          
           <div class="fragment-card" 
                data-index="{{ forloop.index0 }}"
-               data-block-id="{{ block.id }}"
-               data-excerpt="{{ block.settings.description | strip_html | truncate: 200 | escape }}"
-               data-tags="{% if block.settings.tags != blank %}{{ block.settings.tags }}{% endif %}">
+               data-block-id="{{ relique.id }}"
+               data-excerpt="{{ relique.description | metafield_text | strip_html | truncate: 200 | escape }}"
+               data-tags="{{ tags_string }}">
             
             <div class="fragment-card-wrapper">
               {%- comment -%} Colonne gauche : Image {%- endcomment -%}
               <div class="fragment-card-image-col">
-                {% if block.settings.image_dark != blank %}
-                  <img src="{{ block.settings.image_dark | image_url: width: 600 }}" alt="{{ block.settings.title }}" class="fragment-image">
-                {% elsif block.settings.image_light != blank %}
-                  <img src="{{ block.settings.image_light | image_url: width: 600 }}" alt="{{ block.settings.title }}" class="fragment-image">
+                {% if relique.image_pour_fond_sombre != blank %}
+                  <img src="{{ relique.image_pour_fond_sombre | image_url: width: 600 }}" alt="{{ relique.nom }}" class="fragment-image">
+                {% elsif relique.image_pour_fond_clair != blank %}
+                  <img src="{{ relique.image_pour_fond_clair | image_url: width: 600 }}" alt="{{ relique.nom }}" class="fragment-image">
                 {% else %}
                   <div class="fragment-image-placeholder"></div>
                 {% endif %}
@@ -102,14 +116,14 @@
               
               {%- comment -%} Colonne droite : Contenu {%- endcomment -%}
               <div class="fragment-card-content-col">
-                <h3 class="fragment-card-title">{{ block.settings.title | default: "Titre de l'illustration" }}</h3>
+                <h3 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h3>
                 
-                {% if block.settings.artist != blank %}
-                  <p class="fragment-card-artist">Artiste : {{ block.settings.artist }}</p>
+                {% if relique.artiste != blank %}
+                  <p class="fragment-card-artist">Artiste : {{ relique.artiste }}</p>
                 {% endif %}
                 
                 <div class="fragment-card-description">
-                  {{ block.settings.description }}
+                  {{ relique.description | metafield_tag }}
                 </div>
               </div>
             </div>
@@ -117,15 +131,17 @@
         {% endfor %}
         
       {% else %}
-        {%- comment -%} Fallback: Carte de test si aucun bloc n'est ajouté {%- endcomment -%}
+        {%- comment -%} Fallback: Carte de test si aucun metaobject n'existe {%- endcomment -%}
         <div class="fragment-card" data-index="0">
-          <div class="fragment-card-inner">
-            <div class="fragment-card-image" style="background: linear-gradient(135deg, #5D6D7E 0%, #34495E 100%);"></div>
-            <div class="fragment-card-content">
-              <p>Ajoutez des blocs d'illustrations dans les paramètres de la section</p>
+          <div class="fragment-card-wrapper">
+            <div class="fragment-card-image-col">
+              <div class="fragment-image-placeholder"></div>
+            </div>
+            <div class="fragment-card-content-col">
+              <h3 class="fragment-card-title">Aucune illustration</h3>
+              <p>Créez des metaobjects de type "Reliques" pour afficher des illustrations</p>
             </div>
           </div>
-          <h3 class="fragment-card-title">Aucune illustration</h3>
         </div>
       {% endif %}
     </div>
@@ -170,88 +186,16 @@
       "default": "NOS CRÉATIONS"
     },
     {
-      "type": "number",
-      "id": "artists_count",
-      "label": "Nombre d'artistes",
-      "default": 4
-    },
-    {
       "type": "text",
       "id": "search_placeholder",
       "label": "Placeholder de recherche (masquée dans le code)",
       "default": "Rechercher un fragment..."
     }
   ],
-  "blocks": [
-    {
-      "type": "illustration",
-      "name": "Illustration",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "image_light",
-          "label": "Image - Fond Clair",
-          "info": "Version de l'illustration pour le thème clair"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_dark",
-          "label": "Image - Fond Sombre",
-          "info": "Version de l'illustration pour le thème sombre"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Titre",
-          "default": "Titre de l'illustration"
-        },
-        {
-          "type": "text",
-          "id": "artist",
-          "label": "Artiste",
-          "default": "Nom de l'artiste"
-        },
-        {
-          "type": "text",
-          "id": "tags",
-          "label": "Tags (séparés par des virgules)",
-          "default": "Nordique, Guerrier",
-          "info": "Exemple: Nordique, Guerrier, Mythologie"
-        },
-        {
-          "type": "richtext",
-          "id": "description",
-          "label": "Description",
-          "default": "<p>Ajoutez une description de l'illustration ici.</p>"
-        }
-      ]
-    }
-  ],
   "presets": [
     {
-      "name": "RDC Reliques",
-      "blocks": [
-        {
-          "type": "illustration",
-          "settings": {
-            "title": "VALKYRIE"
-          }
-        },
-        {
-          "type": "illustration",
-          "settings": {
-            "title": "ODIN"
-          }
-        },
-        {
-          "type": "illustration",
-          "settings": {
-            "title": "THOR"
-          }
-        }
-      ]
+      "name": "RDC Reliques"
     }
-  ],
-  "max_blocks": 50
+  ]
 }
 {% endschema %}
