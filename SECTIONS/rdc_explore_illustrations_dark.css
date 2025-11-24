@@ -28,6 +28,18 @@
   color: #808892 !important;
 }
 
+.dark-theme .fragments-back-btn {
+  background: rgba(42, 46, 52, 0.9);
+  border-color: #d1bf8e;
+  color: #d1bf8e;
+}
+
+.dark-theme .fragments-back-btn:hover {
+  background: #d1bf8e;
+  color: #1A1D21;
+  box-shadow: 0 4px 12px rgba(209, 191, 142, 0.3);
+}
+
 /* ========================================
    FILTRES / TAGS
    ======================================== */

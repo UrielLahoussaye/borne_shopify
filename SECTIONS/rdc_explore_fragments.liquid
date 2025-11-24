@@ -4,11 +4,13 @@
 <div class="rdc-fragments-section" data-section-id="{{ section.id }}">
   <div class="fragments-hero">
     {%- comment -%} Bouton de retour {%- endcomment -%}
-    <a href="{{ section.settings.back_url | default: '/' }}" class="fragments-back-btn" aria-label="Retour">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-    </a>
+    {% if section.settings.show_back_button %}
+      <a href="{{ section.settings.back_url | default: '/' }}" class="fragments-back-btn" aria-label="Retour">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </a>
+    {% endif %}
     
     {%- comment -%} Récupérer les metaobjects Reliques {%- endcomment -%}
     {%- assign reliques = shop.metaobjects.reliques.values -%}
@@ -269,6 +271,12 @@
       "id": "subtitle",
       "label": "Sous-titre",
       "default": "NOS CRÉATIONS"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_back_button",
+      "label": "Afficher le bouton retour",
+      "default": true
     },
     {
       "type": "url",
