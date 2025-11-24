@@ -568,6 +568,7 @@ class FragmentsCarousel {
         });
         this.scrollToCard(firstVisibleIndex);
         this.updateIndicators();
+        this.updateFixedButtons();
 
         // Désactiver le flag après le scroll
         setTimeout(() => {
@@ -671,6 +672,7 @@ class FragmentsCarousel {
         });
         this.scrollToCard(firstVisibleIndex);
         this.updateIndicators();
+        this.updateFixedButtons();
 
         // Désactiver le flag après le scroll
         setTimeout(() => {
