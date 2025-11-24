@@ -25,7 +25,8 @@ class FragmentsCarousel {
     this.fixedActionsContainer = section.querySelector(
       ".fragments-fixed-actions"
     );
-    this.fixedBtnArticle = section.querySelector(".fragment-fixed-btn-article");
+    this.fixedBtnShop = section.querySelector(".fragment-btn-shop");
+    this.fixedBtnArticle = section.querySelector(".fragment-btn-article");
 
     this.currentIndex = 0;
     this.totalCards = this.cards.length;
@@ -833,36 +834,41 @@ class FragmentsCarousel {
   }
 
   /**
-   * Mettre à jour le bouton fixe en fonction de la carte active
+   * Mettre à jour les boutons fixes en fonction de la carte active
    */
   updateFixedButtons() {
-    if (!this.fixedBtnArticle) return;
+    if (!this.fixedBtnShop || !this.fixedBtnArticle) return;
 
     const currentCard = this.cards[this.currentIndex];
     if (!currentCard) return;
 
+    // Récupérer le titre de la carte pour le bouton shop
+    const cardTitle =
+      currentCard.dataset.cardTitle ||
+      currentCard.querySelector(".fragment-card-title")?.textContent ||
+      "";
+
     // Récupérer l'URL de l'article
     const articleUrl = currentCard.dataset.articleUrl || "";
-    const debugRecit = currentCard.dataset.debugRecit || "";
 
-    console.log("🔍 Debug Récit:", {
-      articleUrl,
-      debugRecit,
-      cardTitle: currentCard.querySelector(".fragment-card-title")?.textContent,
-    });
+    // Mettre à jour le bouton ACHETER (toujours actif)
+    this.fixedBtnShop.dataset.cardTitle = cardTitle;
+    this.fixedBtnShop.style.opacity = "1";
+    this.fixedBtnShop.style.pointerEvents = "auto";
+    this.fixedBtnShop.style.cursor = "pointer";
 
-    // Mettre à jour le lien et l'état du bouton
+    // Mettre à jour le bouton LIRE LE RÉCIT
     if (articleUrl && articleUrl !== "#" && articleUrl !== "") {
       // Article disponible
       this.fixedBtnArticle.href = articleUrl;
-      this.fixedBtnArticle.textContent = "Cliquez pour lire";
+      this.fixedBtnArticle.textContent = "📜 LIRE LE RÉCIT";
       this.fixedBtnArticle.style.opacity = "1";
       this.fixedBtnArticle.style.pointerEvents = "auto";
       this.fixedBtnArticle.style.cursor = "pointer";
     } else {
       // Pas d'article
       this.fixedBtnArticle.href = "#";
-      this.fixedBtnArticle.textContent = "Récit en cours d'écriture";
+      this.fixedBtnArticle.textContent = "⏳ RÉCIT EN COURS";
       this.fixedBtnArticle.style.opacity = "0.5";
       this.fixedBtnArticle.style.pointerEvents = "none";
       this.fixedBtnArticle.style.cursor = "not-allowed";

@@ -228,11 +228,16 @@
     <span class="counter-current">1</span> / <span class="counter-total">{{ reliques.size }}</span>
   </div>
 
-  {%- comment -%} Bouton d'action fixe {%- endcomment -%}
+  {%- comment -%} Bouton d'action double fixe {%- endcomment -%}
   <div class="fragments-fixed-actions" id="fragments-fixed-actions-{{ section.id }}">
-    <a href="#" class="fragment-fixed-btn fragment-fixed-btn-article" data-action="article">
-      Touchez pour lire le récit
-    </a>
+    <div class="fragment-dual-btn">
+      <a href="#" class="fragment-btn fragment-btn-shop" data-action="shop">
+       💖 ACHETER
+      </a>
+      <a href="#" class="fragment-btn fragment-btn-article" data-action="article">
+        📜 LIRE LE RÉCIT
+      </a>
+    </div>
   </div>
 
   {%- comment -%} Images de décoration en bas {%- endcomment -%}

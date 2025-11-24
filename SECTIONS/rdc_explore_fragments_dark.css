@@ -208,14 +208,34 @@
 }
 
 /* ========================================
-   BOUTON D'ACTION FIXE
+   BOUTON D'ACTION DOUBLE FIXE
    ======================================== */
 
-.dark-theme .fragment-fixed-btn-article {
-
-  color: #adaaa0;
+.dark-theme .fragment-dual-btn {
+  background: rgba(40, 40, 40, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
+.dark-theme .fragment-btn {
+  color: #E8E8E8;
+}
+
+.dark-theme .fragment-btn-shop {
+  background: rgba(80, 80, 80, 0.6);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dark-theme .fragment-btn-shop:hover {
+  background: rgba(100, 100, 100, 0.8);
+}
+
+.dark-theme .fragment-btn-article {
+  background: rgba(50, 50, 50, 0.6);
+}
+
+.dark-theme .fragment-btn-article:hover {
+  background: rgba(70, 70, 70, 0.8);
+}
 
 /* ========================================
    BADGE NOUVEAU
