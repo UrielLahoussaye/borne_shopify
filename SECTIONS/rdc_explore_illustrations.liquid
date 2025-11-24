@@ -165,6 +165,19 @@
                     </div>
                   </div>
                 {% endif %}
+
+                {%- comment -%} Boutons d'action {%- endcomment -%}
+                <div class="fragment-card-actions">
+                  <a href="#" class="fragment-action-btn fragment-btn-products">
+                    Voir les produits
+                  </a>
+                  
+                  {% if relique.recit != blank %}
+                    <a href="{{ relique.recit.value.url }}" class="fragment-action-btn fragment-btn-article">
+                      Lire son récit entier
+                    </a>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>

@@ -10,7 +10,12 @@ class FragmentsCarousel {
     this.section = section;
     this.sectionId = section.dataset.sectionId;
     this.carousel = section.querySelector(".fragments-carousel");
-    this.cards = Array.from(section.querySelectorAll(".fragment-card"));
+    this.cards = Array.from(this.carousel.querySelectorAll(".fragment-card"));
+    this.totalCards = this.cards.length;
+    this.currentIndex = 0;
+    this.targetIndex = null;
+    this.scrollTimeout = null;
+    this.isHoveringButton = false;
     this.indicatorsContainer = section.querySelector(".fragments-indicators");
     this.prevBtn = section.querySelector(".carousel-nav-prev");
     this.nextBtn = section.querySelector(".carousel-nav-next");
@@ -130,6 +135,9 @@ class FragmentsCarousel {
     // Clics sur les cartes
     this.setupCardClicks();
 
+    // Empêcher propagation des boutons d'action
+    this.setupActionButtons();
+
     // Support clavier
     this.setupKeyboardNavigation();
 
@@ -156,16 +164,23 @@ class FragmentsCarousel {
    * Détection de la carte centrale au scroll
    */
   setupScrollDetection() {
+    let scrolling = false;
     this.carousel.addEventListener("scroll", () => {
-      // Toujours détecter en temps réel quelle carte est au centre
-      this.updateCenterCard();
+      // Limiter les appels avec requestAnimationFrame
+      if (!scrolling) {
+        scrolling = true;
+        requestAnimationFrame(() => {
+          this.updateCenterCard();
+          scrolling = false;
+        });
+      }
 
       // Après le scroll, réinitialiser la cible
       clearTimeout(this.scrollTimeout);
       this.scrollTimeout = setTimeout(() => {
         this.targetIndex = null;
         this.updateCenterCard();
-      }, 50);
+      }, 150);
     });
   }
 
@@ -216,6 +231,11 @@ class FragmentsCarousel {
    * Met à jour quelle carte est au centre
    */
   updateCenterCard() {
+    // Ne pas mettre à jour si on survole un bouton
+    if (this.isHoveringButton) {
+      return;
+    }
+
     // Avec les cartes en 100vw, on calcule l'index basé sur la position de scroll
     const scrollLeft = this.carousel.scrollLeft;
     const viewportWidth = window.innerWidth;
@@ -677,6 +697,45 @@ class FragmentsCarousel {
         e.preventDefault();
         this.next();
       }
+    });
+  }
+
+  /**
+   * Empêcher la propagation des clics sur les boutons d'action
+   */
+  setupActionButtons() {
+    // Empêcher la propagation sur les boutons
+    const actionButtons = this.section.querySelectorAll('.fragment-action-btn');
+    actionButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      btn.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      btn.addEventListener('mouseup', (e) => {
+        e.stopPropagation();
+      });
+      btn.addEventListener('mouseenter', () => {
+        this.isHoveringButton = true;
+      });
+      btn.addEventListener('mouseleave', () => {
+        this.isHoveringButton = false;
+      });
+    });
+
+    // Empêcher la propagation sur le conteneur des boutons
+    const actionContainers = this.section.querySelectorAll('.fragment-card-actions');
+    actionContainers.forEach(container => {
+      container.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      container.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      container.addEventListener('mouseup', (e) => {
+        e.stopPropagation();
+      });
     });
   }
 

@@ -138,6 +138,27 @@
   color: #B8B8B8;
 }
 
+/* Boutons d'action */
+.dark-theme .fragment-btn-products {
+  background: #afa689;
+  border-color: #afa689;
+}
+
+.dark-theme .fragment-btn-products:hover {
+  background: #9a8d72;
+  border-color: #9a8d72;
+}
+
+.dark-theme .fragment-btn-article {
+  color: #85a4bd;
+  border-color: #85a4bd;
+}
+
+.dark-theme .fragment-btn-article:hover {
+  background: #85a4bd;
+  color: #1A1D21;
+}
+
 /* ========================================
    NAVIGATION
    ======================================== */
