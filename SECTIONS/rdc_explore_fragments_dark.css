@@ -212,13 +212,17 @@
    ======================================== */
 
 .dark-theme .fragment-fixed-btn-article {
-  background: rgba(42, 46, 52, 0.95);
-  color: #d1bf8e;
-  border: 2px solid #d1bf8e;
+
+  color: #adaaa0;
 }
 
-.dark-theme .fragment-fixed-btn-article:hover {
-  background: #d1bf8e;
+
+/* ========================================
+   BADGE NOUVEAU
+   ======================================== */
+
+.dark-theme .fragment-new-badge {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
   color: #1A1D21;
-  box-shadow: 0 4px 12px rgba(209, 191, 142, 0.3);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.6);
 }

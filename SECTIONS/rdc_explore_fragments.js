@@ -37,6 +37,9 @@ class FragmentsCarousel {
     this.generateIndicators();
     this.indicators = Array.from(section.querySelectorAll(".indicator"));
 
+    // Vérifier et afficher les badges NOUVEAU
+    this.checkNewBadges();
+
     this.init();
   }
 
@@ -862,6 +865,38 @@ class FragmentsCarousel {
       this.fixedBtnArticle.style.pointerEvents = "none";
       this.fixedBtnArticle.style.cursor = "not-allowed";
     }
+  }
+
+  /**
+   * Vérifier et afficher les badges NOUVEAU pour les articles récents (moins de 3 mois)
+   */
+  checkNewBadges() {
+    const now = new Date();
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(now.getMonth() - 3);
+
+    this.cards.forEach((card) => {
+      const publishedAt = card.dataset.articlePublishedAt;
+      const badge = card.querySelector(".fragment-new-badge");
+
+      if (!badge) return;
+
+      // Si l'article existe et a une date de publication
+      if (publishedAt && publishedAt !== "") {
+        const publishDate = new Date(publishedAt);
+
+        // Si l'article a moins de 3 mois
+        if (publishDate >= threeMonthsAgo) {
+          badge.style.display = "block";
+          console.log("🆕 Badge NOUVEAU affiché pour:", card.querySelector(".fragment-card-title")?.textContent);
+        } else {
+          badge.style.display = "none";
+        }
+      } else {
+        // Pas d'article ou pas de date
+        badge.style.display = "none";
+      }
+    });
   }
 }
 

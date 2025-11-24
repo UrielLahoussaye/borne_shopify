@@ -125,13 +125,16 @@
             {% endfor %}
           {% endif %}
           
-          {%- comment -%} Debug : afficher la valeur de recit {%- endcomment -%}
+          {%- comment -%} Récupérer l'URL et la date de l'article {%- endcomment -%}
           {%- assign article_url = "" -%}
+          {%- assign article_published_at = "" -%}
           {%- if relique.recit != blank -%}
             {%- if relique.recit.url -%}
               {%- assign article_url = relique.recit.url -%}
+              {%- assign article_published_at = relique.recit.published_at -%}
             {%- elsif relique.recit.value.url -%}
               {%- assign article_url = relique.recit.value.url -%}
+              {%- assign article_published_at = relique.recit.value.published_at -%}
             {%- elsif relique.recit -%}
               {%- assign article_url = relique.recit -%}
             {%- endif -%}
@@ -143,6 +146,7 @@
                data-excerpt="{{ relique.description | metafield_text | strip_html | truncate: 200 | escape }}"
                data-tags="{{ tags_string }}"
                data-article-url="{{ article_url }}"
+               data-article-published-at="{{ article_published_at }}"
                data-debug-recit="{{ relique.recit }}">
             
             <div class="fragment-card-wrapper">
@@ -178,6 +182,11 @@
                     {{ relique.resume }}
                   </p>
                 {% endif %}
+                
+                {%- comment -%} Badge NOUVEAU (sera géré par JS) {%- endcomment -%}
+                <div class="fragment-new-badge" style="display: none;">
+                  NOUVEAU FRAGMENT !
+                </div>
               </div>
             </div>
           </div>
