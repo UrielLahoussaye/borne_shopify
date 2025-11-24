@@ -5,8 +5,8 @@
 header,
 footer,
 .section-text-with-icons,
-.announcement-wrapper {
-  display: none;
+.announcement-wrapper, #shopify-chat {
+  display: none !important;
 }
 
 /* ========================================
@@ -908,6 +908,10 @@ footer,
     padding: 0 0 100px;
   }
 
+  .fragments-meta {
+    display: none;
+  }
+
   .fragments-back-btn {
     position: relative;
     top: 0;
@@ -925,7 +929,7 @@ footer,
 
 .fragments-header-title h1 {
     font-size: 4rem;
-    margin-top: -20px;
+    margin-top: -25px;
   }
 
   .theme-toggle-container
@@ -980,17 +984,32 @@ footer,
   }
 
   .fragment-card-inner {
-    height: 340px;
+    height: 450px;
   }
 
   .fragment-card-title {
-    font-size: 1rem;
+    font-size: 2.4rem;
     height: 45px;
+  }
+
+  .fragment-card-summary
+  {
+    font-size: 1.4rem;
+    margin-top: 5px;
   }
 
   .fragments-excerpt-container {
     height: auto;
     margin: 0 auto 0;
+  }
+
+  .fragment-card-image-col {
+    margin-bottom: 15px;
+  }
+
+  .fragment-card-content-col
+  {
+    gap: 0;
   }
 
   .fragment-card-wrapper {
@@ -1000,5 +1019,26 @@ footer,
   .fragments-carousel-container::before,
   .fragments-carousel-container::after {
     width: 60px;
+  }
+
+  /* Adapter le dual-btn pour mobile */
+  .fragment-dual-btn {
+    width: 90vw;
+    max-width: 90vw;
+  }
+
+  .fragment-btn {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 1.2rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  /* Réduire l'opacité des images du bas */
+  .bottom-image-left,
+  .bottom-image-center,
+  .bottom-image-right {
+    opacity: 0.3;
   }
 }
