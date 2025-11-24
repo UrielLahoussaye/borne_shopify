@@ -919,7 +919,7 @@ footer,
   }
 
   .fragments-hero {
-        padding: 14px 0px 20px;
+        padding: 14px 0 0 0;
   }
 
   .fragments-header-title {
@@ -1009,6 +1009,11 @@ footer,
     margin-top: 5px;
   }
 
+    .fragment-card 
+  {
+    height: 60vh;
+  }
+
   .fragments-excerpt-container {
     height: auto;
     margin: 0 auto 0;
@@ -1025,7 +1030,7 @@ footer,
   }
 
   .fragment-card-wrapper {
-    padding: 0 0 150px 0;
+    padding: 0 0 90px 0;
   }
 
   .fragments-carousel-container::before,
@@ -1035,7 +1040,13 @@ footer,
 
   /* Inverser la position du counter et des boutons */
   .fragments-counter {
-    bottom: 9vh;
+    bottom: auto;
+    top: 5px;
+  }
+
+  .fragment-card 
+  {
+    height: 75vh;
   }
 
   .fragments-fixed-actions {
