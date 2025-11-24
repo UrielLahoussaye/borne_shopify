@@ -58,6 +58,18 @@ class FragmentsCarousel {
   }
 
   /**
+   * Calculer et définir la hauteur du header comme variable CSS
+   */
+  setHeaderHeight() {
+    const hero = this.section.querySelector('.fragments-hero');
+    if (hero) {
+      const heroHeight = hero.offsetHeight;
+      this.section.style.setProperty('--header-height', `${heroHeight}px`);
+      console.log("📏 Header height set to:", heroHeight + "px");
+    }
+  }
+
+  /**
    * Mélanger les cartes de manière aléatoire
    */
   shuffleCards() {
@@ -90,6 +102,9 @@ class FragmentsCarousel {
     );
     console.log("📦 Carousel element:", this.carousel);
     console.log("🎯 Section:", this.section);
+
+    // Calculer la hauteur du header et la définir comme variable CSS
+    this.setHeaderHeight();
 
     // Mélanger les cartes au chargement
     this.shuffleCards();

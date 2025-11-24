@@ -4,7 +4,7 @@
 /* ========================================
    ANNULATION STYLE - REST 
    ======================================== */
-.invisible_fragments{
+.invisible_fragments, header, footer, .section-text-with-icons, .announcement-wrapper {
   display: none;
 }
 
@@ -14,9 +14,9 @@
 
 .rdc-fragments-section {
   min-height: 100vh;
-  background: #2C3539;
+  background: transparent;
   color: #E8E8E8;
-  padding: 40px 20px;
+  padding: 40px 0;
   position: relative;
 }
 
@@ -25,7 +25,6 @@
    ======================================== */
 
 .fragments-hero {
-  max-width: 1400px;
   margin: 0 auto;
   padding: 0 40px;
 }
@@ -36,10 +35,9 @@
 }
 
 .fragments-title {
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: #D4AF37;
+  font-size: 6rem;
+  font-weight: 600;
+  color: #635e4c;
   margin: 0;
   text-transform: uppercase;
   font-family: var(--font-heading-family);
@@ -47,16 +45,14 @@
 }
 
 .fragments-subtitle {
-  font-size: 1.8rem;
-  font-weight: 400;
+  font-size: 3rem;
+  font-weight: 500;
   color: #B8B8B8;
-  margin-left: 15px;
-  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .fragments-meta {
-  font-size: 1.4rem;
+  font-size: 2rem;
   color: #9CA3AF;
   margin: 10px 0 0 0;
   font-family: var(--font-body-family);
@@ -227,7 +223,7 @@
 .fragment-card {
   flex-shrink: 0;
   width: 100vw;
-  min-height: 60vh;
+  height: calc(100vh - var(--header-height, 300px));
   scroll-snap-align: start;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -238,7 +234,7 @@
   align-items: center;
   padding: 60px 0;
   box-sizing: border-box;
-  border: 3px solid red;
+  border: 1px solid #000000;
 }
 
 .fragment-card-wrapper {
@@ -511,10 +507,19 @@
    ======================================== */
 
 .fragments-indicators {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 12px;
-  margin-top: 40px;
+  z-index: 100;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
 }
 
 .indicator {

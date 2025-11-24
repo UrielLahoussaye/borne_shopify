@@ -8,8 +8,26 @@
         {{ section.settings.title | default: "EXPLORER" }}
         <span class="fragments-subtitle">{{ section.settings.subtitle | default: "NOS CRÉATIONS" }}</span>
       </h1>
+      
+      {%- comment -%} Compter les artistes uniques {%- endcomment -%}
+      {%- assign all_artists = '' -%}
+      {% for block in section.blocks %}
+        {% if block.settings.artist != blank %}
+          {%- assign clean_artist = block.settings.artist | strip -%}
+          {%- unless all_artists contains clean_artist -%}
+            {%- if all_artists == '' -%}
+              {%- assign all_artists = clean_artist -%}
+            {%- else -%}
+              {%- assign all_artists = all_artists | append: '|' | append: clean_artist -%}
+            {%- endif -%}
+          {%- endunless -%}
+        {% endif %}
+      {% endfor %}
+      {%- assign artists_array = all_artists | split: '|' -%}
+      {%- assign artists_count = artists_array.size -%}
+      
       <p class="fragments-meta">
-        {{ section.blocks.size }} illustrations disponibles, {{ section.settings.artists_count | default: "4" }} artistes
+        {{ section.blocks.size }} illustrations disponibles, {{ artists_count }} artiste{% if artists_count > 1 %}s{% endif %}
       </p>
     </div>
 
@@ -23,42 +41,37 @@
       >
     </div>
 
-    {%- comment -%} Filtres de catégories (générés automatiquement depuis les tags) {%- endcomment -%}
+    {%- comment -%} Filtres de catégories personnalisés {%- endcomment -%}
     <div class="fragments-filters">
       <button class="fragments-filter active" data-filter="all">
         ✨ Tous les fragments
       </button>
       
-      <button class="fragments-filter" data-filter="recent" data-filter-type="date">
-        🔥 Récents
-      </button>
-      
-      {% if section.settings.blog != blank %}
-        {%- assign blog = blogs[section.settings.blog] -%}
-        {%- assign all_tags = '' -%}
-        {%- assign articles_limit = section.settings.articles_count | default: 0 -%}
-        
-        {%- comment -%} Collecter tous les tags uniques des articles {%- endcomment -%}
-        {% for article in blog.articles %}
-          {% for tag in article.tags %}
-            {%- unless all_tags contains tag -%}
+      {%- comment -%} Collecter tous les tags uniques depuis les blocs {%- endcomment -%}
+      {%- assign all_tags = '' -%}
+      {% for block in section.blocks %}
+        {% if block.settings.tags != blank %}
+          {%- assign block_tags = block.settings.tags | split: ',' -%}
+          {% for tag in block_tags %}
+            {%- assign clean_tag = tag | strip -%}
+            {%- unless all_tags contains clean_tag -%}
               {%- if all_tags == '' -%}
-                {%- assign all_tags = tag -%}
+                {%- assign all_tags = clean_tag -%}
               {%- else -%}
-                {%- assign all_tags = all_tags | append: '|' | append: tag -%}
+                {%- assign all_tags = all_tags | append: '|' | append: clean_tag -%}
               {%- endif -%}
             {%- endunless -%}
           {% endfor %}
-        {% endfor %}
-        
-        {%- comment -%} Afficher un bouton pour chaque tag unique {%- endcomment -%}
-        {%- assign tags_array = all_tags | split: '|' -%}
-        {% for tag in tags_array %}
-          <button class="fragments-filter" data-filter="{{ tag | handleize }}">
-            {{ tag }}
-          </button>
-        {% endfor %}
-      {% endif %}
+        {% endif %}
+      {% endfor %}
+      
+      {%- comment -%} Afficher un bouton pour chaque tag unique {%- endcomment -%}
+      {%- assign tags_array = all_tags | split: '|' -%}
+      {% for tag in tags_array %}
+        <button class="fragments-filter" data-filter="{{ tag | handleize }}">
+          {{ tag }}
+        </button>
+      {% endfor %}
     </div>
   </div>
 
@@ -72,7 +85,8 @@
           <div class="fragment-card" 
                data-index="{{ forloop.index0 }}"
                data-block-id="{{ block.id }}"
-               data-excerpt="{{ block.settings.description | strip_html | truncate: 200 | escape }}">
+               data-excerpt="{{ block.settings.description | strip_html | truncate: 200 | escape }}"
+               data-tags="{% if block.settings.tags != blank %}{{ block.settings.tags }}{% endif %}">
             
             <div class="fragment-card-wrapper">
               {%- comment -%} Colonne gauche : Image {%- endcomment -%}
@@ -129,14 +143,6 @@
     </button>
   </div>
 
-  {%- comment -%} Zone d'extrait fixe {%- endcomment -%}
-  <div class="fragments-excerpt-container">
-    <p class="fragments-excerpt" id="fragments-excerpt-{{ section.id }}">
-      Sélectionnez un fragment pour découvrir son histoire...
-    </p>
-    <p class="fragments-cta">Cliquez sur la carte pour lire</p>
-  </div>
-
   {%- comment -%} Indicateurs générés dynamiquement par JavaScript {%- endcomment -%}
   <div class="fragments-indicators" id="fragments-indicators-{{ section.id }}">
     {%- comment -%} Les indicateurs seront générés par le JS en fonction du nombre de cartes affichées {%- endcomment -%}
@@ -172,7 +178,7 @@
     {
       "type": "text",
       "id": "search_placeholder",
-      "label": "Placeholder de recherche",
+      "label": "Placeholder de recherche (masquée dans le code)",
       "default": "Rechercher un fragment..."
     }
   ],
@@ -204,6 +210,13 @@
           "id": "artist",
           "label": "Artiste",
           "default": "Nom de l'artiste"
+        },
+        {
+          "type": "text",
+          "id": "tags",
+          "label": "Tags (séparés par des virgules)",
+          "default": "Nordique, Guerrier",
+          "info": "Exemple: Nordique, Guerrier, Mythologie"
         },
         {
           "type": "richtext",
