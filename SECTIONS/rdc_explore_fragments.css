@@ -379,7 +379,7 @@ footer,
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 40px 150px;
+  padding: 0 40px 130px;
   box-sizing: border-box;
 }
 
@@ -990,6 +990,17 @@ footer,
   .fragment-card-title {
     font-size: 2.4rem;
     height: 45px;
+    position: relative;
+  }
+
+  .fragment-new-badge {
+    position: absolute;
+    top: 6px;
+    right: 0;
+    margin-top: 0;
+    padding: 4px 10px;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
   }
 
   .fragment-card-summary
@@ -1004,6 +1015,7 @@ footer,
   }
 
   .fragment-card-image-col {
+    margin-top: 30px;
     margin-bottom: 15px;
   }
 
@@ -1019,6 +1031,15 @@ footer,
   .fragments-carousel-container::before,
   .fragments-carousel-container::after {
     width: 60px;
+  }
+
+  /* Inverser la position du counter et des boutons */
+  .fragments-counter {
+    bottom: 9vh;
+  }
+
+  .fragments-fixed-actions {
+    bottom: 20px;
   }
 
   /* Adapter le dual-btn pour mobile */
