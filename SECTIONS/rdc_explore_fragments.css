@@ -154,14 +154,15 @@ footer,
 }
 
 .fragments-filter {
-  padding: 5px 10px;
-  font-size: 1.2rem;
-  border: 1px solid transparent;
+  padding: 10px 20px;
+  border: 2px solid transparent;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: var(--font-heading-family);
   font-weight: 400;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Couleurs pastel équilibrées pour chaque filtre */
@@ -902,13 +903,67 @@ footer,
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 798px) {
   .rdc-fragments-section {
-    padding: 60px 15px 100px;
+    padding: 0 0 100px;
+  }
+
+  .fragments-back-btn {
+    position: relative;
+    top: 0;
+    left: 15px;
+  }
+
+  .fragments-hero {
+        padding: 14px 0px 20px;
+  }
+
+  .fragments-header-title {
+    text-align: center;
+    margin-left: 0;
+  }
+
+.fragments-header-title h1 {
+    font-size: 4rem;
+  }
+
+  .theme-toggle-container
+  {
+    right: 10px;
+    top: 30px;
+  }
+
+  .fragments-subtitle {
+    display: block;
+  }
+
+.fragments-filters {
+    position: relative;
+    right: auto;
+    top: auto;
+    justify-content: flex-start;
+    padding-top: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .fragments-filter
+  {
+    font-size: 1.2rem;
+  }
+  
+  .fragments-filters::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
   }
 
   .fragments-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .fragments-carousel::before,
