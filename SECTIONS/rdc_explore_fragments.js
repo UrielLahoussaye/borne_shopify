@@ -921,11 +921,29 @@ class FragmentsCarousel {
     // Récupérer l'URL de l'article
     const articleUrl = currentCard.dataset.articleUrl || "";
 
-    // Mettre à jour le bouton ACHETER (toujours actif)
+    // Récupérer le filter GID pour savoir si le bouton ACHETER doit être actif
+    const filterGid = currentCard.dataset.filterGid || "";
+
+    // Mettre à jour le bouton ACHETER
     this.fixedBtnShop.dataset.cardTitle = cardTitle;
-    this.fixedBtnShop.style.opacity = "1";
-    this.fixedBtnShop.style.pointerEvents = "auto";
-    this.fixedBtnShop.style.cursor = "pointer";
+
+    if (filterGid) {
+      // GID disponible : bouton actif
+      this.fixedBtnShop.textContent = "💖 ACHETER";
+      this.fixedBtnShop.style.opacity = "1";
+      this.fixedBtnShop.style.pointerEvents = "auto";
+      this.fixedBtnShop.style.cursor = "pointer";
+      this.fixedBtnShop.style.backgroundColor = ""; // Réinitialiser la couleur
+      this.fixedBtnShop.style.color = ""; // Réinitialiser la couleur du texte
+    } else {
+      // Pas de GID : bouton grisé
+      this.fixedBtnShop.textContent = "❌ INDISPONIBLE";
+      this.fixedBtnShop.style.opacity = "0.5";
+      this.fixedBtnShop.style.pointerEvents = "none";
+      this.fixedBtnShop.style.cursor = "not-allowed";
+      this.fixedBtnShop.style.backgroundColor = "#707070ff"; // Gris
+      this.fixedBtnShop.style.color = "#fff"; // Texte blanc
+    }
 
     // Mettre à jour le bouton LIRE LE RÉCIT
     if (articleUrl && articleUrl !== "#" && articleUrl !== "") {
