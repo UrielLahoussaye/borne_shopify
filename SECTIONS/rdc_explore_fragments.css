@@ -925,6 +925,7 @@ footer,
 
 .fragments-header-title h1 {
     font-size: 4rem;
+    margin-top: -20px;
   }
 
   .theme-toggle-container
@@ -966,13 +967,16 @@ footer,
     font-size: 1.6rem;
   }
 
-  .fragments-carousel::before,
-  .fragments-carousel::after {
-    width: calc(50vw - 110px);
+  .fragments-carousel {
+    padding: 0 15vw;
+    gap: 0;
   }
 
   .fragment-card {
-    width: 220px;
+    flex: 0 0 70vw;
+    width: 70vw;
+    max-width: 70vw;
+    min-width: 70vw;
   }
 
   .fragment-card-inner {
@@ -989,9 +993,8 @@ footer,
     margin: 0 auto 0;
   }
 
-  .fragments-carousel {
-    gap: 15px;
-    padding: 0px 10px;
+  .fragment-card-wrapper {
+    padding: 0 0 150px 0;
   }
 
   .fragments-carousel-container::before,

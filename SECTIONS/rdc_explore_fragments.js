@@ -274,9 +274,15 @@ class FragmentsCarousel {
       return;
     }
 
-    // Avec les cartes en 20vw, on calcule l'index basé sur la position de scroll
+    // Détecter si on est sur mobile (< 798px)
+    const isMobile = window.innerWidth < 798;
+
+    // Calculer la largeur de la carte en fonction du viewport
+    const cardWidth = isMobile
+      ? window.innerWidth * 0.7 // 70vw sur mobile
+      : window.innerWidth * 0.2; // 20vw sur desktop
+
     const scrollLeft = this.carousel.scrollLeft;
-    const cardWidth = window.innerWidth * 0.2; // 20vw
     const calculatedIndex = Math.round(scrollLeft / cardWidth);
 
     // S'assurer que l'index est dans les limites
@@ -358,8 +364,14 @@ class FragmentsCarousel {
     const card = this.cards[index];
     if (!card) return;
 
-    // Avec les cartes en 20vw, calculer la position pour centrer la carte
-    const cardWidth = window.innerWidth * 0.2; // 20vw
+    // Détecter si on est sur mobile (< 798px)
+    const isMobile = window.innerWidth < 798;
+
+    // Calculer la largeur de la carte en fonction du viewport
+    const cardWidth = isMobile
+      ? window.innerWidth * 0.7 // 70vw sur mobile
+      : window.innerWidth * 0.2; // 20vw sur desktop
+
     const targetScroll = index * cardWidth;
 
     this.carousel.scrollTo({
