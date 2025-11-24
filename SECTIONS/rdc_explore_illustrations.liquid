@@ -1,4 +1,5 @@
 {{ 'rdc_explore_illustrations.css' | asset_url | stylesheet_tag }}
+{{ 'rdc_explore_illustrations_dark.css' | asset_url | stylesheet_tag }}
 
 <div class="rdc-fragments-section" data-section-id="{{ section.id }}">
   <div class="fragments-hero">
@@ -37,7 +38,7 @@
     {%- comment -%} Filtres de catégories personnalisés {%- endcomment -%}
     <div class="fragments-filters">
       <button class="fragments-filter active" data-filter="all">
-        ✨ Tous les fragments
+        ✨ Toutes les reliques
       </button>
       
       {%- comment -%} Collecter tous les tags uniques depuis les metaobjects {%- endcomment -%}
@@ -64,6 +65,27 @@
           {{ tag }}
         </button>
       {% endfor %}
+    </div>
+
+    {%- comment -%} Bouton toggle thème sombre {%- endcomment -%}
+    <div class="theme-toggle-container">
+      <button class="theme-toggle" id="theme-toggle-{{ section.id }}" aria-label="Basculer le thème">
+        <svg class="theme-icon sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="theme-icon moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <span class="theme-toggle-slider"></span>
+      </button>
     </div>
 
     {%- comment -%} Barre de recherche {%- endcomment -%}
@@ -105,10 +127,13 @@
             <div class="fragment-card-wrapper">
               {%- comment -%} Colonne gauche : Image {%- endcomment -%}
               <div class="fragment-card-image-col">
-                {% if relique.image_pour_fond_sombre != blank %}
-                  <img src="{{ relique.image_pour_fond_sombre | image_url: width: 600 }}" alt="{{ relique.nom }}" class="fragment-image">
-                {% elsif relique.image_pour_fond_clair != blank %}
-                  <img src="{{ relique.image_pour_fond_clair | image_url: width: 600 }}" alt="{{ relique.nom }}" class="fragment-image">
+                {% if relique.image_pour_fond_clair != blank or relique.image_pour_fond_sombre != blank %}
+                  <img 
+                    src="{{ relique.image_pour_fond_clair | image_url: width: 600 }}" 
+                    alt="{{ relique.nom }}" 
+                    class="fragment-image"
+                    data-light-image="{{ relique.image_pour_fond_clair | image_url: width: 600 }}"
+                    data-dark-image="{{ relique.image_pour_fond_sombre | image_url: width: 600 }}">
                 {% else %}
                   <div class="fragment-image-placeholder"></div>
                 {% endif %}
@@ -117,13 +142,29 @@
               {%- comment -%} Colonne droite : Titre, Artiste et Description {%- endcomment -%}
               <div class="fragment-card-content-col">
                 {% if relique.artiste != blank %}
-                  <p class="fragment-card-artist">Artiste : {{ relique.artiste }} (2025)</p>
+                  <p class="fragment-card-artist">
+                    Artiste : {{ relique.artiste }}
+                    {% if relique.date != blank %}
+                      ({{ relique.date | date: "%Y" }})
+                    {% endif %}
+                  </p>
                 {% endif %}
-                <h3 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h3>
+                <h2 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h2>
                 
-                <div class="fragment-card-description">
-                  {{ relique.description | metafield_tag }}
+                <div class="fragment-card-section">
+                  <div class="fragment-card-description">
+                    {{ relique.description | metafield_tag }}
+                  </div>
                 </div>
+
+                {% if relique.mot_de_l_artiste != blank %}
+                  <div class="fragment-card-section">
+                    <div class="fragment-card-artist-word">
+                                        <h3 class="fragment-card-section-title">Le mot de l'artiste</h3>
+                      {{ relique.mot_de_l_artiste | metafield_tag }}
+                    </div>
+                  </div>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -162,6 +203,22 @@
   <div class="fragments-counter" id="fragments-counter-{{ section.id }}">
     <span class="counter-current">1</span> / <span class="counter-total">{{ reliques.size }}</span>
   </div>
+
+  {%- comment -%} Images de décoration en bas {%- endcomment -%}
+  {%- assign opacity_value = section.settings.bottom_images_opacity | default: 100 | divided_by: 100.0 -%}
+  <div class="bottom-decoration-images" style="opacity: {{ opacity_value }};">
+    {% if section.settings.bottom_image_left != blank %}
+      <img src="{{ section.settings.bottom_image_left | image_url: width: 400 }}" alt="Décoration gauche" class="bottom-image bottom-image-left">
+    {% endif %}
+    
+    {% if section.settings.bottom_image_center != blank %}
+      <img src="{{ section.settings.bottom_image_center | image_url: width: 1920 }}" alt="Décoration centre" class="bottom-image bottom-image-center">
+    {% endif %}
+    
+    {% if section.settings.bottom_image_right != blank %}
+      <img src="{{ section.settings.bottom_image_right | image_url: width: 400 }}" alt="Décoration droite" class="bottom-image bottom-image-right">
+    {% endif %}
+  </div>
 </div>
 
 <script src="{{ 'rdc_explore_illustrations.js' | asset_url }}" defer="defer"></script>
@@ -189,6 +246,31 @@
       "id": "search_placeholder",
       "label": "Placeholder de recherche (masquée dans le code)",
       "default": "Rechercher un fragment..."
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_image_left",
+      "label": "Image décoration bas gauche"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_image_center",
+      "label": "Image décoration bas centre (pleine largeur)"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_image_right",
+      "label": "Image décoration bas droite"
+    },
+    {
+      "type": "range",
+      "id": "bottom_images_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité des images de décoration",
+      "default": 100
     }
   ],
   "presets": [

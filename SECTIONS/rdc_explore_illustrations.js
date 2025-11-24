@@ -133,6 +133,9 @@ class FragmentsCarousel {
     // Support clavier
     this.setupKeyboardNavigation();
 
+    // Toggle thème sombre
+    this.setupThemeToggle();
+
     // Centrer la carte du milieu au chargement
     setTimeout(() => {
       const middleIndex = Math.floor(this.totalCards / 2);
@@ -673,6 +676,59 @@ class FragmentsCarousel {
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         this.next();
+      }
+    });
+  }
+
+  /**
+   * Configuration du toggle thème sombre
+   */
+  setupThemeToggle() {
+    const toggleBtn = this.section.querySelector('.theme-toggle');
+    if (!toggleBtn) return;
+
+    // Charger le thème sauvegardé
+    const savedTheme = localStorage.getItem('rdc-theme');
+    if (savedTheme === 'dark') {
+      this.section.classList.add('dark-theme');
+      toggleBtn.classList.add('active');
+      this.updateImagesForTheme(true);
+    }
+
+    // Gérer le clic sur le toggle
+    toggleBtn.addEventListener('click', () => {
+      this.section.classList.toggle('dark-theme');
+      toggleBtn.classList.toggle('active');
+      
+      const isDark = this.section.classList.contains('dark-theme');
+      
+      // Changer les images
+      this.updateImagesForTheme(isDark);
+      
+      // Sauvegarder la préférence
+      if (isDark) {
+        localStorage.setItem('rdc-theme', 'dark');
+      } else {
+        localStorage.setItem('rdc-theme', 'light');
+      }
+    });
+  }
+
+  /**
+   * Met à jour les images des cartes en fonction du thème
+   */
+  updateImagesForTheme(isDark) {
+    this.cards.forEach(card => {
+      const img = card.querySelector('.fragment-image');
+      if (!img) return;
+
+      // Récupérer les URLs des deux images depuis les data attributes
+      const lightImageUrl = img.dataset.lightImage;
+      const darkImageUrl = img.dataset.darkImage;
+
+      // Si on a les deux URLs, changer l'image
+      if (lightImageUrl && darkImageUrl) {
+        img.src = isDark ? darkImageUrl : lightImageUrl;
       }
     });
   }
