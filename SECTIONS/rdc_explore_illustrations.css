@@ -346,33 +346,38 @@
 .fragment-card-content-col {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 15px;
-}
-
-.fragment-card-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #E8E8E8;
-  margin: 0;
-  line-height: 1.2;
-  font-family: var(--font-heading-family);
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 40px;
+  text-align: left;
 }
 
 .fragment-card-artist {
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   color: #9CA3AF;
   margin: 0;
+  font-family: var(--font-heading-family);
+  text-align: left;
+}
+
+.fragment-card-title {
+  font-size: 4rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: #2C3E50;
+  margin: 0;
+  line-height: 1.1;
+  font-family: var(--font-heading-family);
+  text-align: left;
 }
 
 .fragment-card-description {
   font-size: 1.4rem;
   line-height: 1.6;
   color: #B8B8B8;
+  padding-top: 20px;
 }
 
 .fragment-card-description p {
@@ -409,29 +414,7 @@
   pointer-events: none;
 }
 
-/* Titre sous la carte */
-.fragment-card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #2C3E50;
-  text-align: center;
-  margin: 0;
-  transition: all 0.3s ease;
-  opacity: 0.6;
-  height: 60px; /* Hauteur fixe pour éviter les sauts */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.2;
-}
-
-/* Titre de la carte centrale */
-.fragment-card.is-center .fragment-card-title {
-  opacity: 1;
-  font-size: 1.8rem;
-}
+/* Titre sous la carte - SUPPRIMÉ (utilise maintenant .fragment-card-title défini plus haut) */
 
 /* Zone d'extrait fixe */
 .fragments-excerpt-container {
@@ -510,7 +493,7 @@
    INDICATEURS
    ======================================== */
 
-.fragments-indicators {
+.fragments-counter {
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -518,34 +501,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   z-index: 100;
   padding: 15px 30px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 50px;
   backdrop-filter: blur(10px);
+  font-family: var(--font-heading-family);
+  font-size: 2rem;
+  color: #E8E8E8;
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
-.indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #E8ECEF;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
+.counter-current {
+  color: #D4AF37;
+  font-weight: 700;
 }
 
-.indicator:hover {
-  background: #ADB5BD;
-  transform: scale(1.2);
-}
-
-.indicator.active {
-  background: #5D6D7E;
-  width: 32px;
-  border-radius: 6px;
+.counter-total {
+  color: #9CA3AF;
 }
 
 /* ========================================

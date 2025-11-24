@@ -114,13 +114,12 @@
                 {% endif %}
               </div>
               
-              {%- comment -%} Colonne droite : Contenu {%- endcomment -%}
+              {%- comment -%} Colonne droite : Titre, Artiste et Description {%- endcomment -%}
               <div class="fragment-card-content-col">
-                <h3 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h3>
-                
                 {% if relique.artiste != blank %}
-                  <p class="fragment-card-artist">Artiste : {{ relique.artiste }}</p>
+                  <p class="fragment-card-artist">Artiste : {{ relique.artiste }} (2025)</p>
                 {% endif %}
+                <h3 class="fragment-card-title">{{ relique.nom | default: "Titre de l'illustration" }}</h3>
                 
                 <div class="fragment-card-description">
                   {{ relique.description | metafield_tag }}
@@ -159,9 +158,9 @@
     </button>
   </div>
 
-  {%- comment -%} Indicateurs générés dynamiquement par JavaScript {%- endcomment -%}
-  <div class="fragments-indicators" id="fragments-indicators-{{ section.id }}">
-    {%- comment -%} Les indicateurs seront générés par le JS en fonction du nombre de cartes affichées {%- endcomment -%}
+  {%- comment -%} Compteur de cartes {%- endcomment -%}
+  <div class="fragments-counter" id="fragments-counter-{{ section.id }}">
+    <span class="counter-current">1</span> / <span class="counter-total">{{ reliques.size }}</span>
   </div>
 </div>
 

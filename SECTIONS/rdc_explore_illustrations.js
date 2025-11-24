@@ -357,22 +357,16 @@ class FragmentsCarousel {
   }
 
   /**
-   * Met à jour l'état actif des indicateurs
+   * Met à jour le compteur de cartes
    */
   updateIndicators() {
-    const visibleCards = this.getVisibleCards();
-    const currentCard = this.cards[this.currentIndex];
-
-    // Trouver l'index de la carte actuelle parmi les cartes visibles
-    const visibleIndex = visibleCards.indexOf(currentCard);
-
-    this.indicators.forEach((indicator, index) => {
-      if (index === visibleIndex) {
-        indicator.classList.add("active");
-      } else {
-        indicator.classList.remove("active");
-      }
-    });
+    const counterElement = this.section.querySelector('.counter-current');
+    if (counterElement) {
+      const visibleCards = this.getVisibleCards();
+      const currentCard = this.cards[this.currentIndex];
+      const visibleIndex = visibleCards.indexOf(currentCard);
+      counterElement.textContent = visibleIndex + 1;
+    }
   }
 
   /**
