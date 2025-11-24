@@ -855,7 +855,7 @@ class FragmentsCarousel {
     if (articleUrl && articleUrl !== "#" && articleUrl !== "") {
       // Article disponible
       this.fixedBtnArticle.href = articleUrl;
-      this.fixedBtnArticle.textContent = "Cliquez pour lire son récit";
+      this.fixedBtnArticle.textContent = "Cliquez pour lire";
       this.fixedBtnArticle.style.opacity = "1";
       this.fixedBtnArticle.style.pointerEvents = "auto";
       this.fixedBtnArticle.style.cursor = "pointer";
@@ -890,7 +890,10 @@ class FragmentsCarousel {
         // Si l'article a moins de 3 mois
         if (publishDate >= threeMonthsAgo) {
           badge.style.display = "block";
-          console.log("🆕 Badge NOUVEAU affiché pour:", card.querySelector(".fragment-card-title")?.textContent);
+          console.log(
+            "🆕 Badge NOUVEAU affiché pour:",
+            card.querySelector(".fragment-card-title")?.textContent
+          );
         } else {
           badge.style.display = "none";
         }
