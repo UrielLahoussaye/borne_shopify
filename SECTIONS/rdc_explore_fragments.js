@@ -27,6 +27,7 @@ class FragmentsCarousel {
     this.totalCards = this.cards.length;
     this.scrollTimeout = null;
     this.targetIndex = null; // Carte ciblée lors d'un clic
+    this.isFiltering = false; // Flag pour empêcher updateCenterCard pendant le filtrage
 
     // Générer les indicateurs dynamiquement
     this.generateIndicators();
@@ -231,15 +232,15 @@ class FragmentsCarousel {
    * Met à jour quelle carte est au centre
    */
   updateCenterCard() {
-    // Ne pas mettre à jour si on survole un bouton
-    if (this.isHoveringButton) {
+    // Ne pas mettre à jour si on survole un bouton ou si on est en train de filtrer
+    if (this.isHoveringButton || this.isFiltering) {
       return;
     }
 
-    // Avec les cartes en 100vw, on calcule l'index basé sur la position de scroll
+    // Avec les cartes en 20vw, on calcule l'index basé sur la position de scroll
     const scrollLeft = this.carousel.scrollLeft;
-    const viewportWidth = window.innerWidth;
-    const calculatedIndex = Math.round(scrollLeft / viewportWidth);
+    const cardWidth = window.innerWidth * 0.2; // 20vw
+    const calculatedIndex = Math.round(scrollLeft / cardWidth);
 
     // S'assurer que l'index est dans les limites
     const newIndex = Math.max(
@@ -319,8 +320,9 @@ class FragmentsCarousel {
     const card = this.cards[index];
     if (!card) return;
 
-    // Avec les cartes en 100vw, on scroll simplement de index * largeur de viewport
-    const targetScroll = index * window.innerWidth;
+    // Avec les cartes en 20vw, calculer la position pour centrer la carte
+    const cardWidth = window.innerWidth * 0.2; // 20vw
+    const targetScroll = index * cardWidth;
 
     this.carousel.scrollTo({
       left: targetScroll,
@@ -472,6 +474,9 @@ class FragmentsCarousel {
   filterCards(filterValue, filterType) {
     console.log("🏷️ Filtering by:", filterValue, "Type:", filterType);
 
+    // Activer le flag pour empêcher updateCenterCard de s'exécuter
+    this.isFiltering = true;
+
     let visibleCount = 0;
     let firstVisibleIndex = -1;
 
@@ -540,19 +545,15 @@ class FragmentsCarousel {
     this.indicators = Array.from(this.section.querySelectorAll(".indicator"));
     this.setupIndicators();
 
-    // Si la carte actuelle est cachée, scroller vers la première carte visible
-    const currentCard = this.cards[this.currentIndex];
-    if (
-      currentCard &&
-      currentCard.classList.contains("hidden") &&
-      firstVisibleIndex !== -1
-    ) {
+    // Toujours scroller vers la première carte visible après un filtrage
+    if (firstVisibleIndex !== -1) {
       console.log(
-        "➡️ Current card hidden, scrolling to first visible card:",
+        "➡️ Scrolling to first visible card:",
         firstVisibleIndex
       );
       setTimeout(() => {
         this.targetIndex = firstVisibleIndex;
+        this.currentIndex = firstVisibleIndex;
         this.cards.forEach((card, index) => {
           if (index === firstVisibleIndex) {
             card.classList.add("is-center");
@@ -561,12 +562,16 @@ class FragmentsCarousel {
           }
         });
         this.scrollToCard(firstVisibleIndex);
+        this.updateIndicators();
+        
+        // Désactiver le flag après le scroll
+        setTimeout(() => {
+          this.isFiltering = false;
+        }, 600);
       }, 350);
     } else {
-      // Sinon, juste mettre à jour la carte centrale après l'animation
-      setTimeout(() => {
-        this.updateCenterCard();
-      }, 350);
+      // Si aucune carte visible, désactiver le flag immédiatement
+      this.isFiltering = false;
     }
   }
 
@@ -609,6 +614,9 @@ class FragmentsCarousel {
    * Rechercher dans les cartes
    */
   searchCards(query) {
+    // Activer le flag pour empêcher updateCenterCard de s'exécuter
+    this.isFiltering = true;
+    
     let visibleCount = 0;
     let firstVisibleIndex = -1;
 
@@ -643,19 +651,15 @@ class FragmentsCarousel {
     this.indicators = Array.from(this.section.querySelectorAll(".indicator"));
     this.setupIndicators();
 
-    // Si la carte actuelle est cachée, scroller vers la première carte visible
-    const currentCard = this.cards[this.currentIndex];
-    if (
-      currentCard &&
-      currentCard.classList.contains("hidden") &&
-      firstVisibleIndex !== -1
-    ) {
+    // Toujours scroller vers la première carte visible après une recherche
+    if (firstVisibleIndex !== -1) {
       console.log(
-        "➡️ Current card hidden, scrolling to first visible card:",
+        "➡️ Scrolling to first visible card:",
         firstVisibleIndex
       );
       setTimeout(() => {
         this.targetIndex = firstVisibleIndex;
+        this.currentIndex = firstVisibleIndex;
         this.cards.forEach((card, index) => {
           if (index === firstVisibleIndex) {
             card.classList.add("is-center");
@@ -664,12 +668,16 @@ class FragmentsCarousel {
           }
         });
         this.scrollToCard(firstVisibleIndex);
+        this.updateIndicators();
+        
+        // Désactiver le flag après le scroll
+        setTimeout(() => {
+          this.isFiltering = false;
+        }, 600);
       }, 350);
     } else {
-      // Sinon, juste mettre à jour la carte centrale après l'animation
-      setTimeout(() => {
-        this.updateCenterCard();
-      }, 350);
+      // Si aucune carte visible, désactiver le flag immédiatement
+      this.isFiltering = false;
     }
   }
 
