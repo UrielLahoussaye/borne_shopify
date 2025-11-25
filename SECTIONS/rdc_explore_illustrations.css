@@ -790,6 +790,269 @@ footer,
    RESPONSIVE
    ======================================== */
 
+/* Écrans verticaux (portrait) - Layout vertical */
+@media screen and (orientation: portrait), screen and (max-width: 1024px) {
+  .fragment-card-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    padding: 20px 40px 150px;
+    gap: 20px;
+  }
+
+  .fragment-card-image-col {
+    height: auto;
+    min-height: 400px;
+    padding: 20px 0;
+  }
+
+  .fragment-image {
+    width: 90%;
+    height: auto;
+    max-height: 1100px;
+    padding-top: 0;
+  }
+
+  .fragment-card {
+    height: auto;
+  }
+
+  .fragment-card-content-col {
+    padding: 20px 40px;
+    padding-left: 40px;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+  }
+
+  .fragment-card-title {
+    font-size: 8rem;
+  }
+
+  .fragment-card-artist {
+    font-size: 3.4rem;
+    text-align: center;
+  }
+
+  .fragment-card-description {
+    font-size: 2.4rem;
+    padding-top: 30px;
+  }
+
+  .fragment-card-description p
+  {
+    max-width: 900px;
+  }
+
+  .fragment-card-description p {
+    text-align: justify;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .fragment-card-artist-word {
+    font-size: 2rem;
+    margin-left: auto;
+    max-width: 900px;
+    margin-right: auto;
+  }
+
+  .fragment-card-section-title {
+    text-align: center;
+    font-size: 3rem;
+  }
+}
+
+/* Tablettes en portrait */
+@media screen and (orientation: portrait) and (max-width: 768px) {
+  .fragments-hero {
+    padding: 30px 20px 15px 20px;
+  }
+
+  .fragments-header-title {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .fragments-title {
+    font-size: 8rem;
+  }
+
+  .fragments-subtitle {
+    font-size: 2rem;
+  }
+
+  .fragments-meta {
+    font-size: 1.6rem;
+  }
+
+  .fragments-filters {
+    position: static;
+    justify-content: center;
+    margin: 20px 0;
+    max-width: 100%;
+  }
+
+  .theme-toggle-container {
+    top: 20px;
+    right: 20px;
+  }
+
+  .fragments-back-btn {
+    top: 22px;
+    left: 20px;
+  }
+
+  .fragment-card-wrapper {
+    padding: 20px 20px 120px;
+  }
+
+  .fragment-card-image-col {
+    min-height: 250px;
+  }
+
+  .fragment-image {
+    width: 70%;
+    max-height: 300px;
+  }
+
+  .fragment-card-content-col {
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .fragment-card-title {
+    font-size: 2.5rem;
+  }
+
+  .fragment-card-artist {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .fragment-card-description {
+    font-size: 1.3rem;
+  }
+
+  .fragment-card-description p {
+    text-align: justify;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .fragment-card-section-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .fragment-card-artist-word {
+    font-size: 1.2rem;
+    padding: 15px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Mobiles en portrait */
+@media screen and (orientation: portrait) and (max-width: 480px) {
+  .fragments-hero {
+    padding: 20px 15px 10px 15px;
+  }
+
+  .fragments-title {
+    font-size: 3rem;
+  }
+
+  .fragments-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .fragments-meta {
+    font-size: 1.3rem;
+  }
+
+  .fragments-filters {
+    gap: 8px;
+  }
+
+  .fragments-filter {
+    font-size: 1rem;
+    padding: 4px 8px;
+  }
+
+  .fragment-card-wrapper {
+    padding: 15px 15px 100px;
+  }
+
+  .fragment-card-image-col {
+    min-height: 200px;
+  }
+
+  .fragment-image {
+    width: 80%;
+    max-height: 250px;
+  }
+
+  .fragment-card-content-col {
+    padding: 15px;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .fragment-card-title {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+
+  .fragment-card-artist {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .fragment-card-description {
+    font-size: 1.2rem;
+  }
+
+  .fragment-card-description p {
+    max-width: 100%;
+    text-align: justify;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .fragment-card-section-title {
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  .fragment-card-artist-word {
+    font-size: 1.1rem;
+    padding: 12px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .carousel-nav {
+    width: 35px;
+    height: 35px;
+  }
+
+  .carousel-nav-prev {
+    left: 10px;
+  }
+
+  .carousel-nav-next {
+    right: 10px;
+  }
+
+  .fragments-counter {
+    font-size: 1rem;
+    padding: 8px 16px;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .fragments-carousel::before,
   .fragments-carousel::after {
@@ -805,7 +1068,7 @@ footer,
   }
 
   .fragment-card-title {
-    font-size: 1.3rem;
+    font-size: 7.3rem;
     height: 55px;
   }
 }
