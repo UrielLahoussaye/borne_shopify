@@ -200,6 +200,18 @@ class FragmentsCarousel {
       }
     }
 
+    // Si la carte actuelle n'est pas visible, trouver la première carte visible après currentIndex
+    if (currentVisibleIndex === -1) {
+      for (let i = 0; i < visibleCards.length; i++) {
+        const visibleCardIndex = this.cards.indexOf(visibleCards[i]);
+        if (visibleCardIndex > currentIndex) {
+          return visibleCardIndex;
+        }
+      }
+      // Si aucune carte après, retourner la première carte visible
+      return this.cards.indexOf(visibleCards[0]);
+    }
+
     // Prochaine carte visible (avec boucle)
     const nextVisibleIndex = (currentVisibleIndex + 1) % visibleCards.length;
     return this.cards.indexOf(visibleCards[nextVisibleIndex]);
@@ -221,6 +233,18 @@ class FragmentsCarousel {
       }
     }
 
+    // Si la carte actuelle n'est pas visible, trouver la première carte visible avant currentIndex
+    if (currentVisibleIndex === -1) {
+      for (let i = visibleCards.length - 1; i >= 0; i--) {
+        const visibleCardIndex = this.cards.indexOf(visibleCards[i]);
+        if (visibleCardIndex < currentIndex) {
+          return visibleCardIndex;
+        }
+      }
+      // Si aucune carte avant, retourner la dernière carte visible
+      return this.cards.indexOf(visibleCards[visibleCards.length - 1]);
+    }
+
     // Carte visible précédente (avec boucle)
     const prevVisibleIndex =
       (currentVisibleIndex - 1 + visibleCards.length) % visibleCards.length;
@@ -236,22 +260,35 @@ class FragmentsCarousel {
       return;
     }
 
-    // Avec les cartes en 100vw, on calcule l'index basé sur la position de scroll
-    const scrollLeft = this.carousel.scrollLeft;
-    const viewportWidth = window.innerWidth;
-    const calculatedIndex = Math.round(scrollLeft / viewportWidth);
-
-    // S'assurer que l'index est dans les limites
-    const newIndex = Math.max(
-      0,
-      Math.min(calculatedIndex, this.totalCards - 1)
-    );
-
     // Si on a une carte ciblée (clic/navigation), utiliser celle-ci
     if (this.targetIndex !== null) {
       this.currentIndex = this.targetIndex;
     } else {
-      this.currentIndex = newIndex;
+      // Calculer l'index basé sur la position de scroll
+      // Mais seulement parmi les cartes visibles
+      const scrollLeft = this.carousel.scrollLeft;
+      const viewportWidth = window.innerWidth;
+      const visibleCards = this.getVisibleCards();
+
+      if (visibleCards.length > 0) {
+        // Trouver quelle carte visible est la plus proche du centre
+        // En calculant la position basée sur l'index visible (pas l'index global)
+        let closestIndex = 0;
+        let minDistance = Infinity;
+
+        visibleCards.forEach((card, visibleIndex) => {
+          const cardIndex = this.cards.indexOf(card);
+          const cardLeft = visibleIndex * viewportWidth;
+          const distance = Math.abs(scrollLeft - cardLeft);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestIndex = cardIndex;
+          }
+        });
+
+        this.currentIndex = closestIndex;
+      }
     }
 
     // Mettre à jour les classes is-center
@@ -317,10 +354,16 @@ class FragmentsCarousel {
     if (index < 0 || index >= this.totalCards) return;
 
     const card = this.cards[index];
-    if (!card) return;
+    if (!card || card.classList.contains("hidden")) return;
 
-    // Avec les cartes en 100vw, on scroll simplement de index * largeur de viewport
-    const targetScroll = index * window.innerWidth;
+    // Trouver l'index visible de cette carte (en comptant seulement les cartes non cachées)
+    const visibleCards = this.getVisibleCards();
+    const visibleIndex = visibleCards.indexOf(card);
+
+    if (visibleIndex === -1) return;
+
+    // Calculer la position de scroll basée sur l'index visible
+    const targetScroll = visibleIndex * window.innerWidth;
 
     this.carousel.scrollTo({
       left: targetScroll,

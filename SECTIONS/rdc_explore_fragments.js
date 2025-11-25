@@ -238,6 +238,18 @@ class FragmentsCarousel {
       }
     }
 
+    // Si la carte actuelle n'est pas visible, trouver la première carte visible après currentIndex
+    if (currentVisibleIndex === -1) {
+      for (let i = 0; i < visibleCards.length; i++) {
+        const visibleCardIndex = this.cards.indexOf(visibleCards[i]);
+        if (visibleCardIndex > currentIndex) {
+          return visibleCardIndex;
+        }
+      }
+      // Si aucune carte après, retourner la première carte visible
+      return this.cards.indexOf(visibleCards[0]);
+    }
+
     // Prochaine carte visible (avec boucle)
     const nextVisibleIndex = (currentVisibleIndex + 1) % visibleCards.length;
     return this.cards.indexOf(visibleCards[nextVisibleIndex]);
@@ -259,6 +271,18 @@ class FragmentsCarousel {
       }
     }
 
+    // Si la carte actuelle n'est pas visible, trouver la première carte visible avant currentIndex
+    if (currentVisibleIndex === -1) {
+      for (let i = visibleCards.length - 1; i >= 0; i--) {
+        const visibleCardIndex = this.cards.indexOf(visibleCards[i]);
+        if (visibleCardIndex < currentIndex) {
+          return visibleCardIndex;
+        }
+      }
+      // Si aucune carte avant, retourner la dernière carte visible
+      return this.cards.indexOf(visibleCards[visibleCards.length - 1]);
+    }
+
     // Carte visible précédente (avec boucle)
     const prevVisibleIndex =
       (currentVisibleIndex - 1 + visibleCards.length) % visibleCards.length;
@@ -274,28 +298,43 @@ class FragmentsCarousel {
       return;
     }
 
-    // Détecter si on est sur mobile (< 798px)
-    const isMobile = window.innerWidth < 798;
-
-    // Calculer la largeur de la carte en fonction du viewport
-    const cardWidth = isMobile
-      ? window.innerWidth * 0.7 // 70vw sur mobile
-      : window.innerWidth * 0.2; // 20vw sur desktop
-
-    const scrollLeft = this.carousel.scrollLeft;
-    const calculatedIndex = Math.round(scrollLeft / cardWidth);
-
-    // S'assurer que l'index est dans les limites
-    const newIndex = Math.max(
-      0,
-      Math.min(calculatedIndex, this.totalCards - 1)
-    );
-
     // Si on a une carte ciblée (clic/navigation), utiliser celle-ci
     if (this.targetIndex !== null) {
       this.currentIndex = this.targetIndex;
     } else {
-      this.currentIndex = newIndex;
+      // Calculer l'index basé sur la position de scroll
+      // Mais seulement parmi les cartes visibles
+      const scrollLeft = this.carousel.scrollLeft;
+
+      // Détecter si on est sur mobile (< 798px)
+      const isMobile = window.innerWidth < 798;
+
+      // Calculer la largeur de la carte en fonction du viewport
+      const cardWidth = isMobile
+        ? window.innerWidth * 0.7 // 70vw sur mobile
+        : window.innerWidth * 0.2; // 20vw sur desktop
+
+      const visibleCards = this.getVisibleCards();
+
+      if (visibleCards.length > 0) {
+        // Trouver quelle carte visible est la plus proche du centre
+        // En calculant la position basée sur l'index visible (pas l'index global)
+        let closestIndex = 0;
+        let minDistance = Infinity;
+
+        visibleCards.forEach((card, visibleIndex) => {
+          const cardIndex = this.cards.indexOf(card);
+          const cardLeft = visibleIndex * cardWidth;
+          const distance = Math.abs(scrollLeft - cardLeft);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestIndex = cardIndex;
+          }
+        });
+
+        this.currentIndex = closestIndex;
+      }
     }
 
     // Mettre à jour les classes is-center
@@ -362,7 +401,7 @@ class FragmentsCarousel {
     if (index < 0 || index >= this.totalCards) return;
 
     const card = this.cards[index];
-    if (!card) return;
+    if (!card || card.classList.contains("hidden")) return;
 
     // Détecter si on est sur mobile (< 798px)
     const isMobile = window.innerWidth < 798;
